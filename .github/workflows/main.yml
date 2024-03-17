@@ -1,4 +1,4 @@
-            - name: Upload S3
+- name: Upload S3
   # You may pin to the exact commit or the version.
   # uses: shallwefootball/upload-s3-action@4350529f410221787ccf424e50133cbc1b52704e
   uses: shallwefootball/upload-s3-action@v1.3.3
