@@ -4,15 +4,11 @@
   uses: shallwefootball/upload-s3-action@v1.3.3
   with:
     # aws key id
-    aws_key_id: 
-    ${{ secrets.AWS_ACCESS_KEY_ID }}
-    aws_secret_access_key: 
-    ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-    aws_bucket: 
-    'miketineo.com'
+    aws_key_id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+    aws_secret_access_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+    aws_bucket: 'miketineo.com'
     source_dir: 'build'
     # destination directory for upload
     # destination_dir: './' # optional, default is /
     # endpoint URI to send requests
     # endpoint: # optional
-    
