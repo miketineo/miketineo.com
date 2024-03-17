@@ -17,7 +17,7 @@ const introdata = {
 
 const dataabout = {
     title: "abit about my self",
-    aboutme: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Praesent quis dolor id ligula semper elementum feugiat pretium nulla. Nunc non commodo dolor. Nunc mollis dignissim facilisis. Morbi ut magna ultricies.",
+    aboutme: "I'm originally from Venezuela, During the last 10 years I've lived in Ireland, Italy, and the Netherlands.  I'm this and this and that",
 };
 const worktimeline = [{
         jobtitle: "Designer of week",
