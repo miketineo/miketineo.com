@@ -1,13 +1,132 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Vite + React + TS</title>
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.tsx"></script>
-  </body>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Minimalistic Personal Website</title>
+    <style>
+        body {
+            font-family: "Courier New", Courier, monospace;
+            background-color: #f5f5f5;
+            color: #333;
+            margin: 0;
+            padding: 0;
+        }
+        header {
+            background-color: #000;
+            color: #fff;
+            text-align: center;
+            padding: 10px 0;
+            font-size: 1.2em;
+        }
+        header nav a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+        header nav {
+            display: inline;
+        }
+        main {
+            padding: 20px;
+            max-width: 800px;
+            margin: 0 auto;
+        }
+        section {
+            margin: 40px 0;
+        }
+        h1, h2 {
+            text-align: center;
+        }
+        .ascii-art {
+            font-family: "Courier New", Courier, monospace;
+            white-space: pre;
+            text-align: center;
+        }
+        footer {
+            text-align: center;
+            margin: 20px 0;
+            font-size: 0.9em;
+        }
+        a {
+            color: #000;
+        }
+        .experience-item {
+            margin-bottom: 20px;
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <nav>
+            <a href="#about">About</a> | 
+            <a href="#projects">Projects</a> | 
+            <a href="#experience">Experience</a> | 
+            <a href="#contact">Contact</a>
+        </nav>
+    </header>
+
+    <main>
+        <section id="about">
+            <h2>About Me</h2>
+            <p>Hello, I'm Miguel Tineo, an Engineering Leader, Coach & Mentor. I've worked with companies like Dutchie and Zendesk, bringing over 10 years of engineering management experience to build and lead transformative cloud solutions. I am passionate about distributed cloud technologies, SaaS development, and team leadership.</p>
+        </section>
+
+        <section id="projects">
+            <h2>Projects</h2>
+            <p>Here are some of my recent projects:</p>
+            <ul>
+                <li>Distributed & Decentralized cloud storage and compute systems @Hive</li>
+                <li>POS and Platform Engineering initiatives @Dutchie</li>
+                <li>Building next-gen Zendesk's real-time services to enable a cutting-edge omnichannel CX</li>
+            </ul>
+        </section>
+
+        <section id="experience">
+            <h2>Experience</h2>
+            <div class="experience-item">
+                <h3>Software Engineering Manager | Hive</h3>
+                <p><strong>June 2024 - Present</strong> | Remote Cagliari, Sardinia, Italy</p>
+                <p>Re-inventing the distributed cloud by building reliable and affordable storage and compute infrastructure.</p>
+            </div>
+            <div class="experience-item">
+                <h3>Engineering Manager | Dutchie</h3>
+                <p><strong>October 2021 - January 2024</strong> | Bend, Oregon, USA</p>
+                <p>Led the Engineering Team at Dutchie, supporting cloud cost reduction initiatives and growing a high-performing team across the EU and USA.</p>
+            </div>
+            <div class="experience-item">
+                <h3>Chief Technology Officer | Yard</h3>
+                <p><strong>May 2021 - October 2021</strong> | Ireland</p>
+                <p>Drove the engineering efforts for Yard.live, acting as CTO and managing third-party vendors, APIs, and product validation.</p>
+            </div>
+            <div class="experience-item">
+                <h3>Engineering Manager | Zendesk</h3>
+                <p><strong>January 2019 - February 2021</strong> | Dublin, Ireland</p>
+                <p>Managed real-time services engineering and led the Sustaining EMEA team for Zendesk's core platform.</p>
+            </div>
+        </section>
+
+        <section id="contact">
+            <h2>Contact</h2>
+            <p>Feel free to reach out to me:</p>
+            <p>Email: <a href="mailto:miketineo@gmail.com">miketineo@gmail.com</a></p>
+            <p>LinkedIn: <a href="https://www.linkedin.com/in/miketineo" target="_blank">www.linkedin.com/in/miketineo</a></p>
+        </section>
+
+        <section class="ascii-art">
+            <pre>
+ _______
+|       |
+| ( )   |     Hello there!
+|_______|
+            </pre>
+        </section>
+    </main>
+
+    <footer>
+        <p>&copy; 2024 Miguel Tineo</p>
+    </footer>
+
+</body>
 </html>
