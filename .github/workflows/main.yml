@@ -1,12 +1,10 @@
-name: Upload to S3
-
 on:
   push:
     branches:
       - main
 
 jobs:
-  upload:
+  deploy:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v2
@@ -20,7 +18,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE_DIR: "."
       - name: Invalidate CloudFront Cache
-        uses: chetan/invalidate-cloudfront-action@v1.0.1
+        uses: chetan/invalidate-cloudfront-action@v1
         with:
           distribution: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           paths: "/*"
