@@ -1,3 +1,5 @@
+name: Deploy to S3 and Invalidate CloudFront
+
 on:
   push:
     branches:
@@ -18,7 +20,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE_DIR: "."
       - name: Invalidate CloudFront Cache
-        uses: awact/cloudfront-invalidate-action@v1.0.0
+        uses: aws-actions/cloudfront-invalidate-cache@v1
         with:
           distribution-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           paths: "/index.html"
