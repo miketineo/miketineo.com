@@ -20,7 +20,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           SOURCE_DIR: "."
       - name: Invalidate CloudFront Cache
-        uses: chetan/invalidate-cloudfront-action@v1.5.0
+        uses: chetan/invalidate-cloudfront-action@master
         with:
           distribution-id: ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }}
           paths: "/index.html"
