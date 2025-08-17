@@ -4,6 +4,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>MikeTineo.com - Miguel Tineo's Personal Website</title>
+    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
+    <script type="module">
+        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
+        createChat({
+            webhookUrl: 'https://a793fa40-25ee-4499-a452-9b25fdfb773c-5678.tenants.hivecompute.ai/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat'
+        });
+    </script>
     <style>
         body {
             font-family: "Courier New", Courier, monospace;
