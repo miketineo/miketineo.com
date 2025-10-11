@@ -862,6 +862,10 @@ main {
   border-bottom-color: #2A2A2A;
 }
 
+[data-theme="dark"] .about-hero {
+  background: var(--gradient-hero);
+}
+
 /* =====================================================
    15. Theme Switcher
    ===================================================== */
