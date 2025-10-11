@@ -197,6 +197,47 @@
   box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
 }
 
+/* Featured AI Card */
+.card--featured {
+  background: linear-gradient(135deg,
+    rgba(0, 75, 255, 0.02) 0%,
+    rgba(0, 75, 255, 0.04) 100%);
+  border: 2px solid rgba(0, 75, 255, 0.15);
+  position: relative;
+  overflow: hidden;
+}
+
+.card--featured::before {
+  content: "";
+  position: absolute;
+  top: -2px;
+  left: -2px;
+  right: -2px;
+  height: 4px;
+  background: linear-gradient(90deg,
+    var(--color-primary) 0%,
+    #0040dd 50%,
+    var(--color-primary) 100%);
+  animation: shimmer 3s ease-in-out infinite;
+}
+
+@keyframes shimmer {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 1; }
+}
+
+.card--featured:focus-within {
+  outline: 3px solid var(--color-primary);
+  outline-offset: 4px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .card--featured::before {
+    animation: none;
+    opacity: 0.8;
+  }
+}
+
 .card-title {
   font-size: var(--font-size-xl);
   margin-bottom: var(--spacing-sm);
@@ -546,6 +587,32 @@ main {
   gap: var(--spacing-md);
   flex-wrap: wrap;
   margin-top: var(--spacing-sm);
+}
+
+.about-role-container {
+  display: flex;
+  flex-direction: column;
+  gap: var(--spacing-xs);
+}
+
+.about-role-subtitle {
+  font-size: calc(var(--font-size-base) * 0.95);
+  color: var(--color-primary);
+  font-weight: 500;
+  letter-spacing: -0.01em;
+  margin: 0;
+  opacity: 0.9;
+}
+
+.company-link {
+  color: var(--color-primary);
+  font-weight: 600;
+  border-bottom: 1px solid rgba(0, 75, 255, 0.2);
+  transition: border-color var(--transition-fast);
+}
+
+.company-link:hover {
+  border-bottom-color: var(--color-primary);
 }
 
 /* Tablet responsive */

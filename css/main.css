@@ -160,6 +160,21 @@ a:focus-visible {
   grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
 }
 
+/* 3-2 grid for Leadership Values with 5 cards */
+.values-grid {
+  display: grid;
+  gap: var(--spacing-lg);
+  grid-template-columns: repeat(2, 1fr);
+}
+
+@media (min-width: 769px) {
+  .values-grid .card:nth-child(5) {
+    grid-column: 1 / -1;
+    max-width: 600px;
+    margin: 0 auto;
+  }
+}
+
 /* =====================================================
    6. Utilities
    ===================================================== */
