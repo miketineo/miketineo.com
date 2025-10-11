@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Engineering leadership insights, team building strategies, and distributed systems thinking from Miguel Tineo.">
+    <title>Blog & Newsletter - Miguel Tineo</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" aria-label="Miguel Tineo Home">Miguel Tineo</a>
+            <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/about.html" class="nav-link">About</a></li>
+                <li><a href="/experience.html" class="nav-link">Experience</a></li>
+                <li><a href="/speaking.html" class="nav-link">Speaking</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <!-- Page Header -->
+        <section class="section section-lg">
+            <div class="container container-narrow">
+                <div class="page-header">
+                    <h1 class="page-title">Leadership Insights</h1>
+                    <p class="page-description">
+                        Monthly deep-dives on engineering leadership, culture, and systems thinking
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Newsletter Signup -->
+        <section class="section bg-light">
+            <div class="container container-narrow">
+                <div class="card text-center">
+                    <h2 style="margin-bottom: var(--spacing-md);">Subscribe to the Newsletter</h2>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg); max-width: 600px; margin-left: auto; margin-right: auto;">
+                        Join 500+ engineering leaders getting monthly insights on team building,
+                        distributed systems, and engineering culture. No spam, unsubscribe anytime.
+                    </p>
+                    <form class="newsletter-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                        <!-- Honeypot field for spam protection -->
+                        <input type="text" name="_gotcha" style="display: none;" tabindex="-1" autocomplete="off">
+
+                        <input
+                            type="email"
+                            name="email"
+                            class="form-input newsletter-input"
+                            placeholder="your@email.com"
+                            required
+                            aria-label="Email address">
+                        <button type="submit" class="btn btn-primary newsletter-btn">Subscribe</button>
+                    </form>
+                    <p style="font-size: 14px; color: var(--color-text-secondary); margin-top: var(--spacing-md); margin-bottom: 0;">
+                        By subscribing, you agree to receive monthly emails. GDPR compliant.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Blog Posts / Coming Soon -->
+        <section class="section">
+            <div class="container">
+                <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">Recent Posts</h2>
+
+                <div style="text-align: center; padding: var(--spacing-2xl) 0;">
+                    <p style="font-size: var(--font-size-lg); color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
+                        Blog posts are coming soon! In the meantime, subscribe to the newsletter
+                        to receive insights directly in your inbox.
+                    </p>
+                    <p style="color: var(--color-text-secondary);">
+                        Upcoming topics include:
+                    </p>
+                    <ul style="list-style: none; padding: 0; max-width: 600px; margin: var(--spacing-lg) auto 0;">
+                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
+                            • Building psychological safety in remote teams
+                        </li>
+                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
+                            • The engineering manager's guide to 1-on-1s
+                        </li>
+                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
+                            • Scaling microservices: lessons from the trenches
+                        </li>
+                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
+                            • Career development frameworks for engineers
+                        </li>
+                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
+                            • Cloud cost optimization strategies that actually work
+                        </li>
+                    </ul>
+                </div>
+
+                <!-- Placeholder for future blog posts structure -->
+                <!--
+                <div class="grid grid-2">
+                    <article class="card">
+                        <h3 class="card-title">Blog Post Title</h3>
+                        <p class="card-meta">January 15, 2025 • 5 min read</p>
+                        <p class="card-description">
+                            Brief excerpt from the blog post...
+                        </p>
+                        <a href="/blog/post-slug.html" class="btn btn-secondary" style="margin-top: var(--spacing-md);">Read More</a>
+                    </article>
+                </div>
+                -->
+            </div>
+        </section>
+
+        <!-- Topics -->
+        <section class="section bg-light">
+            <div class="container">
+                <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">What I Write About</h2>
+                <div class="grid grid-3">
+                    <div class="card">
+                        <h3 class="card-title">Engineering Leadership</h3>
+                        <p class="card-description">
+                            Team building, mentorship, career development, and creating high-performing
+                            engineering organizations.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Distributed Systems</h3>
+                        <p class="card-description">
+                            Architecture patterns, scalability strategies, and lessons learned from
+                            building systems that handle millions of requests.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Engineering Culture</h3>
+                        <p class="card-description">
+                            Remote work best practices, psychological safety, continuous learning,
+                            and sustainable delivery.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Cloud Architecture</h3>
+                        <p class="card-description">
+                            AWS optimization, infrastructure as code, observability, and cost management
+                            strategies for cloud-native applications.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Career Growth</h3>
+                        <p class="card-description">
+                            Navigating career transitions, from IC to management, building leadership
+                            skills, and interview preparation.
+                        </p>
+                    </div>
+                    <div class="card">
+                        <h3 class="card-title">Systems Thinking</h3>
+                        <p class="card-description">
+                            Holistic approaches to problem-solving, understanding complex systems,
+                            and making impactful technical decisions.
+                        </p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Connect -->
+        <section class="section">
+            <div class="container container-narrow text-center">
+                <h2>Let's Continue the Conversation</h2>
+                <p style="margin-bottom: var(--spacing-lg);">
+                    Have questions or topics you'd like me to cover? Reach out directly or
+                    connect with me on LinkedIn.
+                </p>
+                <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
+                    <a href="/contact.html" class="btn btn-primary">Send a Message</a>
+                    <a href="https://www.linkedin.com/in/miketineo" class="btn btn-secondary" target="_blank" rel="noopener">Connect on LinkedIn</a>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Miguel Tineo</h4>
+                    <p style="color: var(--color-text-secondary); font-size: 14px;">
+                        Engineering Leader focused on building teams and systems that scale.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/experience.html">Experience</a></li>
+                        <li><a href="/speaking.html">Speaking</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://www.linkedin.com/in/miketineo" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="mailto:miketineo@gmail.com">Email</a></li>
+                        <li><a href="/contact.html">Contact Form</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Miguel Tineo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js" defer></script>
+</body>
+</html>

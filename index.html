@@ -3,147 +3,265 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>MikeTineo.com - Miguel Tineo's Personal Website v1</title>
-    <link href="https://cdn.jsdelivr.net/npm/@n8n/chat/dist/style.css" rel="stylesheet" />
-    <script type="module">
-        import { createChat } from 'https://cdn.jsdelivr.net/npm/@n8n/chat/dist/chat.bundle.es.js';
-        createChat({
-            webhookUrl: 'https://a793fa40-25ee-4499-a452-9b25fdfb773c-5678.tenants.hivecompute.ai/webhook/a889d2ae-2159-402f-b326-5f61e90f602e/chat'
-        });
+    <meta name="description" content="Engineering Leader | Cloud Innovator | Mentor | Speaker. Building teams that build the future.">
+    <meta name="author" content="Miguel Tineo">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://miketineo.com/">
+    <meta property="og:title" content="Miguel Tineo - Engineering Leadership">
+    <meta property="og:description" content="Engineering Leader | Cloud Innovator | Mentor | Speaker">
+    <meta property="og:image" content="https://miketineo.com/assets/images/og-image.jpg">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Miguel Tineo - Engineering Leadership">
+    <meta name="twitter:description" content="Engineering Leader | Cloud Innovator | Mentor | Speaker">
+
+    <title>Miguel Tineo - Engineering Leadership</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+
+    <!-- JSON-LD Structured Data -->
+    <script type="application/ld+json">
+    {
+      "@context": "https://schema.org",
+      "@type": "Person",
+      "name": "Miguel Tineo",
+      "url": "https://miketineo.com",
+      "jobTitle": "Software Engineering Manager",
+      "worksFor": {
+        "@type": "Organization",
+        "name": "Hive"
+      },
+      "alumniOf": [
+        {
+          "@type": "Organization",
+          "name": "Zendesk"
+        },
+        {
+          "@type": "Organization",
+          "name": "Dutchie"
+        }
+      ],
+      "sameAs": [
+        "https://www.linkedin.com/in/miketineo",
+        "https://github.com/miketineo"
+      ]
+    }
     </script>
-    <style>
-        body {
-            font-family: "Courier New", Courier, monospace;
-            background-color: #f5f5f5;
-            color: #333;
-            margin: 0;
-            padding: 0;
-        }
-        header {
-            background-color: #000;
-            color: #fff;
-            text-align: center;
-            padding: 10px 0;
-            font-size: 1.2em;
-        }
-        header nav a {
-            color: #fff;
-            text-decoration: none;
-            margin: 0 10px;
-        }
-        header nav {
-            display: inline;
-        }
-        main {
-            padding: 20px;
-            max-width: 800px;
-            margin: 0 auto;
-        }
-        section {
-            margin: 40px 0;
-        }
-        h1, h2 {
-            text-align: center;
-        }
-        .ascii-art {
-            font-family: "Courier New", Courier, monospace;
-            white-space: pre;
-            text-align: center;
-        }
-        footer {
-            text-align: center;
-            margin: 20px 0;
-            font-size: 0.9em;
-        }
-        a {
-            color: #000;
-        }
-        .experience-item {
-            margin-bottom: 20px;
-        }
-    </style>
 </head>
 <body>
-
-    <header>
-        <nav>
-            <a href="#about">About</a> | 
-            <a href="#projects">Projects</a> | 
-            <a href="#experience">Experience</a> | 
-            <a href="#contact">Contact</a>
-            <a href="blog.miketineo.com">Blog</a>
-        </nav>
-    </header>
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" aria-label="Miguel Tineo Home">Miguel Tineo</a>
+            <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link active">Home</a></li>
+                <li><a href="/about.html" class="nav-link">About</a></li>
+                <li><a href="/experience.html" class="nav-link">Experience</a></li>
+                <li><a href="/speaking.html" class="nav-link">Speaking</a></li>
+                <li><a href="/blog/" class="nav-link">Blog</a></li>
+                <li><a href="/contact.html" class="nav-link">Contact</a></li>
+            </ul>
+        </div>
+    </nav>
 
     <main>
-        <section id="about">
-            <h2>About Me</h2>
-            <p>Hello, I'm Miguel Tineo, an Engineering Leader, Coach & Mentor. I've worked with companies like Dutchie and Zendesk, bringing over 10 years of engineering management experience to build and lead transformative cloud solutions. I am passionate about distributed cloud technologies, SaaS development, and team leadership.</p>
-        </section>
-
-        <section id="projects">
-            <h2>Projects</h2>
-            <p>Here are some of my recent projects:</p>
-            <ul>
-                <li>Distributed & Decentralized cloud storage and compute systems @Hive</li>
-                <li>POS and Platform Engineering initiatives @Dutchie</li>
-                <li>Building next-gen Zendesk's real-time services to enable a cutting-edge omnichannel CX</li>
-            </ul>
-        </section>
-
-        <section id="experience">
-            <h2>Experience</h2>
-            <div class="experience-item">
-                <h3>Software Engineering Manager | Hive</h3>
-                <p><strong>June 2024 - Present</strong> | Remote Cagliari, Sardinia, Italy</p>
-                <p>Re-inventing the distributed cloud by building reliable and affordable storage and compute infrastructure.</p>
-            </div>
-            <div class="experience-item">
-                <h3>Engineering Manager | Dutchie</h3>
-                <p><strong>October 2021 - January 2024</strong> | Bend, Oregon, USA</p>
-                <p>Led the Engineering Team at Dutchie, supporting cloud cost reduction initiatives and growing a high-performing team across the EU and USA.</p>
-            </div>
-            <div class="experience-item">
-                <h3>Chief Technology Officer | Yard</h3>
-                <p><strong>May 2021 - October 2021</strong> | Ireland</p>
-                <p>Drove the engineering efforts for Yard.live, acting as CTO and managing third-party vendors, APIs, and product validation.</p>
-            </div>
-            <div class="experience-item">
-                <h3>Engineering Manager | Zendesk</h3>
-                <p><strong>January 2019 - February 2021</strong> | Dublin, Ireland</p>
-                <p>Managed real-time services engineering and led the Sustaining EMEA team for Zendesk's core platform.</p>
+        <!-- Hero Section -->
+        <section class="hero">
+            <div class="container">
+                <div class="hero-content fade-in">
+                    <h1 class="hero-title">Engineering Leadership.<br>Scaled. Human.</h1>
+                    <p class="hero-subtitle">Engineering Leader | Cloud Innovator | Mentor | Speaker</p>
+                    <div class="hero-cta">
+                        <a href="/experience.html" class="btn btn-primary">Explore My Work</a>
+                        <a href="/blog/" class="btn btn-secondary">Leadership Insights</a>
+                    </div>
+                </div>
             </div>
         </section>
 
-        <section id="contact">
-            <h2>Referals</h2>
-            <p>Here are some referral links of tools that I use daily</p>
-            <a href="https://app.warp.dev/referral/8JM9LK">Warp terminal</a>
-            <p>Warp is a terminal that allows you to run your code in the cloud. It's a great tool for remote development and pair programming.</p>
-            <a href="https://www.hivenet.com/referral?referral_code=9k2cUNGl1TK3HEYknY5EQ7WXNkFaxrNTCm38ipZmozGlVceHvezGrPfsCPd%2FUtfWeAgOXw%3D%3D">HiveDisk</a>
-            <p>HiveDisk is a decentralized cloud storage solution that allows you to store your files securely and privately.</p>
+        <!-- Impact Metrics -->
+        <section class="section bg-light">
+            <div class="container">
+                <h2 class="text-center">Impact By Numbers</h2>
+                <div class="grid grid-3">
+                    <div class="metric-card">
+                        <span class="metric-value">10+</span>
+                        <span class="metric-label">Years in Engineering Leadership</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">50+</span>
+                        <span class="metric-label">Engineers Mentored</span>
+                    </div>
+                    <div class="metric-card">
+                        <span class="metric-value">10M+</span>
+                        <span class="metric-label">Daily Requests Scaled</span>
+                    </div>
+                </div>
+            </div>
         </section>
 
-        <section id="contact">
-            <h2>Contact</h2>
-            <p>Feel free to reach out to me:</p>
-            <p>Email: <a href="mailto:miketineo@gmail.com">miketineo@gmail.com</a></p>
-            <p>LinkedIn: <a href="https://www.linkedin.com/in/miketineo" target="_blank">www.linkedin.com/in/miketineo</a></p>
+        <!-- Project Highlights -->
+        <section class="section">
+            <div class="container">
+                <h2 class="text-center">Recent Work</h2>
+                <div class="grid grid-2">
+                    <article class="card">
+                        <h3 class="card-title">Distributed Cloud Infrastructure</h3>
+                        <p class="card-meta">Hive | 2024 - Present</p>
+                        <p class="card-description">
+                            Re-inventing the distributed cloud by building reliable and affordable
+                            storage and compute infrastructure. Leading engineering teams across
+                            decentralized systems and blockchain technology.
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h3 class="card-title">Platform Engineering at Scale</h3>
+                        <p class="card-meta">Dutchie | 2021 - 2024</p>
+                        <p class="card-description">
+                            Led platform engineering initiatives reducing AWS costs by 20% while
+                            scaling distributed services to handle millions of transactions. Built
+                            and mentored high-performing teams across EU and USA.
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h3 class="card-title">Real-Time Services Architecture</h3>
+                        <p class="card-meta">Zendesk | 2019 - 2021</p>
+                        <p class="card-description">
+                            Architected and scaled real-time messaging services supporting 10M+
+                            requests per day. Enabled next-generation omnichannel customer
+                            experience platform.
+                        </p>
+                    </article>
+
+                    <article class="card">
+                        <h3 class="card-title">Team Building & Mentorship</h3>
+                        <p class="card-meta">Across Organizations</p>
+                        <p class="card-description">
+                            Mentored 50+ engineers into senior and lead roles. Established
+                            engineering culture frameworks focused on psychological safety,
+                            continuous learning, and sustainable delivery.
+                        </p>
+                    </article>
+                </div>
+            </div>
         </section>
 
-        <section class="ascii-art">
-            <pre>
- _______
-|       |
-| ( )   |     Hello there!
-|_______|
-            </pre>
+        <!-- Newsletter CTA -->
+        <section class="section bg-light">
+            <div class="container container-narrow text-center">
+                <h2>Join My Leadership Insights</h2>
+                <p style="margin-bottom: var(--spacing-lg);">
+                    Join 500+ readers getting monthly insights on engineering leadership,
+                    culture, and systems thinking.
+                </p>
+                <form class="newsletter-form" action="https://formspree.io/f/YOUR_FORM_ID" method="POST">
+                    <input
+                        type="email"
+                        name="email"
+                        class="form-input newsletter-input"
+                        placeholder="your@email.com"
+                        required
+                        aria-label="Email address">
+                    <button type="submit" class="btn btn-primary newsletter-btn">Subscribe</button>
+                </form>
+                <p style="font-size: 14px; color: var(--color-text-secondary); margin-top: var(--spacing-sm);">
+                    No spam. Unsubscribe anytime. GDPR compliant.
+                </p>
+            </div>
+        </section>
+
+        <!-- Speaking Preview -->
+        <section class="section">
+            <div class="container">
+                <h2 class="text-center">Speaking Topics</h2>
+                <p class="text-center" style="margin-bottom: var(--spacing-lg); color: var(--color-text-secondary);">
+                    Available for conferences, panels, and workshops
+                </p>
+                <div class="grid grid-2">
+                    <div class="talk-card">
+                        <h3 class="talk-title">Leading Distributed Teams Across Time Zones</h3>
+                        <p class="talk-description">
+                            Best practices for building and managing engineering teams across
+                            multiple countries and cultures.
+                        </p>
+                    </div>
+                    <div class="talk-card">
+                        <h3 class="talk-title">Balancing Velocity and Stability in Cloud Systems</h3>
+                        <p class="talk-description">
+                            How to maintain rapid delivery while ensuring system reliability
+                            and scalability at scale.
+                        </p>
+                    </div>
+                    <div class="talk-card">
+                        <h3 class="talk-title">Coaching Engineers to Become Leaders</h3>
+                        <p class="talk-description">
+                            Framework for developing leadership skills in senior engineers and
+                            building a strong technical leadership pipeline.
+                        </p>
+                    </div>
+                    <div class="talk-card">
+                        <h3 class="talk-title">Cloud Cost Optimization at Scale</h3>
+                        <p class="talk-description">
+                            Practical strategies for reducing cloud infrastructure costs while
+                            maintaining performance and reliability.
+                        </p>
+                    </div>
+                </div>
+                <div style="text-align: center; margin-top: var(--spacing-lg);">
+                    <a href="/speaking.html" class="btn btn-secondary">View All Topics</a>
+                </div>
+            </div>
         </section>
     </main>
 
-    <footer>
-        <p>&copy; 2024 Miguel Tineo</p>
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Miguel Tineo</h4>
+                    <p style="color: var(--color-text-secondary); font-size: 14px;">
+                        Engineering Leader focused on building teams and systems that scale.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/experience.html">Experience</a></li>
+                        <li><a href="/speaking.html">Speaking</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://www.linkedin.com/in/miketineo" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="mailto:miketineo@gmail.com">Email</a></li>
+                        <li><a href="/contact.html">Contact Form</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Miguel Tineo. All rights reserved.</p>
+            </div>
+        </div>
     </footer>
 
+    <!-- Scripts -->
+    <script src="/js/main.js" defer></script>
 </body>
 </html>

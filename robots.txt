@@ -1,0 +1,10 @@
+# Robots.txt for miketineo.com
+
+User-agent: *
+Allow: /
+
+# Sitemap
+Sitemap: https://miketineo.com/sitemap.xml
+
+# Crawl-delay (optional, respectful to crawlers)
+# Crawl-delay: 1
