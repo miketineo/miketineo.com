@@ -72,8 +72,23 @@
 }
 
 @media (max-width: 768px) {
+  .nav-container {
+    /* Ensure proper layout: logo | theme-toggle | hamburger */
+    display: flex;
+    align-items: center;
+    gap: 0;
+  }
+
   .nav-toggle {
     display: block;
+    /* Keep hamburger on the right */
+    order: 3;
+    margin-left: var(--spacing-sm);
+  }
+
+  .nav-logo {
+    /* Logo on the left */
+    order: 1;
   }
 
   .nav-menu {
@@ -915,11 +930,19 @@ main {
 
 @media (max-width: 768px) {
   .theme-switcher {
-    position: fixed;
-    bottom: var(--spacing-md);
-    right: var(--spacing-md);
-    z-index: 100;
-    box-shadow: var(--shadow-card-hover);
+    /* Moved into header between logo and hamburger */
+    position: static;
+    order: 2;
+    margin-right: auto;
+    margin-left: var(--spacing-md);
+    box-shadow: none;
+    background: rgba(26, 26, 26, 0.05);
+    padding: 4px;
+    border-radius: 6px;
+  }
+
+  [data-theme="dark"] .theme-switcher {
+    background: rgba(255, 255, 255, 0.05);
   }
 
   .theme-label {
@@ -928,5 +951,8 @@ main {
 
   .theme-btn {
     padding: 10px;
+    /* Ensure proper touch target size (44x44px minimum) */
+    min-width: 44px;
+    min-height: 44px;
   }
 }
