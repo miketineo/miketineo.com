@@ -7,13 +7,45 @@
    ===================================================== */
 
 :root {
-  /* Color Palette */
-  --color-primary: #004BFF;
-  --color-text-primary: #111111;
-  --color-text-secondary: #666666;
+  /* Color Palette - Coral Orange Theme */
+  --color-primary: #FF8A5B;
+  --color-primary-dark: #E56D42;
+  --color-primary-light: #FFB593;
+
+  /* Accent/Complementary */
+  --color-accent: #5BC8CC;
+  --color-accent-dark: #4AA9AD;
+
+  /* Text Colors */
+  --color-text-primary: #1A1A1A;
+  --color-text-secondary: #64605C;
+  --color-link: #E56D42;
+  --color-link-hover: #C95A34;
+
+  /* Backgrounds */
   --color-background: #FFFFFF;
-  --color-background-light: #F8F9FB;
-  --color-border: #E5E7EB;
+  --color-background-light: #FFF9F7;
+  --color-background-tint: rgba(255, 138, 91, 0.03);
+
+  /* Borders */
+  --color-border: #F0E8E4;
+  --color-border-accent: rgba(255, 138, 91, 0.2);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, rgba(255, 138, 91, 0.02) 0%, rgba(255, 138, 91, 0.05) 100%);
+  --gradient-hero: linear-gradient(135deg, rgba(255, 138, 91, 0.03) 0%, rgba(91, 200, 204, 0.02) 100%);
+
+  /* Shadows */
+  --shadow-primary: 0 4px 12px rgba(255, 138, 91, 0.15);
+  --shadow-primary-hover: 0 8px 24px rgba(255, 138, 91, 0.25);
+  --shadow-card: 0 2px 8px rgba(26, 26, 26, 0.06);
+  --shadow-card-hover: 0 12px 24px rgba(255, 138, 91, 0.08);
+
+  /* Semantic Colors */
+  --color-success: #10B981;
+  --color-error: #DC2626;
+  --color-warning: #F59E0B;
+  --color-info: #5BC8CC;
 
   /* Typography Scale (1.25 modular) */
   --font-size-base: 16px;
