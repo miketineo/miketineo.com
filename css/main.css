@@ -78,6 +78,96 @@
 }
 
 /* =====================================================
+   Dark Mode Color Palette
+   ===================================================== */
+
+[data-theme="dark"] {
+  /* Backgrounds */
+  --color-background: #0F0F0F;
+  --color-background-light: #1A1A1A;
+  --color-background-elevated: #242424;
+  --color-background-tint: rgba(255, 154, 111, 0.05);
+
+  /* Adjusted Brand Colors */
+  --color-primary: #FF9A6F;
+  --color-primary-dark: #FF8A5B;
+  --color-primary-light: #FFB593;
+  --color-accent: #6DD4D8;
+  --color-accent-dark: #5BC8CC;
+
+  /* Text Colors */
+  --color-text-primary: #F5F5F5;
+  --color-text-secondary: #B8B4B0;
+  --color-link: #FF9A6F;
+  --color-link-hover: #FFB593;
+
+  /* Borders */
+  --color-border: #2A2A2A;
+  --color-border-accent: rgba(255, 154, 111, 0.3);
+
+  /* Gradients */
+  --gradient-primary: linear-gradient(135deg, rgba(255, 154, 111, 0.05) 0%, rgba(255, 154, 111, 0.08) 100%);
+  --gradient-hero: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%);
+
+  /* Shadows (glows in dark mode) */
+  --shadow-primary: 0 0 24px rgba(255, 154, 111, 0.15);
+  --shadow-primary-hover: 0 0 32px rgba(255, 154, 111, 0.25);
+  --shadow-card: 0 0 1px rgba(255, 255, 255, 0.1);
+  --shadow-card-hover: 0 0 32px rgba(255, 154, 111, 0.2);
+
+  /* Semantic Colors */
+  --color-success: #34D399;
+  --color-error: #F87171;
+  --color-warning: #FBBF24;
+  --color-info: #6DD4D8;
+}
+
+/* System preference fallback */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    /* Copy all dark mode variables here */
+    --color-background: #0F0F0F;
+    --color-background-light: #1A1A1A;
+    --color-background-elevated: #242424;
+    --color-background-tint: rgba(255, 154, 111, 0.05);
+    --color-primary: #FF9A6F;
+    --color-primary-dark: #FF8A5B;
+    --color-primary-light: #FFB593;
+    --color-accent: #6DD4D8;
+    --color-accent-dark: #5BC8CC;
+    --color-text-primary: #F5F5F5;
+    --color-text-secondary: #B8B4B0;
+    --color-link: #FF9A6F;
+    --color-link-hover: #FFB593;
+    --color-border: #2A2A2A;
+    --color-border-accent: rgba(255, 154, 111, 0.3);
+    --gradient-primary: linear-gradient(135deg, rgba(255, 154, 111, 0.05) 0%, rgba(255, 154, 111, 0.08) 100%);
+    --gradient-hero: linear-gradient(135deg, #0F0F0F 0%, #1A1A1A 100%);
+    --shadow-primary: 0 0 24px rgba(255, 154, 111, 0.15);
+    --shadow-primary-hover: 0 0 32px rgba(255, 154, 111, 0.25);
+    --shadow-card: 0 0 1px rgba(255, 255, 255, 0.1);
+    --shadow-card-hover: 0 0 32px rgba(255, 154, 111, 0.2);
+    --color-success: #34D399;
+    --color-error: #F87171;
+    --color-warning: #FBBF24;
+    --color-info: #6DD4D8;
+  }
+}
+
+/* Smooth theme transitions */
+:root {
+  transition: background-color 400ms cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+* {
+  transition: background-color 400ms ease, border-color 400ms ease, color 400ms ease;
+}
+
+.theme-transitioning * {
+  transition: none !important;
+}
+
+/* =====================================================
    2. Reset & Base Styles
    ===================================================== */
 

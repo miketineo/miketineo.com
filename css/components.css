@@ -727,3 +727,202 @@ main {
     filter: grayscale(0%) contrast(1.1);
   }
 }
+
+/* =====================================================
+   13. Expertise Badges Section
+   ===================================================== */
+
+/* Expertise Badges Section */
+.expertise-badges {
+  display: flex;
+  gap: var(--spacing-lg);
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.badge-wrapper {
+  transition: transform var(--transition-base), box-shadow var(--transition-base);
+  border-radius: var(--border-radius);
+  display: inline-block;
+}
+
+.badge-wrapper:hover {
+  transform: translateY(-4px);
+  box-shadow: 0 8px 24px rgba(255, 138, 91, 0.12);
+}
+
+.badge-wrapper img {
+  display: block;
+  border-radius: var(--border-radius);
+}
+
+/* LinkedIn Custom Badge */
+.linkedin-badge {
+  display: inline-block;
+}
+
+.badge-link {
+  display: block;
+  text-decoration: none;
+  transition: all var(--transition-base);
+}
+
+.badge-content {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  padding: 20px 24px;
+  background: var(--color-background);
+  border: 1px solid var(--color-border);
+  border-radius: var(--border-radius);
+  width: 280px;
+  transition: all var(--transition-base);
+}
+
+.badge-link:hover .badge-content {
+  border-color: var(--color-primary);
+  background: var(--color-background-tint);
+  box-shadow: var(--shadow-card);
+}
+
+.badge-icon {
+  flex-shrink: 0;
+}
+
+.badge-text {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+}
+
+.badge-title {
+  font-size: 16px;
+  font-weight: 600;
+  color: var(--color-text-primary);
+}
+
+.badge-subtitle {
+  font-size: 14px;
+  color: var(--color-text-secondary);
+}
+
+.badge-arrow {
+  flex-shrink: 0;
+  color: var(--color-text-secondary);
+  transition: transform var(--transition-fast);
+}
+
+.badge-link:hover .badge-arrow {
+  transform: translateX(4px);
+  color: var(--color-primary);
+}
+
+@media (max-width: 768px) {
+  .expertise-badges {
+    flex-direction: column;
+  }
+
+  .badge-content {
+    width: 100%;
+    max-width: 320px;
+  }
+}
+
+/* =====================================================
+   14. Dark Mode Component Adjustments
+   ===================================================== */
+
+[data-theme="dark"] .about-portrait {
+  box-shadow:
+    0 0 0 8px rgba(255, 154, 111, 0.1),
+    0 0 40px rgba(255, 154, 111, 0.15),
+    0 0 80px rgba(255, 154, 111, 0.05);
+}
+
+[data-theme="dark"] .about-portrait:hover {
+  box-shadow:
+    0 0 0 12px rgba(255, 154, 111, 0.15),
+    0 0 60px rgba(255, 154, 111, 0.25),
+    0 0 100px rgba(255, 154, 111, 0.1);
+}
+
+[data-theme="dark"] .btn-primary {
+  background-color: var(--color-primary);
+  color: #0F0F0F;
+}
+
+[data-theme="dark"] .btn-primary:hover {
+  background-color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .nav {
+  background: rgba(15, 15, 15, 0.95);
+  border-bottom-color: #2A2A2A;
+}
+
+/* =====================================================
+   15. Theme Switcher
+   ===================================================== */
+
+/* Theme Switcher */
+.theme-switcher {
+  display: flex;
+  gap: 4px;
+  margin-right: var(--spacing-lg);
+  background: rgba(26, 26, 26, 0.05);
+  padding: 4px;
+  border-radius: 6px;
+}
+
+[data-theme="dark"] .theme-switcher {
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.theme-btn {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border: none;
+  background: transparent;
+  color: var(--color-text-secondary);
+  font-size: 14px;
+  font-family: var(--font-sans);
+  cursor: pointer;
+  border-radius: 4px;
+  transition: all var(--transition-fast);
+}
+
+.theme-btn:hover {
+  background: rgba(255, 138, 91, 0.1);
+  color: var(--color-text-primary);
+}
+
+.theme-btn.active {
+  background: var(--color-primary);
+  color: white;
+}
+
+.theme-label {
+  font-weight: 500;
+}
+
+@media (max-width: 768px) {
+  .theme-switcher {
+    position: fixed;
+    bottom: var(--spacing-md);
+    right: var(--spacing-md);
+    z-index: 100;
+    box-shadow: var(--shadow-card-hover);
+  }
+
+  .theme-label {
+    display: none;
+  }
+
+  .theme-btn {
+    padding: 10px;
+  }
+}
