@@ -72,23 +72,8 @@
 }
 
 @media (max-width: 768px) {
-  .nav-container {
-    /* Ensure proper layout: logo | theme-toggle | hamburger */
-    display: flex;
-    align-items: center;
-    gap: 0;
-  }
-
   .nav-toggle {
     display: block;
-    /* Keep hamburger on the right */
-    order: 3;
-    margin-left: var(--spacing-sm);
-  }
-
-  .nav-logo {
-    /* Logo on the left */
-    order: 1;
   }
 
   .nav-menu {
@@ -548,10 +533,10 @@ main {
     0 2px 8px rgba(26, 26, 26, 0.06);
   filter: grayscale(100%) contrast(1.1);
   transition:
-    filter var(--transition-base),
-    transform var(--transition-base) cubic-bezier(0.34, 1.56, 0.64, 1),
-    box-shadow var(--transition-base),
-    border-color var(--transition-base);
+    filter 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    transform 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    box-shadow 0.6s cubic-bezier(0.4, 0, 0.2, 1),
+    border-color 0.6s cubic-bezier(0.4, 0, 0.2, 1);
   display: block;
   position: relative;
   z-index: 1;
@@ -889,77 +874,322 @@ main {
 }
 
 /* =====================================================
-   15. Theme Switcher
+   15. WebGL Background Animation
    ===================================================== */
 
-/* Theme Switcher */
-.theme-switcher {
+#webgl-background {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: -1;
+  pointer-events: none;
+  overflow: hidden;
+}
+
+#webgl-background canvas {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Hide on reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  #webgl-background {
+    display: none;
+  }
+}
+
+/* Ensure content is above the canvas */
+.nav,
+.hero,
+.section,
+.footer {
+  position: relative;
+  z-index: 1;
+}
+
+/* =====================================================
+   16. Cookie Consent Banner
+   ===================================================== */
+
+.cookie-consent-banner {
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(100%);
+  width: 90%;
+  max-width: 600px;
+  background: rgba(255, 255, 255, 0.98);
+  backdrop-filter: blur(12px);
+  border: 1px solid var(--color-border);
+  border-radius: 12px 12px 0 0;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.1);
+  z-index: 9999;
+  padding: var(--spacing-lg);
+  transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.cookie-consent-banner.cookie-consent-visible {
+  transform: translateX(-50%) translateY(0);
+}
+
+.cookie-consent-content {
   display: flex;
-  gap: 4px;
-  margin-right: var(--spacing-lg);
-  background: rgba(26, 26, 26, 0.05);
-  padding: 4px;
-  border-radius: 6px;
+  flex-direction: column;
+  gap: var(--spacing-md);
 }
 
-[data-theme="dark"] .theme-switcher {
-  background: rgba(255, 255, 255, 0.05);
-}
-
-.theme-btn {
+.cookie-consent-message {
   display: flex;
-  align-items: center;
-  gap: 6px;
-  padding: 8px 12px;
-  border: none;
-  background: transparent;
-  color: var(--color-text-secondary);
-  font-size: 14px;
-  font-family: var(--font-sans);
-  cursor: pointer;
-  border-radius: 4px;
-  transition: all var(--transition-fast);
+  align-items: flex-start;
+  gap: var(--spacing-sm);
 }
 
-.theme-btn:hover {
-  background: rgba(255, 138, 91, 0.1);
+.cookie-icon {
+  font-size: 24px;
+  flex-shrink: 0;
+  line-height: 1;
+}
+
+.cookie-consent-message p {
+  margin: 0;
   color: var(--color-text-primary);
+  font-size: var(--font-size-base);
+  line-height: 1.6;
 }
 
-.theme-btn.active {
-  background: var(--color-primary);
-  color: white;
-}
-
-.theme-label {
+.cookie-privacy-link {
+  color: var(--color-primary);
+  text-decoration: underline;
   font-weight: 500;
 }
 
+.cookie-privacy-link:hover {
+  color: #E56D42;
+}
+
+.cookie-privacy-link:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+.cookie-consent-buttons {
+  display: flex;
+  gap: var(--spacing-sm);
+  justify-content: flex-end;
+}
+
+.cookie-consent-buttons .btn {
+  flex: 0 1 auto;
+  min-width: 120px;
+}
+
+/* Mobile responsive */
+@media (max-width: 600px) {
+  .cookie-consent-banner {
+    width: 95%;
+    max-width: none;
+    padding: var(--spacing-md);
+    border-radius: 8px 8px 0 0;
+  }
+
+  .cookie-consent-message {
+    flex-direction: column;
+    gap: var(--spacing-xs);
+  }
+
+  .cookie-icon {
+    font-size: 20px;
+  }
+
+  .cookie-consent-message p {
+    font-size: 14px;
+  }
+
+  .cookie-consent-buttons {
+    flex-direction: column-reverse;
+  }
+
+  .cookie-consent-buttons .btn {
+    width: 100%;
+    min-width: auto;
+  }
+}
+
+/* Tablet breakpoint */
+@media (max-width: 768px) and (min-width: 601px) {
+  .cookie-consent-banner {
+    width: 92%;
+  }
+}
+
+/* Dark mode styles */
+[data-theme="dark"] .cookie-consent-banner {
+  background: rgba(26, 26, 26, 0.98);
+  border-color: #2A2A2A;
+  box-shadow: 0 -4px 24px rgba(0, 0, 0, 0.4);
+}
+
+[data-theme="dark"] .cookie-consent-message p {
+  color: var(--color-text-primary);
+}
+
+[data-theme="dark"] .cookie-privacy-link {
+  color: var(--color-primary-light);
+}
+
+[data-theme="dark"] .cookie-privacy-link:hover {
+  color: #FFB593;
+}
+
+/* Accessibility - Reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .cookie-consent-banner {
+    transition: none;
+  }
+
+  .cookie-consent-banner.cookie-consent-visible {
+    animation: none;
+  }
+}
+
+/* High contrast mode */
+@media (prefers-contrast: high) {
+  .cookie-consent-banner {
+    border-width: 2px;
+    background: white;
+  }
+
+  [data-theme="dark"] .cookie-consent-banner {
+    background: #0F0F0F;
+    border-color: white;
+  }
+}
+
+/* Focus management for keyboard navigation */
+.cookie-consent-banner:focus-within {
+  outline: 3px solid var(--color-primary);
+  outline-offset: -3px;
+}
+
+/* =====================================================
+   17. Theme Switcher - Minimal Toggle
+   ===================================================== */
+
+/* Theme Toggle - Minimal single-button design */
+.theme-toggle {
+  position: relative;
+  width: 72px;
+  height: 32px;
+  background: rgba(26, 26, 26, 0.08);
+  border-radius: 16px;
+  border: none;
+  cursor: pointer;
+  transition: background-color 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  padding: 0;
+  overflow: hidden;
+}
+
+.theme-toggle:hover {
+  background: rgba(26, 26, 26, 0.12);
+}
+
+.theme-toggle:focus-visible {
+  outline: 2px solid var(--color-primary);
+  outline-offset: 2px;
+}
+
+/* Dark mode toggle background */
+[data-theme="dark"] .theme-toggle {
+  background: rgba(255, 255, 255, 0.1);
+}
+
+[data-theme="dark"] .theme-toggle:hover {
+  background: rgba(255, 255, 255, 0.15);
+}
+
+/* Sliding indicator */
+.theme-toggle-indicator {
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 26px;
+  height: 26px;
+  background: white;
+  border-radius: 50%;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.15);
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+[data-theme="dark"] .theme-toggle-indicator {
+  background: #2A2A2A;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.3);
+}
+
+/* Icon container */
+.theme-toggle-icon {
+  width: 16px;
+  height: 16px;
+  color: #666;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+[data-theme="dark"] .theme-toggle-icon {
+  color: var(--color-primary);
+}
+
+/* Icon positioning based on theme */
+.theme-toggle[data-current-theme="light"] .theme-toggle-indicator {
+  left: 3px;
+}
+
+.theme-toggle[data-current-theme="auto"] .theme-toggle-indicator {
+  left: 23px;
+}
+
+.theme-toggle[data-current-theme="dark"] .theme-toggle-indicator {
+  left: 43px;
+}
+
+/* Hide default SVGs, show via JS */
+.theme-toggle-icon svg {
+  display: block;
+  width: 100%;
+  height: 100%;
+}
+
+/* Mobile responsive */
 @media (max-width: 768px) {
-  .theme-switcher {
-    /* Moved into header between logo and hamburger */
-    position: static;
-    order: 2;
-    margin-right: auto;
-    margin-left: var(--spacing-md);
-    box-shadow: none;
-    background: rgba(26, 26, 26, 0.05);
-    padding: 4px;
-    border-radius: 6px;
+  .theme-toggle {
+    width: 64px;
+    height: 32px;
   }
 
-  [data-theme="dark"] .theme-switcher {
-    background: rgba(255, 255, 255, 0.05);
+  .theme-toggle-indicator {
+    width: 26px;
+    height: 26px;
   }
 
-  .theme-label {
-    display: none;
+  .theme-toggle[data-current-theme="auto"] .theme-toggle-indicator {
+    left: 19px;
   }
 
-  .theme-btn {
-    padding: 10px;
-    /* Ensure proper touch target size (44x44px minimum) */
-    min-width: 44px;
-    min-height: 44px;
+  .theme-toggle[data-current-theme="dark"] .theme-toggle-indicator {
+    left: 35px;
+  }
+}
+
+/* Accessibility - reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  .theme-toggle,
+  .theme-toggle-indicator,
+  .theme-toggle-icon {
+    transition-duration: 0.01ms !important;
   }
 }
