@@ -7,21 +7,21 @@ tags: ["ai", "infrastructure", "sustainability", "cost-optimization"]
 
 ## When the API Bill Hits €9,000
 
-I'm working with a Paris-based accounting automation company that's burning €4,000-€9,000 per month on OpenAI, Google, and Claude APIs. They're processing 2 million tokens per minute at peak—500 to 1,000 API calls per minute—for invoice processing, document data extraction, and accounting entry generation across French accounting firms.
+I'm working with European startups that take data locality seriously. One mystery partner is burning €4,000-€9,000 per month on OpenAI, Google, and Claude APIs. They're processing 2 million tokens per minute at peak (500 to 1,000 API calls per minute) when use cases for processing documents become heavy.
 
-The costs are unsustainable. They need to migrate 90% of their document processing stack to self-hosted GPU infrastructure running open models (GPT-OSS-20B, Gemma 7B, Llama 3). But the complexity is daunting: gateway architecture, security layers, ethical guardrails, and performance optimization.
+The costs are unsustainable. They need to migrate 90% of their document processing stack to self-hosted GPU infrastructure running open models (GPT-OSS-20B, Gemma 7B, Llama 3). If you're exploring similar transitions, check out [compute.hivenet.com](https://compute.hivenet.com) (and yes, you can use code MIGUEL70 for a discount at checkout). But the complexity is daunting: gateway architecture, security layers, ethical guardrails, and performance optimization.
 
-This migration forced a critical realization: modern infrastructure decisions aren't just about cost anymore. They sit at the intersection of three factors—**cost optimization, operational control, and carbon impact**. Leaders who only optimize for one or two dimensions miss the broader opportunity.
+This migration forced a critical realization: modern infrastructure decisions aren't just about cost anymore. They sit at the intersection of three factors: **cost optimization, operational control, and carbon impact**. Leaders who only optimize for one or two dimensions miss the broader opportunity.
 
 ## The Three-Way Trade-Off You're Not Tracking
 
-Most engineering leaders I talk to evaluate cloud APIs versus self-hosted models through a single lens: cost per token. That's understandable—money talks. But at Hivenet, we've started scoring infrastructure decisions differently.
+Most engineering leaders I talk to evaluate cloud APIs versus self-hosted models through a single lens: cost per token. That's understandable (money talks). But at Hivenet, we've started scoring infrastructure decisions differently.
 
 Here's what the Cost-Control-Carbon triangle looks like in practice:
 
-**Cost:** The Paris customer migration projects a 60% reduction in monthly spend. We're still in prototype phase, but the math is solid. Going from €4-9k to €2-3k monthly gives them runway to reinvest in product features.
+**Cost:** The mystery partner migration projects a 60% reduction in monthly spend. We're still in prototype phase, but the math is solid. Going from €4-9k to €2-3k monthly gives them runway to reinvest in product features.
 
-**Control:** Self-hosting means they control data sovereignty, customize model behavior, and adjust performance characteristics for their specific use case (French legal documents and receipts in PDF format). With APIs, you rent all three.
+**Control:** Self-hosting means they control data sovereignty, customize model behavior, and adjust performance characteristics for their specific document processing use case. With APIs, you rent all three.
 
 **Carbon:** Here's where it gets interesting. Our prototype architecture shows 18-25% lower energy draw per processed document compared to API-based processing. Carbon intensity drops by 30-40g CO₂e per 1,000 tokens.
 
@@ -29,7 +29,7 @@ The biggest surprise? **When you show engineers that "saving €X also saved Y k
 
 ## Why Energy Efficiency Is Now a First-Class Architecture Decision
 
-At Hivenet, we built a lightweight CSOA-VM (Compute-Sustainability-Optimized-Allocation) model to score VMs by watt-per-token efficiency and grid intensity. Our orchestrator picks regions and instance types based on this score, not just performance or cost.
+At Hivenet, we are exploring to build a lightweight CSOA-VM (Compute-Sustainability-Optimized-Allocation) model to score VMs by watt-per-token efficiency and grid intensity. The vision is for our orchestrator to pick regions and instance types based on this score, not just performance or cost.
 
 Here's a real decision we made last month: **A100s in Frankfurt versus RTX 4090s in Cannes.** Same performance for the customer's workload. But Cannes' grid mix was 40% cleaner that week. We routed the job to Cannes.
 
@@ -49,17 +49,17 @@ This visibility turns engineers into active participants in sustainability decis
 
 Here's what most people miss about migrating from cloud APIs to self-hosted AI: **the model inference is the easy part.**
 
-The Paris customer's gateway layer has to solve three problems simultaneously:
+The mystery partner's gateway layer has to solve three problems simultaneously:
 
 1. **Dealing with bad actors** - Prompt reverse engineering protection, jailbreak detection
 2. **Protecting infrastructure** - Rate limiting, authentication, abuse monitoring
-3. **Optimizing workflow complexity** - For legal documents and receipts in PDF format, we optimize the heavy lifting on image and document processing to avoid overloading the LLM
+3. **Optimizing workflow complexity** - We optimize the heavy lifting on image and document processing to avoid overloading the LLM
 
-The gateway handles model routing, parallelization, security, and ethical filters. These aren't optional components—they're essential whether you use APIs or self-hosted models. The difference: with self-hosted, you build and control them. With APIs, you hope the vendor got them right.
+The gateway handles model routing, parallelization, security, and ethical filters. These aren't optional components (they're essential whether you use APIs or self-hosted models). The difference: with self-hosted, you build and control them. With APIs, you hope the vendor got them right.
 
 ### The Hidden Engineering Cost
 
-When we estimated the Paris migration, the model deployment was 20% of the engineering effort. The other 80%:
+When we estimated the mystery partner migration, the model deployment was 20% of the engineering effort. The other 80%:
 
 - Security and authentication layers
 - Ethical guardrails for open-source models deployed out-of-the-box
@@ -73,7 +73,7 @@ Don't underestimate this. Budget for the gateway layer upfront, not as an aftert
 
 While working on energy-aware infrastructure at Hivenet, we're also pushing the engineering org toward agentic development. These two shifts are more connected than you'd think.
 
-When AI agents handle more of the development work—testing, coverage, troubleshooting—your reliability culture has to level up. You can't fake code coverage. Tests either hit the lines with valid arguments and payloads, or they don't.
+When AI agents handle more of the development work (testing, coverage, troubleshooting), your reliability culture has to level up. You can't fake code coverage. Tests either hit the lines with valid arguments and payloads, or they don't.
 
 ### The Troubleshooting Agent That Actually Works
 
@@ -96,7 +96,7 @@ Some developers on my team resist AI-assisted coding. Their concern is mathemati
 
 They're right. So we don't use agents for precision tasks requiring mathematical proof. We use them for repetitive, deterministic tasks: testing, coverage, verification, validation, simulation.
 
-The key is reshaping culture. Give developers what they need to build better prompts, follow better agentic standards, and use their expertise to train the "Artificial Workforce" to shine where it should—not replacing judgment, but handling the grind.
+The key is reshaping culture. Give developers what they need to build better prompts, follow better agentic standards, and use their expertise to train the "Artificial Workforce" to shine where it should (not replacing judgment, but handling the grind).
 
 ## The Framework: Apply the Cost-Control-Carbon Lens
 
@@ -137,7 +137,7 @@ When engineers see these metrics alongside performance and cost, they become act
 
 ## Real-World Numbers You Can Use
 
-The Paris customer migration gives us concrete data:
+The mystery partner migration gives us concrete data:
 
 **Before (API-based):**
 - €4,000-€9,000/month
@@ -178,9 +178,9 @@ And here's the thing: **carbon is a secondary benefit for customers but extremel
 
 ## Key Takeaways
 
-- Modern infrastructure decisions sit at the intersection of cost, control, and carbon—optimize for all three, not just one
+- Modern infrastructure decisions sit at the intersection of cost, control, and carbon (optimize for all three, not just one)
 - Energy efficiency is a first-class architecture concern: track watt-per-token efficiency and grid intensity alongside traditional metrics
-- Gateway layers for self-hosted AI are 80% of the engineering effort—budget for security, ethics, routing, and monitoring upfront
+- Gateway layers for self-hosted AI are 80% of the engineering effort (budget for security, ethics, routing, and monitoring upfront)
 - Agentic development requires better reliability culture: use agents for deterministic tasks, verify with tangible metrics like code coverage
 - Make sustainability visible: "Saving €X also saved Y kWh" shifts conversations from procurement to purpose
 
