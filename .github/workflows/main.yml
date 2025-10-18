@@ -35,3 +35,39 @@ jobs:
           AWS_REGION: "us-east-1"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Detect New Blog Post
+        id: blog_check
+        run: |
+          # Check if a new blog post was added
+          NEW_POSTS=$(git diff --name-only HEAD~1 HEAD | grep "^blog/posts/" || true)
+
+          if [ -n "$NEW_POSTS" ]; then
+            echo "new_post=true" >> $GITHUB_OUTPUT
+            POST_FILE=$(echo "$NEW_POSTS" | head -1)
+            POST_SLUG=$(basename "$POST_FILE" .md)
+            echo "post_slug=$POST_SLUG" >> $GITHUB_OUTPUT
+            echo "📝 New blog post detected: $POST_SLUG"
+          else
+            echo "new_post=false" >> $GITHUB_OUTPUT
+            echo "No new blog post in this push"
+          fi
+
+      - name: Blog Post Published Notification
+        if: steps.blog_check.outputs.new_post == 'true'
+        run: |
+          POST_SLUG="${{ steps.blog_check.outputs.post_slug }}"
+          POST_URL="https://miketineo.com/blog/${POST_SLUG}"
+
+          echo "🎉 Blog Post Published!" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "📝 Post: ${POST_SLUG}" >> $GITHUB_STEP_SUMMARY
+          echo "🔗 URL: ${POST_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "" >> $GITHUB_STEP_SUMMARY
+          echo "Next Steps:" >> $GITHUB_STEP_SUMMARY
+          echo "1. Verify live: ${POST_URL}" >> $GITHUB_STEP_SUMMARY
+          echo "2. Share on social media (optional)" >> $GITHUB_STEP_SUMMARY
+          echo "3. Create newsletter: Run /content-newsletter" >> $GITHUB_STEP_SUMMARY
+          echo "4. Schedule newsletter for next Tuesday" >> $GITHUB_STEP_SUMMARY
+
+          echo "::notice title=Blog Post Published::New post live at ${POST_URL}"

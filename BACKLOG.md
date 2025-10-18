@@ -26,18 +26,25 @@ Task tracking for website and content operations.
 ## In Progress
 
 ### #tech
-- [ ] **DRY up nav/footer across pages** (PR: feature/dry-templates)
-  - Description: Extract navigation and footer into reusable templates/components
-  - Impact: Eliminate ~285 lines of duplicated code
-  - Approach: Created `src/` structure with components, build-pages.js script
-  - Status: Implementation complete, testing in progress
-  - PR Branch: feature/dry-templates
+-
+
+### #content
+-
+
+### #growth
+-
 
 ---
 
 ## Done
 
 ### #tech
+- [x] **DRY up nav/footer across pages**
+  - Completed: 2025-10-18
+  - Result: Template-based build system, eliminated ~285 lines of duplicated code
+  - PR: Merged to main
+  - Files: src/ structure, build-pages.js, BUILD_README.md
+
 - [x] **Launch blog system with markdown**
   - Completed: 2025-01-18
   - Result: Markdown-to-HTML build script, automated via GitHub Actions
@@ -51,6 +58,19 @@ Task tracking for website and content operations.
   - Result: New SSL certificate, CloudFront updated, Cloudflare DNS configured
 
 ### #content
+- [x] **Complete content pipeline implementation**
+  - Completed: 2025-10-18
+  - Result: Full bi-weekly workflow with AI assistance
+  - Deliverables:
+    - Voice guidelines extracted from existing content
+    - content-strategy-specialist agent for interviews
+    - Enhanced copy-writer agent with brief integration
+    - Content brief template
+    - Newsletter template (Bear Essentials format)
+    - Helper scripts (create-brief, new-post, archive)
+    - Complete workflow documentation (CONTENT_WORKFLOW.md)
+  - Files: content-pipeline/, .claude/agents/, scripts/, CONTENT_WORKFLOW.md
+
 - [x] **Create first blog post**
   - Completed: 2025-01-15
   - Result: "Building Psychological Safety in Remote Teams" published
@@ -75,6 +95,52 @@ Task tracking for website and content operations.
 - [x] **Use framework (Next.js/Nuxt/Astro)**
   - Rejected: 2025-01-18
   - Reason: Overkill for 6 pages. Static site is simpler, faster, cheaper. Current setup scales fine.
+
+---
+
+## Content Pipeline Tracker
+
+Track bi-weekly blog posts and newsletter sends.
+
+### Current Cycle (In Progress)
+
+**Target Dates:**
+- Interview: [Weekend date]
+- Blog publish: [Thursday date]
+- Newsletter send: [Tuesday date]
+
+**Status:**
+- [ ] Content interview completed
+- [ ] Content brief created
+- [ ] Blog draft written
+- [ ] Blog draft reviewed
+- [ ] Blog published
+- [ ] Newsletter drafted
+- [ ] Newsletter sent
+- [ ] Content archived
+
+**Topic:** [Topic name when decided]
+**Brief:** [Link to content-pipeline/content-briefs/YYYY-MM-DD-slug.md]
+
+---
+
+### Published Content
+
+#### 2025-01-15 - Building Psychological Safety in Remote Teams
+- ✅ Blog: https://miketineo.com/blog/psychological-safety
+- ✅ Newsletter: Sent [date if sent]
+- 📊 Stats: [Open rate, CTR when available]
+- Tags: leadership, remote-work, culture
+
+---
+
+### Upcoming Topics Queue
+
+Ideas for future blog posts (in priority order):
+
+1. [Topic idea 1]
+2. [Topic idea 2]
+3. [Topic idea 3]
 
 ---
 
@@ -126,4 +192,4 @@ Ideas that might become tasks later:
 
 ---
 
-**Last Updated:** 2025-01-18
+**Last Updated:** 2025-10-18

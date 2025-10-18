@@ -1,0 +1,1 @@
+- remember to commit in this project as myself using `git commit -S ...` to sign the commit, if you want you can add claude as a honorary collaborator in all changes but to allow the repo to auto detect new commits for PR let's just author as me.
