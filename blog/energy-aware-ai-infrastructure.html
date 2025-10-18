@@ -1,0 +1,376 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact—with real-world numbers from a €4-9k/month API migration.">
+    <meta name="author" content="Miguel Tineo">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miketineo.com/blog/energy-aware-ai-infrastructure.html">
+    <meta property="og:title" content="Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle">
+    <meta property="og:description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact—with real-world numbers from a €4-9k/month API migration.">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle">
+    <meta name="twitter:description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact—with real-world numbers from a €4-9k/month API migration.">
+
+    <title>Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle - Miguel Tineo</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+
+    <!-- Theme must load before page renders to prevent flash -->
+    <script src="/js/theme.js"></script>
+
+    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <script src="/js/cookie-consent.js" defer></script>
+
+    <style>
+        .blog-post {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+        }
+        .blog-post-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+        .blog-post-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+        .blog-post-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-tags {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        .blog-post-tag {
+            padding: 4px 12px;
+            background: var(--color-bg-secondary);
+            border-radius: 4px;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        .blog-post-content {
+            font-size: var(--font-size-base);
+            line-height: 1.8;
+            color: var(--color-text-primary);
+        }
+        .blog-post-content h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-top: var(--spacing-2xl);
+            margin-bottom: var(--spacing-lg);
+            color: var(--color-text-primary);
+        }
+        .blog-post-content h3 {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+        .blog-post-content p {
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-content ul, .blog-post-content ol {
+            margin-bottom: var(--spacing-lg);
+            padding-left: var(--spacing-xl);
+        }
+        .blog-post-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+        .blog-post-content code {
+            background: var(--color-bg-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .blog-post-content pre {
+            background: var(--color-bg-secondary);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-content pre code {
+            background: none;
+            padding: 0;
+        }
+        .blog-post-content blockquote {
+            border-left: 4px solid var(--color-primary);
+            padding-left: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+            font-style: italic;
+            color: var(--color-text-secondary);
+        }
+        .blog-post-content a {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+        .blog-post-content a:hover {
+            color: var(--color-primary-dark);
+        }
+        .blog-post-back {
+            margin-bottom: var(--spacing-xl);
+        }
+        .blog-post-footer {
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-2xl);
+            border-top: 1px solid var(--color-border);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" aria-label="Miguel Tineo Home">Miguel Tineo</a>
+            <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/about.html" class="nav-link">About</a></li>
+                <li><a href="/experience.html" class="nav-link">Experience</a></li>
+                <li><a href="/speaking.html" class="nav-link">Speaking</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/contact.html" class="nav-link">Contact</a></li>
+                <li>
+                    <button class="theme-toggle" data-current-theme="auto" aria-label="Toggle theme">
+                        <span class="theme-toggle-indicator">
+                            <span class="theme-toggle-icon"></span>
+                        </span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <article class="blog-post">
+            <div class="blog-post-back">
+                <a href="/blog/" class="btn btn-secondary">← Back to Blog</a>
+            </div>
+
+            <header class="blog-post-header">
+                <h1 class="blog-post-title">Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle</h1>
+                <div class="blog-post-meta">
+                    <time datetime="Sat Oct 18 2025 02:00:00 GMT+0200 (Central European Summer Time)">October 18, 2025</time>
+                    <span>•</span>
+                </div>
+                
+                <div class="blog-post-tags">
+                    <span class="blog-post-tag">ai</span><span class="blog-post-tag">infrastructure</span><span class="blog-post-tag">sustainability</span><span class="blog-post-tag">cost-optimization</span>
+                </div>
+                
+            </header>
+
+            <div class="blog-post-content">
+                <h2>When the API Bill Hits €9,000</h2>
+<p>I&#39;m working with a Paris-based accounting automation company that&#39;s burning €4,000-€9,000 per month on OpenAI, Google, and Claude APIs. They&#39;re processing 2 million tokens per minute at peak—500 to 1,000 API calls per minute—for invoice processing, document data extraction, and accounting entry generation across French accounting firms.</p>
+<p>The costs are unsustainable. They need to migrate 90% of their document processing stack to self-hosted GPU infrastructure running open models (GPT-OSS-20B, Gemma 7B, Llama 3). But the complexity is daunting: gateway architecture, security layers, ethical guardrails, and performance optimization.</p>
+<p>This migration forced a critical realization: modern infrastructure decisions aren&#39;t just about cost anymore. They sit at the intersection of three factors—<strong>cost optimization, operational control, and carbon impact</strong>. Leaders who only optimize for one or two dimensions miss the broader opportunity.</p>
+<h2>The Three-Way Trade-Off You&#39;re Not Tracking</h2>
+<p>Most engineering leaders I talk to evaluate cloud APIs versus self-hosted models through a single lens: cost per token. That&#39;s understandable—money talks. But at Hivenet, we&#39;ve started scoring infrastructure decisions differently.</p>
+<p>Here&#39;s what the Cost-Control-Carbon triangle looks like in practice:</p>
+<p><strong>Cost:</strong> The Paris customer migration projects a 60% reduction in monthly spend. We&#39;re still in prototype phase, but the math is solid. Going from €4-9k to €2-3k monthly gives them runway to reinvest in product features.</p>
+<p><strong>Control:</strong> Self-hosting means they control data sovereignty, customize model behavior, and adjust performance characteristics for their specific use case (French legal documents and receipts in PDF format). With APIs, you rent all three.</p>
+<p><strong>Carbon:</strong> Here&#39;s where it gets interesting. Our prototype architecture shows 18-25% lower energy draw per processed document compared to API-based processing. Carbon intensity drops by 30-40g CO₂e per 1,000 tokens.</p>
+<p>The biggest surprise? <strong>When you show engineers that &quot;saving €X also saved Y kWh,&quot; the conversation shifts from procurement to purpose.</strong> Suddenly, everyone wants to know which GPU region has cleaner grid mix that week.</p>
+<h2>Why Energy Efficiency Is Now a First-Class Architecture Decision</h2>
+<p>At Hivenet, we built a lightweight CSOA-VM (Compute-Sustainability-Optimized-Allocation) model to score VMs by watt-per-token efficiency and grid intensity. Our orchestrator picks regions and instance types based on this score, not just performance or cost.</p>
+<p>Here&#39;s a real decision we made last month: <strong>A100s in Frankfurt versus RTX 4090s in Cannes.</strong> Same performance for the customer&#39;s workload. But Cannes&#39; grid mix was 40% cleaner that week. We routed the job to Cannes.</p>
+<p>That decision saved negligible dollars. But it reduced carbon emissions and sent a signal to our team: we optimize for all three factors, not just the obvious one.</p>
+<h3>Making It Visible</h3>
+<p>The key is visibility. We surface energy cost alongside dollar cost in our dashboards. Engineers see:</p>
+<ul>
+<li><strong>Watt-per-token efficiency</strong> for each workload type</li>
+<li><strong>Grid intensity</strong> for each region (updated hourly)</li>
+<li><strong>Carbon cost</strong> per 1,000 tokens processed</li>
+</ul>
+<p>This visibility turns engineers into active participants in sustainability decisions. You don&#39;t need to preach about climate. Just show the data and get out of the way.</p>
+<h2>Gateway Layers Are Way More Complex Than You Think</h2>
+<p>Here&#39;s what most people miss about migrating from cloud APIs to self-hosted AI: <strong>the model inference is the easy part.</strong></p>
+<p>The Paris customer&#39;s gateway layer has to solve three problems simultaneously:</p>
+<ol>
+<li><strong>Dealing with bad actors</strong> - Prompt reverse engineering protection, jailbreak detection</li>
+<li><strong>Protecting infrastructure</strong> - Rate limiting, authentication, abuse monitoring</li>
+<li><strong>Optimizing workflow complexity</strong> - For legal documents and receipts in PDF format, we optimize the heavy lifting on image and document processing to avoid overloading the LLM</li>
+</ol>
+<p>The gateway handles model routing, parallelization, security, and ethical filters. These aren&#39;t optional components—they&#39;re essential whether you use APIs or self-hosted models. The difference: with self-hosted, you build and control them. With APIs, you hope the vendor got them right.</p>
+<h3>The Hidden Engineering Cost</h3>
+<p>When we estimated the Paris migration, the model deployment was 20% of the engineering effort. The other 80%:</p>
+<ul>
+<li>Security and authentication layers</li>
+<li>Ethical guardrails for open-source models deployed out-of-the-box</li>
+<li>Performance optimization and caching strategies</li>
+<li>Monitoring and observability infrastructure</li>
+<li>Backup and failover systems</li>
+</ul>
+<p>Don&#39;t underestimate this. Budget for the gateway layer upfront, not as an afterthought.</p>
+<h2>How Agentic Development Changes the Reliability Game</h2>
+<p>While working on energy-aware infrastructure at Hivenet, we&#39;re also pushing the engineering org toward agentic development. These two shifts are more connected than you&#39;d think.</p>
+<p>When AI agents handle more of the development work—testing, coverage, troubleshooting—your reliability culture has to level up. You can&#39;t fake code coverage. Tests either hit the lines with valid arguments and payloads, or they don&#39;t.</p>
+<h3>The Troubleshooting Agent That Actually Works</h3>
+<p>We created a troubleshooting agent with read-only permissions for our Kubernetes clusters (we run 2 clusters with event-driven cloud instance state management). The agent detects root causes during incidents and has been flawless so far.</p>
+<p>Engineers start from accurate diagnosis instead of hunting through runbooks and logs. They just take action.</p>
+<p>This works because:</p>
+<ol>
+<li><strong>Limited, well-defined permissions</strong> - Read-only access, specific namespaces</li>
+<li><strong>High-signal, low-risk tasks</strong> - Diagnosis, not remediation</li>
+<li><strong>Tangible metrics</strong> - Time to diagnosis dropped measurably</li>
+<li><strong>Clear boundaries</strong> - Agent suggests, humans decide</li>
+</ol>
+<p>I also now create Grafana dashboards in seconds using agents with proper context and API access via MCPs. My focus shifted from writing YAML to reviewing reports and results.</p>
+<h3>Addressing Developer Skepticism</h3>
+<p>Some developers on my team resist AI-assisted coding. Their concern is mathematically valid: &quot;AI hallucinations in mathematical proof are mathematically inevitable, even with perfect data and models.&quot;</p>
+<p>They&#39;re right. So we don&#39;t use agents for precision tasks requiring mathematical proof. We use them for repetitive, deterministic tasks: testing, coverage, verification, validation, simulation.</p>
+<p>The key is reshaping culture. Give developers what they need to build better prompts, follow better agentic standards, and use their expertise to train the &quot;Artificial Workforce&quot; to shine where it should—not replacing judgment, but handling the grind.</p>
+<h2>The Framework: Apply the Cost-Control-Carbon Lens</h2>
+<p>Every infrastructure decision should be evaluated across all three dimensions. Here&#39;s how:</p>
+<h3>Step 1: Define Your Baseline</h3>
+<p>Before optimizing, measure:</p>
+<ul>
+<li><strong>Cost per token</strong> (current spend)</li>
+<li><strong>Energy draw per processed document/token</strong> (if self-hosted, measure GPU utilization; if APIs, estimate based on vendor data)</li>
+<li><strong>Operational control</strong> (qualitative: what can&#39;t you customize today?)</li>
+</ul>
+<h3>Step 2: Score Your Options</h3>
+<p>For each alternative (different API vendor, self-hosted region, GPU type):</p>
+<ul>
+<li><strong>Cost:</strong> Direct dollar savings</li>
+<li><strong>Control:</strong> Customization, data sovereignty, performance tuning capability</li>
+<li><strong>Carbon:</strong> Watt-per-token efficiency × regional grid intensity</li>
+</ul>
+<h3>Step 3: Make the Trade-Off Explicit</h3>
+<p>You won&#39;t maximize all three. That&#39;s okay. The goal is making the trade-off <strong>visible and intentional</strong>:</p>
+<ul>
+<li>&quot;We&#39;re choosing AWS Frankfurt over Google Milan because cost savings (25%) outweigh the carbon penalty (5% higher grid intensity)&quot;</li>
+<li>&quot;We&#39;re self-hosting despite 10% higher operational cost because data sovereignty is non-negotiable&quot;</li>
+</ul>
+<h3>Step 4: Track and Iterate</h3>
+<p>Add energy metrics to your existing infrastructure dashboards. Track:</p>
+<ul>
+<li>Infrastructure utilization (avoid waste)</li>
+<li>Regional grid intensity (changes hourly)</li>
+<li>Cost per token (traditional metric, now contextualized)</li>
+</ul>
+<p>When engineers see these metrics alongside performance and cost, they become active participants in optimization. No preaching required.</p>
+<h2>Real-World Numbers You Can Use</h2>
+<p>The Paris customer migration gives us concrete data:</p>
+<p><strong>Before (API-based):</strong></p>
+<ul>
+<li>€4,000-€9,000/month</li>
+<li>~500-1,500 API calls/min at peak</li>
+<li>~3M tokens/min throughput</li>
+<li>Zero operational control</li>
+<li>Carbon cost: baseline (vendor-dependent, opaque)</li>
+</ul>
+<p><strong>After (self-hosted prototype):</strong></p>
+<ul>
+<li>€2,000-€3,000/month (60% reduction)</li>
+<li>Same throughput, better latency</li>
+<li>Full operational control (data sovereignty, customization)</li>
+<li>18-25% lower energy draw per document</li>
+<li>30-40g CO₂e reduction per 1K tokens</li>
+</ul>
+<p>The complexity cost: significant engineering investment in gateway layers, security, monitoring. But the ROI justifies it at their scale.</p>
+<h2>Where to Start</h2>
+<p>Pick one area to make energy-aware this quarter:</p>
+<h3>📊 Add Energy Metrics to Dashboards</h3>
+<p>Surface watt-per-token efficiency and carbon cost alongside dollar cost. Make sustainability visible to your engineering team. This is the lowest-effort, highest-impact starting point.</p>
+<h3>🎯 Evaluate Your Next Compute Decision Using Cost-Control-Carbon</h3>
+<p>Next time you&#39;re choosing between regions, instance types, or vendors, score options across all three dimensions. Document the trade-off explicitly.</p>
+<h3>🤖 Create a Limited-Scope Agent for High-Signal Tasks</h3>
+<p>Build a troubleshooting agent with read-only permissions, or an agent that generates test coverage. Build trust through concrete wins before expanding scope.</p>
+<h2>The Long Game</h2>
+<p>We&#39;re at an inflection point. AI workloads are scaling exponentially. The default path—just keep paying API bills—becomes unsustainable economically and environmentally.</p>
+<p>Engineering leaders who integrate energy efficiency into architecture decisions unlock both immediate savings and long-term sustainability wins. Customers might not ask for it directly, but when you &quot;Salt Bae&quot; sustainability on top of cost savings, it always extracts a smile.</p>
+<p>And here&#39;s the thing: <strong>carbon is a secondary benefit for customers but extremely important for our mission.</strong> We help, but cleanly.</p>
+<h2>Key Takeaways</h2>
+<ul>
+<li>Modern infrastructure decisions sit at the intersection of cost, control, and carbon—optimize for all three, not just one</li>
+<li>Energy efficiency is a first-class architecture concern: track watt-per-token efficiency and grid intensity alongside traditional metrics</li>
+<li>Gateway layers for self-hosted AI are 80% of the engineering effort—budget for security, ethics, routing, and monitoring upfront</li>
+<li>Agentic development requires better reliability culture: use agents for deterministic tasks, verify with tangible metrics like code coverage</li>
+<li>Make sustainability visible: &quot;Saving €X also saved Y kWh&quot; shifts conversations from procurement to purpose</li>
+</ul>
+<h2>What&#39;s Next?</h2>
+<p>Pick one strategy from this post and implement it this quarter. Add energy metrics to your dashboard, evaluate your next compute decision using the Cost-Control-Carbon framework, or create a limited-scope troubleshooting agent.</p>
+<p>Start small, measure the impact, and iterate.</p>
+<p>What&#39;s one infrastructure decision you&#39;re facing right now where you could apply the Cost-Control-Carbon lens? <a href="/contact.html">Reach out</a> and tell me—I&#39;d love to hear how you&#39;re thinking about this.</p>
+<hr>
+<p><em>This post is part of a bi-weekly series on engineering leadership. <a href="/blog/">Subscribe to the newsletter</a> to get the next post delivered to your inbox.</em></p>
+
+            </div>
+
+            <footer class="blog-post-footer">
+                <div class="text-center">
+                    <h3>Join Bear Essentials 🐻</h3>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
+                        Get bi-weekly insights on engineering leadership, AI agents, distributed systems, and sustainable tech.
+                    </p>
+                    <a href="/blog/" class="btn btn-primary">Subscribe</a>
+                </div>
+            </footer>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Miguel Tineo</h4>
+                    <p style="color: var(--color-text-secondary); font-size: 14px;">
+                        Engineering Leader focused on building teams and systems that scale.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/experience.html">Experience</a></li>
+                        <li><a href="/speaking.html">Speaking</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://www.linkedin.com/in/miketineo" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="mailto:miketineo@gmail.com">Email</a></li>
+                        <li><a href="/contact.html">Contact Form</a></li>
+                        <li><a href="#cookie-settings" id="cookie-settings-link">Cookie Settings</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Miguel Tineo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js" defer></script>
+</body>
+</html>

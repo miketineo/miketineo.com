@@ -301,7 +301,7 @@ function generatePostPage(post) {
 </body>
 </html>`;
 
-  const outputPath = path.join(GENERATED_DIR, `${post.slug}.html`);
+  const outputPath = path.join(BLOG_DIR, `${post.slug}.html`);
   fs.writeFileSync(outputPath, template);
   console.log(`Generated: ${outputPath}`);
 }
