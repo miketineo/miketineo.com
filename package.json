@@ -3,6 +3,8 @@
   "version": "1.0.0",
   "description": "Blog system for miketineo.com",
   "scripts": {
+    "build": "npm run build:pages && npm run build:blog",
+    "build:pages": "node scripts/build-pages.js",
     "build:blog": "node scripts/build-blog.js"
   },
   "dependencies": {
