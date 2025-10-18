@@ -26,3 +26,7 @@ dist-ssr
 # AI
 .claude
 .screenshots
+
+# Blog generated files
+blog/generated/
+posts.json

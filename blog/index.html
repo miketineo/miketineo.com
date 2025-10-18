@@ -12,32 +12,15 @@
 
     <!-- Theme must load before page renders to prevent flash -->
     <script src="/js/theme.js"></script>
+
+    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <script src="/js/cookie-consent.js" defer></script>
 </head>
 <body>
     <!-- Navigation -->
     <nav class="nav" role="navigation" aria-label="Main navigation">
         <div class="nav-container">
             <a href="/" class="nav-logo" aria-label="Miguel Tineo Home">Miguel Tineo</a>
-            <div class="theme-switcher">
-                <button class="theme-btn" data-theme="light" aria-label="Light mode" title="Light mode">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M12 18a6 6 0 100-12 6 6 0 000 12zM12 2v2m0 16v2M4.93 4.93l1.41 1.41m11.32 11.32l1.41 1.41M2 12h2m16 0h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41"/>
-                    </svg>
-                    <span class="theme-label">Light</span>
-                </button>
-                <button class="theme-btn" data-theme="auto" aria-label="System theme" title="System theme">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M21 14h-1V7a3 3 0 00-3-3H7a3 3 0 00-3 3v7H3a1 1 0 00-1 1v2a3 3 0 003 3h14a3 3 0 003-3v-2a1 1 0 00-1-1zM6 7a1 1 0 011-1h10a1 1 0 011 1v7H6V7z"/>
-                    </svg>
-                    <span class="theme-label">Auto</span>
-                </button>
-                <button class="theme-btn" data-theme="dark" aria-label="Dark mode" title="Dark mode">
-                    <svg width="18" height="18" viewBox="0 0 24 24" fill="currentColor">
-                        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
-                    </svg>
-                    <span class="theme-label">Dark</span>
-                </button>
-            </div>
             <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
                 <span></span>
                 <span></span>
@@ -50,6 +33,13 @@
                 <li><a href="/speaking.html" class="nav-link">Speaking</a></li>
                 <li><a href="/blog/" class="nav-link active">Blog</a></li>
                 <li><a href="/contact.html" class="nav-link">Contact</a></li>
+                <li>
+                    <button class="theme-toggle" data-current-theme="auto" aria-label="Toggle theme">
+                        <span class="theme-toggle-indicator">
+                            <span class="theme-toggle-icon"></span>
+                        </span>
+                    </button>
+                </li>
             </ul>
         </div>
     </nav>
@@ -61,7 +51,7 @@
                 <div class="page-header">
                     <h1 class="page-title">Leadership Insights</h1>
                     <p class="page-description">
-                        Monthly deep-dives on engineering leadership, culture, and systems thinking
+                        Bi-weekly deep-dives on engineering leadership, culture, and systems thinking
                     </p>
                 </div>
             </div>
@@ -71,15 +61,12 @@
         <section class="section bg-light">
             <div class="container container-narrow">
                 <div class="card text-center">
-                    <h2 style="margin-bottom: var(--spacing-md);">Subscribe to the Newsletter</h2>
+                    <h2 style="margin-bottom: var(--spacing-md);">Bear Essentials 🐻</h2>
                     <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg); max-width: 600px; margin-left: auto; margin-right: auto;">
-                        Join 500+ engineering leaders getting monthly insights on team building,
-                        distributed systems, and engineering culture. No spam, unsubscribe anytime.
+                        Bi-weekly insights on engineering leadership, AI agents, distributed systems,
+                        and sustainable tech. The essential wisdom for modern builders—distilled, thoughtful, no fluff.
                     </p>
-                    <form class="newsletter-form" action="https://formspree.io/f/mblzzwdv" method="POST">
-                        <!-- Honeypot field for spam protection -->
-                        <input type="text" name="_gotcha" style="display: none;" tabindex="-1" autocomplete="off">
-
+                    <form class="newsletter-form" action="https://buttondown.email/api/emails/embed-subscribe/bearessentials" method="POST" target="popupwindow">
                         <input
                             type="email"
                             name="email"
@@ -90,57 +77,36 @@
                         <button type="submit" class="btn btn-primary newsletter-btn">Subscribe</button>
                     </form>
                     <p style="font-size: 14px; color: var(--color-text-secondary); margin-top: var(--spacing-md); margin-bottom: 0;">
-                        By subscribing, you agree to receive monthly emails. GDPR compliant.
+                        No spam. Unsubscribe anytime. GDPR compliant.
                     </p>
                 </div>
             </div>
         </section>
 
-        <!-- Blog Posts / Coming Soon -->
+        <!-- Blog Posts -->
         <section class="section">
             <div class="container">
                 <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">Recent Posts</h2>
 
-                <div style="text-align: center; padding: var(--spacing-2xl) 0;">
-                    <p style="font-size: var(--font-size-lg); color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
-                        Blog posts are coming soon! In the meantime, subscribe to the newsletter
-                        to receive insights directly in your inbox.
-                    </p>
-                    <p style="color: var(--color-text-secondary);">
-                        Upcoming topics include:
-                    </p>
-                    <ul style="list-style: none; padding: 0; max-width: 600px; margin: var(--spacing-lg) auto 0;">
-                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Building psychological safety in remote teams
-                        </li>
-                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • The engineering manager's guide to 1-on-1s
-                        </li>
-                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Scaling microservices: lessons from the trenches
-                        </li>
-                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Career development frameworks for engineers
-                        </li>
-                        <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Cloud cost optimization strategies that actually work
-                        </li>
-                    </ul>
-                </div>
-
-                <!-- Placeholder for future blog posts structure -->
-                <!--
+                
                 <div class="grid grid-2">
+                    
                     <article class="card">
-                        <h3 class="card-title">Blog Post Title</h3>
-                        <p class="card-meta">January 15, 2025 • 5 min read</p>
+                        <h3 class="card-title">Building Psychological Safety in Remote Teams</h3>
+                        <p class="card-meta">January 15, 2025 • 4 min read</p>
+                        
+                        <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap; margin-bottom: var(--spacing-sm);">
+                            <span style="padding: 2px 8px; background: var(--color-bg-secondary); border-radius: 4px; font-size: 12px;">leadership</span><span style="padding: 2px 8px; background: var(--color-bg-secondary); border-radius: 4px; font-size: 12px;">remote-work</span><span style="padding: 2px 8px; background: var(--color-bg-secondary); border-radius: 4px; font-size: 12px;">culture</span>
+                        </div>
+                        
                         <p class="card-description">
-                            Brief excerpt from the blog post...
+                            Learn practical strategies for creating trust and safety in distributed engineering teams, enabling innovation and honest communication.
                         </p>
-                        <a href="/blog/post-slug.html" class="btn btn-secondary" style="margin-top: var(--spacing-md);">Read More</a>
+                        <a href="/blog/generated/psychological-safety.html" class="btn btn-secondary" style="margin-top: var(--spacing-md);">Read More</a>
                     </article>
+  
                 </div>
-                -->
+                
             </div>
         </section>
 
@@ -237,6 +203,7 @@
                         <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
                         <li><a href="mailto:miketineo@gmail.com">Email</a></li>
                         <li><a href="/contact.html">Contact Form</a></li>
+                        <li><a href="#cookie-settings" id="cookie-settings-link">Cookie Settings</a></li>
                     </ul>
                 </div>
             </div>

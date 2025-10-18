@@ -1,0 +1,14 @@
+{
+  "name": "miketineo-blog",
+  "version": "1.0.0",
+  "description": "Blog system for miketineo.com",
+  "scripts": {
+    "build:blog": "node scripts/build-blog.js"
+  },
+  "dependencies": {
+    "gray-matter": "^4.0.3",
+    "marked": "^11.1.1"
+  },
+  "devDependencies": {},
+  "private": true
+}
