@@ -21,7 +21,7 @@ jobs:
       - name: Sync S3
         uses: jakejarvis/s3-sync-action@v0.5.1
         with:
-          args: --follow-symlinks --delete
+          args: --follow-symlinks --delete --exclude '.git/*' --exclude 'node_modules/*' --exclude '.claude/*' --exclude 'content-pipeline/*' --exclude 'src/*' --exclude 'scripts/*' --exclude '.github/*' --exclude '*.md' --exclude '.mcp.json' --exclude '.gitignore' --exclude 'package.json' --exclude 'package-lock.json' --exclude 'ideas/*' --exclude 'newsletter-samples/*' --exclude 'screenshots/*' --exclude 'interview_answers.md'
         env:
           AWS_S3_BUCKET: "miketineo.com"
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
