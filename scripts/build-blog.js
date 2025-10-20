@@ -323,7 +323,7 @@ function generateBlogIndex(posts) {
                         <p class="card-description">
                             ${escapeHtml(post.excerpt)}
                         </p>
-                        <a href="/blog/generated/${post.slug}.html" class="btn btn-secondary" style="margin-top: var(--spacing-md);">Read More</a>
+                        <a href="/blog/${post.slug}.html" class="btn btn-secondary" style="margin-top: var(--spacing-md);">Read More</a>
                     </article>
   `).join('');
 
