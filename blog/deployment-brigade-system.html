@@ -1,0 +1,383 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Monthly deployments are like serving 30-day-old food. Here&#039;s how three principles from professional kitchens can transform deployment hell into daily routine.">
+    <meta name="author" content="Miguel Tineo">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miketineo.com/blog/deployment-brigade-system.html">
+    <meta property="og:title" content="What The Bear Taught Me About Daily Deployments">
+    <meta property="og:description" content="Monthly deployments are like serving 30-day-old food. Here&#039;s how three principles from professional kitchens can transform deployment hell into daily routine.">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="What The Bear Taught Me About Daily Deployments">
+    <meta name="twitter:description" content="Monthly deployments are like serving 30-day-old food. Here&#039;s how three principles from professional kitchens can transform deployment hell into daily routine.">
+
+    <title>What The Bear Taught Me About Daily Deployments - Miguel Tineo</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+
+    <!-- Theme must load before page renders to prevent flash -->
+    <script src="/js/theme.js"></script>
+
+    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <script src="/js/cookie-consent.js" defer></script>
+
+    <style>
+        .blog-post {
+            max-width: 800px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+        }
+        .blog-post-header {
+            margin-bottom: var(--spacing-2xl);
+        }
+        .blog-post-title {
+            font-size: var(--font-size-3xl);
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+        .blog-post-meta {
+            display: flex;
+            gap: var(--spacing-md);
+            align-items: center;
+            color: var(--color-text-secondary);
+            font-size: var(--font-size-sm);
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-tags {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+        }
+        .blog-post-tag {
+            padding: 4px 12px;
+            background: var(--color-bg-secondary);
+            border-radius: 4px;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+        .blog-post-content {
+            font-size: var(--font-size-base);
+            line-height: 1.8;
+            color: var(--color-text-primary);
+        }
+        .blog-post-content h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-top: var(--spacing-2xl);
+            margin-bottom: var(--spacing-lg);
+            color: var(--color-text-primary);
+        }
+        .blog-post-content h3 {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+        .blog-post-content p {
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-content ul, .blog-post-content ol {
+            margin-bottom: var(--spacing-lg);
+            padding-left: var(--spacing-xl);
+        }
+        .blog-post-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+        .blog-post-content code {
+            background: var(--color-bg-secondary);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .blog-post-content pre {
+            background: var(--color-bg-secondary);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-content pre code {
+            background: none;
+            padding: 0;
+        }
+        .blog-post-content blockquote {
+            border-left: 4px solid var(--color-primary);
+            padding-left: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+            font-style: italic;
+            color: var(--color-text-secondary);
+        }
+        .blog-post-content a {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+        .blog-post-content a:hover {
+            color: var(--color-primary-dark);
+        }
+        .blog-post-back {
+            margin-bottom: var(--spacing-xl);
+        }
+        .blog-post-footer {
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-2xl);
+            border-top: 1px solid var(--color-border);
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" aria-label="Miguel Tineo Home">Miguel Tineo</a>
+            <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/about.html" class="nav-link">About</a></li>
+                <li><a href="/experience.html" class="nav-link">Experience</a></li>
+                <li><a href="/speaking.html" class="nav-link">Speaking</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/contact.html" class="nav-link">Contact</a></li>
+                <li>
+                    <button class="theme-toggle" data-current-theme="auto" aria-label="Toggle theme">
+                        <span class="theme-toggle-indicator">
+                            <span class="theme-toggle-icon"></span>
+                        </span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <article class="blog-post">
+            <div class="blog-post-back">
+                <a href="/blog/" class="btn btn-secondary">← Back to Blog</a>
+            </div>
+
+            <header class="blog-post-header">
+                <h1 class="blog-post-title">What The Bear Taught Me About Daily Deployments</h1>
+                <div class="blog-post-meta">
+                    <time datetime="Mon Oct 27 2025 01:00:00 GMT+0100 (Central European Standard Time)">October 27, 2025</time>
+                    <span>•</span>
+                </div>
+                
+                <div class="blog-post-tags">
+                    <span class="blog-post-tag">continuous-delivery</span><span class="blog-post-tag">deployment</span><span class="blog-post-tag">engineering-culture</span><span class="blog-post-tag">devops</span>
+                </div>
+                
+            </header>
+
+            <div class="blog-post-content">
+                <h2>Stop Serving Month-Old Food</h2>
+<p>A few years back, like many teams, we were stuck in deployment hell. Monthly releases, 17 engineers, three-hour war rooms. One bad change in 30 days of work would spoil everything. Nobody owned anything. Deployments were &quot;events&quot; not routine.</p>
+<p>Sound familiar?</p>
+<p>Here&#39;s what we&#39;re building with modern practices like GitOps, FluxCD, and Kubernetes: daily deployments with zero drama. Routine rollbacks, not crisis. Teams that never ask &quot;when will we deploy?&quot; because service runs on schedule. It&#39;s continuous improvement, and the principles below will accelerate your journey.</p>
+<p>The breakthrough didn&#39;t come from new tools or extensive retraining. It came from applying three principles from <em>The Bear</em>—yes, the FX show about a struggling restaurant kitchen. When we stopped treating deployments as crisis events and started treating them like dinner service, everything changed.</p>
+<h2>The Monthly Deployment Buffet Problem</h2>
+<p>Monthly deployments are like serving a 30-dish buffet where every item has been sitting for a day. When something tastes wrong, you can&#39;t isolate which dish is the problem—you&#39;re throwing out the entire buffet or doing emergency surgery to extract the bad item.</p>
+<p>According to <a href="https://dora.dev/">DORA&#39;s State of DevOps research</a>, elite performers deploy on-demand, multiple times per day, with lead times under one hour. They&#39;re not serving month-old food. They&#39;re serving fresh dishes, one at a time, with immediate feedback.</p>
+<p>The shift from monthly chaos to daily service isn&#39;t about moving faster for speed&#39;s sake. It&#39;s about reducing batch size, establishing clear ownership, and treating software delivery as a service operation with standards and accountability.</p>
+<p>Here&#39;s how to make it happen.</p>
+<h2>Principle 1: Reduce Batch Size - One Dish at a Time</h2>
+<p>In <em>The Bear</em>, Marcus doesn&#39;t serve 30 different pastries at once. He serves one perfect donut. When something&#39;s off, he fixes that one item and moves on.</p>
+<p>Your monthly deployment is a 30-day buffet. A single bad change requires rolling back everything or debugging which of hundreds of commits broke production. With daily deploys, you&#39;re serving 1-2 changes at a time. If something breaks, you know exactly what broke it. Rollback is trivial.</p>
+<p>This isn&#39;t theoretical. Jez Humble and David Farley established this principle in <em>Continuous Delivery</em>: reduce batch size to reduce risk. Small batches mean faster feedback, easier debugging, and lower-stakes rollbacks.</p>
+<p><strong>Try this tomorrow:</strong></p>
+<p>Visualize your deployment as a restaurant buffet. Monthly = 30 dishes at once (overwhelming, high risk). Daily = 1-2 dishes (manageable, isolated risk).</p>
+<p>Ask your team: &quot;If this change breaks, how many other changes do we have to roll back with it?&quot;</p>
+<p>That question exposes the real cost of batching. When the answer is &quot;all 47 PRs from the last month,&quot; you&#39;ve identified the problem.</p>
+<h2>Principle 2: Clear Ownership Kills the Committee</h2>
+<p>In <em>The Bear</em>, Marcus owns pastry. Not a committee. Not consensus. Not a rotation. Marcus. When pastry&#39;s late, there are no excuses. When pastry&#39;s perfect, Marcus gets the credit.</p>
+<p>The problem with most engineering teams isn&#39;t lack of skills—it&#39;s 17 engineers playing hot potato with deployment responsibility. My team had the skills all along. The breakthrough came when we assigned one owner per environment.</p>
+<p>Not a team. Not a rotation. <strong>One person.</strong></p>
+<p>When Sarah owns the test environment deployment, the question isn&#39;t &quot;who should deploy?&quot; It&#39;s &quot;Sarah, what&#39;s the status?&quot; Excuses evaporate. Ownership creates accountability. Accountability creates results.</p>
+<p>This was uncomfortable at first. Managers worried about single points of failure. Engineers worried about being blamed. But here&#39;s what happened: Sarah didn&#39;t do all the work—she owned the service. She coordinated, she unblocked, she made the call when we needed to rollback. The team supported her, but she owned it.</p>
+<p>Within two weeks, test environment deployments went from &quot;whenever someone has time&quot; to &quot;10am daily, Sarah runs service.&quot;</p>
+<p><strong>Tomorrow morning in standup:</strong></p>
+<p>Assign one person as the deployment owner for each environment (test, staging, prod). Not a team, not a rotation—ONE person. That person doesn&#39;t do all the work, but they own the service.</p>
+<p>Watch how fast &quot;we&#39;re not ready&quot; becomes &quot;here&#39;s what we need to be ready.&quot;</p>
+<h2>Principle 3: Service-Level Accountability - It&#39;s Not an Event, It&#39;s Service</h2>
+<p>The biggest shift wasn&#39;t technical. It was linguistic.</p>
+<p>We stopped calling them &quot;deployments.&quot; We started calling them &quot;service.&quot;</p>
+<p>When it&#39;s a &quot;deployment,&quot; teams can say &quot;we&#39;re not ready.&quot; When it&#39;s &quot;service,&quot; the question becomes &quot;what do we need to run service today?&quot;</p>
+<p>In a restaurant, you don&#39;t cancel dinner service because the kitchen&#39;s messy. You work the problem. The guests are coming at 6pm whether you&#39;re ready or not.</p>
+<p>This mental model shift is everything. Deployments are events that happen when convenient. Service is an operation that runs on schedule. Service has standards. Service has customers waiting.</p>
+<p>The language shaped behavior. Once we started saying &quot;What time is service?&quot; instead of &quot;When should we deploy?&quot;, the team treated it like something that must happen, not something that might happen.</p>
+<p><strong>This week:</strong></p>
+<p>Change your language. Stop saying &quot;deployment.&quot; Say &quot;service.&quot;</p>
+<p>In Slack: &quot;What time is deployment service today?&quot;<br>In standup: &quot;Are we ready for service?&quot;<br>In retrospectives: &quot;How did service go this week?&quot;</p>
+<p>Language shapes culture. When you call it service, teams treat it like a professional operation with standards, not a special event that requires perfect conditions.</p>
+<h2>The Deployment Brigade System</h2>
+<p>Here&#39;s the framework that emerged from applying these three principles:</p>
+<h3>1. Daily Service Schedule</h3>
+<p>Just like dinner service starts at 6pm, deployment service runs on a schedule. We picked two time windows: 10am and 2pm.</p>
+<p>Code ready by 9:30am? It goes in the 10am service.<br>Not ready? It waits for 2pm.</p>
+<p>No more &quot;when will this deploy?&quot; questions. The schedule is the schedule.</p>
+<h3>2. Station Ownership</h3>
+<p>Each environment has one owner, like stations in a kitchen:</p>
+<ul>
+<li>Test environment: Sarah</li>
+<li>Staging: Marcus</li>
+<li>Production: Alex</li>
+</ul>
+<p>They don&#39;t do everything—they own the service. They coordinate, unblock, make the call.</p>
+<h3>3. Service Standards</h3>
+<p>Clear definition of &quot;ready for service&quot;:</p>
+<ul>
+<li>Tests pass (green CI pipeline)</li>
+<li>Canary deployment plan ready</li>
+<li>Rollback plan verified</li>
+<li>Metrics dashboard clean</li>
+</ul>
+<p>No standards? No service. Simple as that.</p>
+<h3>4. &quot;Behind!&quot; Protocol</h3>
+<p>In professional kitchens, when something&#39;s wrong, you shout &quot;Behind!&quot; The brigade doesn&#39;t blame—they help.</p>
+<p>We adopted the same protocol. When something breaks during service, the owner calls &quot;Behind!&quot; in Slack. No blame. No finger-pointing. The team swarms to help or executes immediate rollback.</p>
+<p>This created urgency culture, not blame culture. Problems get surfaced instantly because surfacing them brings help, not punishment.</p>
+<h3>5. Post-Service Review</h3>
+<p>At the end of each service window, a quick 5-minute recap:</p>
+<ul>
+<li>What went out?</li>
+<li>Any issues?</li>
+<li>What&#39;s on tomorrow&#39;s menu?</li>
+</ul>
+<p>This isn&#39;t a long retrospective. It&#39;s a quick sync to close the loop and prep for next service.</p>
+<h2>How It Works in Practice</h2>
+<p><strong>Morning standup (9am):</strong><br>&quot;What&#39;s ready for the 10am service?&quot;<br>Sarah: &quot;I&#39;ve got the new payment flow—tests green, ready to go.&quot;<br>Marcus: &quot;My feature needs one more test fix—I&#39;ll target 2pm service.&quot;</p>
+<p><strong>First service window (10am):</strong><br>Sarah deploys to test, checks canary metrics for 15 minutes. Clean. Proceeds to prod with canary rollout: 5% → 50% → 100%. Monitors error rates, latency, key business metrics.</p>
+<p><strong>Issue detected (10:18am):</strong><br>Alex: &quot;Behind! Error rate spike on checkout endpoint.&quot;<br>Sarah: &quot;Rolling back now.&quot;<br>Within 3 minutes, rollback complete. Service restored.</p>
+<p><strong>Second service window (2pm):</strong><br>Marcus runs his deploy. Tests pass, canary clean, full rollout complete by 2:20pm.</p>
+<p><strong>End of day:</strong><br>Two features shipped. One rollback (no drama). Tomorrow&#39;s menu identified.</p>
+<h2>Measuring What Matters</h2>
+<p>Track four metrics:</p>
+<p><strong>1. Deployment Frequency</strong></p>
+<ul>
+<li>Before: 1x per month (often slipped to 6 weeks)</li>
+<li>Target: 1x per day minimum, work up to 6+</li>
+<li>How: Count successful production deployments per day</li>
+</ul>
+<p><strong>2. Lead Time for Changes</strong></p>
+<ul>
+<li>Before: 30 days (monthly cycle)</li>
+<li>Target: Same day (code merged → deployed)</li>
+<li>How: Track time from PR merge to production</li>
+</ul>
+<p><strong>3. Change Failure Rate</strong></p>
+<ul>
+<li>Before: Unknown (too many changes to isolate)</li>
+<li>Target: &lt;15% initially (will improve)</li>
+<li>How: Deployments requiring rollback ÷ total deployments</li>
+</ul>
+<p><strong>4. Time to Restore Service</strong></p>
+<ul>
+<li>Before: Hours (debugging which change broke)</li>
+<li>Target: &lt;15 minutes (rollback is routine)</li>
+<li>How: Time from incident to service restored</li>
+</ul>
+<p><strong>The Non-Obvious Metric:</strong><br>Track how many times per week someone asks &quot;when will this deploy?&quot;</p>
+<p>Target: Zero.</p>
+<p>When service runs daily, nobody asks—they know the schedule.</p>
+<h2>What Stops Most Teams (And How to Fix It)</h2>
+<p><strong>&quot;We&#39;ll break production daily instead of monthly.&quot;</strong></p>
+<p>You&#39;re already breaking production monthly—just with more damage. This is like saying one massive surgery is safer than daily checkups. When you break daily with small changes, you know exactly what broke. When you break monthly with 30 days of changes, you&#39;re debugging a haystack.</p>
+<p>Plus, rollback is trivial when it&#39;s one small change versus a month of work.</p>
+<p><strong>&quot;We need better tooling first.&quot;</strong></p>
+<p>My team had the same tools before and after. What changed? Ownership and accountability. Start service with what you have. You&#39;ll discover real blockers fast, not theoretical ones.</p>
+<p>Pick ONE blocker—the biggest one—and fix it. Don&#39;t wait for the perfect toolchain.</p>
+<p><strong>&quot;Daily deploys will expose who&#39;s actually slow.&quot;</strong></p>
+<p>Yes. That&#39;s the point.</p>
+<p>Monthly cycles let everyone hide. Daily service makes velocity visible. This is the unspoken objection that kills most transformation efforts. Middle managers resist because they can&#39;t obscure problems anymore.</p>
+<p>But if you&#39;re serious about improvement, transparency is required. <em>The Bear</em> succeeds because there&#39;s nowhere to hide during service. That pressure drives excellence.</p>
+<h2>Start Service Tomorrow</h2>
+<p>Don&#39;t announce a transformation. Don&#39;t create a roadmap. Don&#39;t form a committee.</p>
+<p>Tomorrow morning, ask your team one question: &quot;What would need to be true for us to deploy today?&quot;</p>
+<p>Write down every excuse. Those are your actual blockers.</p>
+<p>Pick the biggest one. Assign ONE owner. Give them 48 hours to fix it or propose a fix.</p>
+<p>Then pick a pilot team—your strongest team, the one closest to weekly deploys already. Let them be the pilot kitchen. When they&#39;re deploying daily without drama, fear evaporates across the organization.</p>
+<p>Start with what you have. Change your language. Assign owners. Run service.</p>
+<h2>Key Takeaways</h2>
+<ul>
+<li><strong>Reduce batch size</strong>: Monthly deploys are 30-day-old food. Daily deploys mean smaller changes, easier rollbacks, faster feedback.</li>
+<li><strong>Clear ownership</strong>: Assign one owner per environment. Committees create excuses, ownership creates accountability.</li>
+<li><strong>Service-level accountability</strong>: Stop calling them &quot;deployments.&quot; Start calling them &quot;service.&quot; Language shapes behavior.</li>
+<li><strong>The Deployment Brigade System</strong>: Daily service schedule, station ownership, service standards, &quot;Behind!&quot; protocol, post-service reviews.</li>
+<li><strong>Start small</strong>: Pick one blocker, assign one owner, pilot with one team. Daily deploys expose everything—that transparency drives improvement.</li>
+</ul>
+<h2>What&#39;s Next?</h2>
+<p>What would Carmen from <em>The Bear</em> do? He wouldn&#39;t have a meeting about meetings. He&#39;d start service.</p>
+<p>Your turn.</p>
+<p>Tomorrow morning, ask your team: &quot;What would need to be true for us to deploy today?&quot; Don&#39;t announce a transformation. Just fix that one thing. Then ask again the next day.</p>
+<p>That&#39;s how you start service.</p>
+<hr>
+<p><em>This post is part of a bi-weekly series on engineering leadership. <a href="/blog/">Subscribe to Bear Essentials newsletter</a> to get the next post delivered to your inbox.</em></p>
+
+            </div>
+
+            <footer class="blog-post-footer">
+                <div class="text-center">
+                    <h3>Join Bear Essentials 🐻</h3>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
+                        Get bi-weekly insights on engineering leadership, AI agents, distributed systems, and sustainable tech.
+                    </p>
+                    <a href="/blog/" class="btn btn-primary">Subscribe</a>
+                </div>
+            </footer>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Miguel Tineo</h4>
+                    <p style="color: var(--color-text-secondary); font-size: 14px;">
+                        Engineering Leader focused on building teams and systems that scale.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/experience.html">Experience</a></li>
+                        <li><a href="/speaking.html">Speaking</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://www.linkedin.com/in/miketineo" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="mailto:miketineo@gmail.com">Email</a></li>
+                        <li><a href="/contact.html">Contact Form</a></li>
+                        <li><a href="#cookie-settings" id="cookie-settings-link">Cookie Settings</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2025 Miguel Tineo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js" defer></script>
+</body>
+</html>

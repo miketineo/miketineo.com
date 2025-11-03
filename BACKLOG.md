@@ -105,29 +105,43 @@ Track bi-weekly blog posts and newsletter sends.
 ### Current Cycle (In Progress)
 
 **Target Dates:**
-- Interview: [Weekend date]
-- Blog publish: [Thursday date]
-- Newsletter send: [Tuesday date]
+- Interview: 2025-10-27 (Today)
+- Blog publish: 2025-11-07 (Thursday)
+- Newsletter send: 2025-11-12 (Tuesday)
 
 **Status:**
-- [ ] Content interview completed
-- [ ] Content brief created
-- [ ] Blog draft written
-- [ ] Blog draft reviewed
-- [ ] Blog published
+- [x] Content interview completed
+- [x] Content brief created
+- [x] Blog draft written (1,886 words)
+- [x] Blog draft reviewed
+- [x] Blog published (2025-11-03)
 - [ ] Newsletter drafted
 - [ ] Newsletter sent
 - [ ] Content archived
 
-**Topic:** [Topic name when decided]
-**Brief:** [Link to content-pipeline/content-briefs/YYYY-MM-DD-slug.md]
+**Topic:** Deployment Brigade System - WWCD (What Would Carmen Do)
+**Brief:** content-pipeline/content-briefs/2025-10-27-deployment-brigade-system.md
+**Draft:** content-pipeline/drafts/2025-10-27-deployment-brigade-system.md
 
 ---
 
 ### Published Content
 
+#### 2025-10-27 - What The Bear Taught Me About Daily Deployments
+- ✅ Blog: https://miketineo.com/blog/deployment-brigade-system.html
+- ⏳ Newsletter: Pending (target: 2025-11-12)
+- 📊 Stats: [Update after 24 hours from Buttondown]
+- Tags: continuous-delivery, deployment, engineering-culture, devops
+
+#### 2025-10-18 - Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle
+- ✅ Blog: https://miketineo.com/blog/energy-aware-ai-infrastructure.html
+- ✅ Newsletter sent: 2025-10-23
+- ✅ Archived: 2025-10-23
+- 📊 Stats: [Update after 24 hours from Buttondown]
+- Tags: ai, infrastructure, sustainability, cost-optimization
+
 #### 2025-01-15 - Building Psychological Safety in Remote Teams
-- ✅ Blog: https://miketineo.com/blog/psychological-safety
+- ✅ Blog: https://miketineo.com/blog/psychological-safety.html
 - ✅ Newsletter: Sent [date if sent]
 - 📊 Stats: [Open rate, CTR when available]
 - Tags: leadership, remote-work, culture
@@ -192,4 +206,4 @@ Ideas that might become tasks later:
 
 ---
 
-**Last Updated:** 2025-10-18
+**Last Updated:** 2025-11-03 (Blog published)
