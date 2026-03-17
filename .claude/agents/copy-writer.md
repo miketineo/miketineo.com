@@ -228,7 +228,9 @@ P.S. [Optional: Quick personal note or related resource]
 - One clear takeaway
 - Conversational but professional
 - Personal sign-off
-- Link to full blog post: "Read the full post: https://miketineo.com/blog/[slug]"
+- Link to full blog post: "Read the full post: https://miketineo.com/blog/[slug-without-date].html"
+  - IMPORTANT: Strip the date prefix (YYYY-MM-DD-) from the slug and add .html
+  - Example: For "2025-10-18-energy-aware-ai-infrastructure" → "energy-aware-ai-infrastructure.html"
 
 ### Working from a Brief: Step-by-Step Example
 
@@ -251,8 +253,13 @@ External Source: Google Project Aristotle
 **Your newsletter should:**
 1. Condense to the core insight from the story
 2. Highlight 1-2 of the key strategies (not all 3)
-3. Include link to full blog post
+3. Include link to full blog post (URL format: https://miketineo.com/blog/[slug-without-date].html)
 4. End with engaging question or invitation to reply
+
+**IMPORTANT - Blog URL Format:**
+Always strip the date prefix and add .html extension:
+- Blog file: `blog/posts/2025-10-18-energy-aware-ai-infrastructure.md`
+- URL: `https://miketineo.com/blog/energy-aware-ai-infrastructure.html` (NOT `/blog/2025-10-18-energy-aware-ai-infrastructure`)
 
 ---
 

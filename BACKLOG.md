@@ -115,13 +115,14 @@ Track bi-weekly blog posts and newsletter sends.
 - [x] Blog draft written (1,886 words)
 - [x] Blog draft reviewed
 - [x] Blog published (2025-11-03)
-- [ ] Newsletter drafted
+- [x] Newsletter drafted (188 words)
 - [ ] Newsletter sent
 - [ ] Content archived
 
 **Topic:** Deployment Brigade System - WWCD (What Would Carmen Do)
 **Brief:** content-pipeline/content-briefs/2025-10-27-deployment-brigade-system.md
 **Draft:** content-pipeline/drafts/2025-10-27-deployment-brigade-system.md
+**Newsletter:** content-pipeline/drafts/newsletter-2025-10-27-deployment-brigade-system.md
 
 ---
 

@@ -42,7 +42,7 @@ That moment didn't happen by accident. It happened because we've normalized vuln
 
 This week: In your next team meeting, start with "I made a mistake when..." and see what happens.
 
-Read the full post: https://miketineo.com/blog/psychological-safety
+Read the full post: https://miketineo.com/blog/psychological-safety.html
 
 — Miguel
 
@@ -67,7 +67,7 @@ The fix: We added output validation, fallback paths, and explicit error boundari
 
 This week: If you're building with agents, ask yourself: "What happens when the LLM returns something unexpected?"
 
-Read the full framework: https://miketineo.com/blog/ai-agent-production-patterns
+Read the full framework: https://miketineo.com/blog/ai-agent-production-patterns.html
 
 — Miguel
 
@@ -145,8 +145,15 @@ This week: [Specific action with context]
 
 **Format:**
 ```
-Read the full [framework/post/guide]: https://miketineo.com/blog/[slug]
+Read the full [framework/post/guide]: https://miketineo.com/blog/[slug-without-date].html
 ```
+
+**IMPORTANT - URL Format:**
+Blog URLs must strip the date prefix and add .html extension:
+- Blog file: `blog/posts/2025-10-18-energy-aware-ai-infrastructure.md`
+- Slug: `2025-10-18-energy-aware-ai-infrastructure`
+- URL slug (strip YYYY-MM-DD- prefix): `energy-aware-ai-infrastructure`
+- Correct URL: `https://miketineo.com/blog/energy-aware-ai-infrastructure.html`
 
 **Phrases:**
 - "Read the full framework:"
