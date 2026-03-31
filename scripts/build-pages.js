@@ -103,10 +103,10 @@ function generatePage(pageConfig) {
       "@type": "Person",
       "name": "Miguel Tineo",
       "url": "https://miketineo.com",
-      "jobTitle": "Software Engineering Manager",
+      "jobTitle": "Head of Engineering",
       "worksFor": {
         "@type": "Organization",
-        "name": "Hive"
+        "name": "Hivenet"
       },
       "alumniOf": [
         {

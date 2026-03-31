@@ -102,36 +102,18 @@ Task tracking for website and content operations.
 
 Track bi-weekly blog posts and newsletter sends.
 
-### Current Cycle (In Progress)
+### Current Cycle
 
-**Target Dates:**
-- Interview: 2025-10-27 (Today)
-- Blog publish: 2025-11-07 (Thursday)
-- Newsletter send: 2025-11-12 (Tuesday)
-
-**Status:**
-- [x] Content interview completed
-- [x] Content brief created
-- [x] Blog draft written (1,886 words)
-- [x] Blog draft reviewed
-- [x] Blog published (2025-11-03)
-- [x] Newsletter drafted (188 words)
-- [ ] Newsletter sent
-- [ ] Content archived
-
-**Topic:** Deployment Brigade System - WWCD (What Would Carmen Do)
-**Brief:** content-pipeline/content-briefs/2025-10-27-deployment-brigade-system.md
-**Draft:** content-pipeline/drafts/2025-10-27-deployment-brigade-system.md
-**Newsletter:** content-pipeline/drafts/newsletter-2025-10-27-deployment-brigade-system.md
+No active cycle. Run `/content-start` to begin a new one.
 
 ---
 
 ### Published Content
 
 #### 2025-10-27 - What The Bear Taught Me About Daily Deployments
-- ✅ Blog: https://miketineo.com/blog/deployment-brigade-system.html
-- ⏳ Newsletter: Pending (target: 2025-11-12)
-- 📊 Stats: [Update after 24 hours from Buttondown]
+- Blog: https://miketineo.com/blog/deployment-brigade-system.html
+- Newsletter: Skipped (cycle went dormant)
+- Archived: 2026-03-31
 - Tags: continuous-delivery, deployment, engineering-culture, devops
 
 #### 2025-10-18 - Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle
@@ -207,4 +189,4 @@ Ideas that might become tasks later:
 
 ---
 
-**Last Updated:** 2025-11-03 (Blog published)
+**Last Updated:** 2026-03-31 (Pipeline reset, stale cycle archived)

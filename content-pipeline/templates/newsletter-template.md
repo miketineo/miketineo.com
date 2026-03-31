@@ -226,7 +226,7 @@ Before sending, verify:
 ## Common Mistakes to Avoid
 
 ### ❌ Too Long
-"I want to share three major learnings from our recent incident at Hive, each of which taught me something different about how distributed systems behave under load, and how important it is to have proper observability and monitoring in place..."
+"I want to share three major learnings from our recent incident at Hivenet, each of which taught me something different about how distributed systems behave under load, and how important it is to have proper observability and monitoring in place..."
 
 **Problem:** Rambling, will exceed 200 words
 
