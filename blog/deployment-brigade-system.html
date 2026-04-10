@@ -31,41 +31,113 @@
 
     <style>
         .blog-post {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: var(--spacing-2xl) var(--spacing-lg);
         }
-        .blog-post-header {
-            margin-bottom: var(--spacing-2xl);
+        .blog-post-back {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        /* ── Hero ── */
+        .blog-post-hero {
+            display: flex;
+            gap: 64px;
+            align-items: flex-start;
+            margin-bottom: 64px;
+        }
+        .blog-post-hero-main {
+            flex: 1;
+            min-width: 0;
+        }
+        .blog-post-illustration {
+            width: 120px;
+            height: 120px;
+            background: #FF8A5B;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            flex-shrink: 0;
+        }
+        @media (prefers-color-scheme: dark) {
+            .blog-post-illustration {
+                background: #E56D42;
+            }
+        }
+        [data-theme="dark"] .blog-post-illustration {
+            background: #E56D42;
         }
         .blog-post-title {
-            font-size: var(--font-size-3xl);
+            font-size: 39px;
             font-weight: 700;
             line-height: 1.2;
             margin-bottom: var(--spacing-md);
             color: var(--color-text-primary);
         }
-        .blog-post-meta {
-            display: flex;
-            gap: var(--spacing-md);
-            align-items: center;
+        .blog-post-subtitle {
+            font-size: 25px;
+            font-weight: 400;
             color: var(--color-text-secondary);
-            font-size: var(--font-size-sm);
+            margin-top: 8px;
             margin-bottom: var(--spacing-lg);
+            line-height: 1.3;
         }
         .blog-post-tags {
             display: flex;
             gap: var(--spacing-sm);
             flex-wrap: wrap;
+            margin-top: var(--spacing-md);
         }
         .blog-post-tag {
             padding: 4px 12px;
-            background: var(--color-bg-secondary);
+            background: var(--color-background-light);
             border-radius: 4px;
             font-size: var(--font-size-sm);
             color: var(--color-text-secondary);
         }
+
+        /* ── Sidebar ── */
+        .blog-post-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-label {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        .sidebar-copy-link {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-primary);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .sidebar-copy-link:hover {
+            color: var(--color-primary-dark);
+        }
+
+        /* ── Content ── */
         .blog-post-content {
+            max-width: 720px;
             font-size: var(--font-size-base);
             line-height: 1.8;
             color: var(--color-text-primary);
@@ -95,14 +167,14 @@
             margin-bottom: var(--spacing-sm);
         }
         .blog-post-content code {
-            background: var(--color-bg-secondary);
+            background: var(--color-background-light);
             padding: 2px 6px;
             border-radius: 4px;
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 0.9em;
         }
         .blog-post-content pre {
-            background: var(--color-bg-secondary);
+            background: var(--color-background-light);
             padding: var(--spacing-lg);
             border-radius: 8px;
             overflow-x: auto;
@@ -126,13 +198,66 @@
         .blog-post-content a:hover {
             color: var(--color-primary-dark);
         }
-        .blog-post-back {
-            margin-bottom: var(--spacing-xl);
+
+        /* ── Tables ── */
+        .blog-post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 32px 0;
+            font-size: 15px;
         }
+        .blog-post-content thead th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--color-text-primary);
+        }
+        .blog-post-content tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: top;
+        }
+        .blog-post-content tbody td:first-child {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .blog-post-content tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── Footer ── */
         .blog-post-footer {
+            max-width: 720px;
             margin-top: var(--spacing-2xl);
             padding-top: var(--spacing-2xl);
             border-top: 1px solid var(--color-border);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .blog-post-hero {
+                flex-direction: column;
+                gap: 32px;
+            }
+            .blog-post-sidebar {
+                position: static;
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 16px;
+                padding-top: 24px;
+                border-top: 1px solid var(--color-border);
+            }
+            .sidebar-item {
+                flex: 1;
+                min-width: 120px;
+            }
+            .blog-post-content {
+                max-width: 100%;
+            }
+            .blog-post-footer {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -167,21 +292,50 @@
     <main>
         <article class="blog-post">
             <div class="blog-post-back">
-                <a href="/blog/" class="btn btn-secondary">← Back to Blog</a>
+                <a href="/blog/" class="btn btn-secondary">&larr; Back to Blog</a>
             </div>
 
-            <header class="blog-post-header">
-                <h1 class="blog-post-title">What The Bear Taught Me About Daily Deployments</h1>
-                <div class="blog-post-meta">
-                    <time datetime="Mon Oct 27 2025 01:00:00 GMT+0100 (Central European Standard Time)">October 27, 2025</time>
-                    <span>•</span>
+            <div class="blog-post-hero">
+                <div class="blog-post-hero-main">
+                    <div class="blog-post-illustration">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Map body with fold lines -->
+  <path d="M12 18 L32 14 L48 18 L68 14 L68 62 L48 66 L32 62 L12 66 Z"/>
+  <!-- Fold creases -->
+  <line x1="32" y1="14" x2="32" y2="62"/>
+  <line x1="48" y1="18" x2="48" y2="66"/>
+  <line x1="12" y1="40" x2="68" y2="40"/>
+  <!-- X mark -->
+  <line x1="52" y1="28" x2="60" y2="36"/>
+  <line x1="60" y1="28" x2="52" y2="36"/>
+  <!-- Route line -->
+  <path d="M20 52 Q24 46 30 50 Q36 54 40 48" stroke-width="1.5"/>
+  <!-- Start dot -->
+  <circle cx="20" cy="52" r="2" fill="#1A1A1A" stroke="none"/>
+</svg>
+                    </div>
+                    <h1 class="blog-post-title">What The Bear Taught Me About Daily Deployments</h1>
+                    
+                    <div class="blog-post-tags">
+          <span class="blog-post-tag">continuous-delivery</span><span class="blog-post-tag">deployment</span><span class="blog-post-tag">engineering-culture</span><span class="blog-post-tag">devops</span>
+      </div>
                 </div>
-                
-                <div class="blog-post-tags">
-                    <span class="blog-post-tag">continuous-delivery</span><span class="blog-post-tag">deployment</span><span class="blog-post-tag">engineering-culture</span><span class="blog-post-tag">devops</span>
-                </div>
-                
-            </header>
+                <aside class="blog-post-sidebar">
+                    
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Date</span>
+                        <span class="sidebar-value">October 27, 2025</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Reading time</span>
+                        <span class="sidebar-value">10 min</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Share</span>
+                        <a class="sidebar-copy-link" href="#" onclick="(function(el){navigator.clipboard.writeText(window.location.href).then(function(){var t=el.textContent;el.textContent='Copied!';setTimeout(function(){el.textContent=t;},2000);});})(this);return false;">Copy link</a>
+                    </div>
+                </aside>
+            </div>
 
             <div class="blog-post-content">
                 <h2>Stop Serving Month-Old Food</h2>
@@ -331,7 +485,7 @@
 
             <footer class="blog-post-footer">
                 <div class="text-center">
-                    <h3>Join Bear Essentials 🐻</h3>
+                    <h3>Join Bear Essentials</h3>
                     <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
                         Get bi-weekly insights on engineering leadership, AI agents, distributed systems, and sustainable tech.
                     </p>
@@ -372,7 +526,7 @@
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Miguel Tineo. All rights reserved.</p>
+                <p>&copy; 2026 Miguel Tineo. All rights reserved.</p>
             </div>
         </div>
     </footer>

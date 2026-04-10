@@ -11,7 +11,175 @@ marked.setOptions({
   gfm: true,
 });
 
-// Paths
+// ─── Illustration Library ────────────────────────────────────────────────────
+// Inline SVG illustrations: ink-drawing style, ~80x80 viewBox, stroke-based.
+
+function getIllustration(name) {
+  const illustrations = {
+    compass: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="40" cy="40" r="28"/>
+  <circle cx="40" cy="40" r="4"/>
+  <!-- Cardinal marks -->
+  <line x1="40" y1="12" x2="40" y2="18"/>
+  <line x1="40" y1="62" x2="40" y2="68"/>
+  <line x1="12" y1="40" x2="18" y2="40"/>
+  <line x1="62" y1="40" x2="68" y2="40"/>
+  <!-- N label -->
+  <text x="37" y="10" font-size="7" stroke-width="1.2" fill="#1A1A1A" font-family="Georgia,serif">N</text>
+  <!-- Needle north (dark) -->
+  <polygon points="40,20 37,40 40,36 43,40" fill="#1A1A1A" stroke="none"/>
+  <!-- Needle south (light) -->
+  <polygon points="40,60 37,40 40,44 43,40" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+</svg>`,
+
+    campfire: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Logs -->
+  <line x1="18" y1="58" x2="52" y2="50"/>
+  <line x1="28" y1="58" x2="62" y2="50"/>
+  <!-- Log ends -->
+  <ellipse cx="18" cy="58" rx="4" ry="3" transform="rotate(-15 18 58)"/>
+  <ellipse cx="62" cy="50" rx="4" ry="3" transform="rotate(-15 62 50)"/>
+  <!-- Ground glow arc -->
+  <path d="M22 60 Q40 66 58 60"/>
+  <!-- Flames -->
+  <path d="M40 50 C38 44 33 40 36 32 C37 36 41 34 40 28 C44 33 47 30 45 36 C48 33 50 36 48 42 C46 38 43 40 44 46 Z"/>
+  <path d="M36 50 C34 46 30 44 32 38 C34 42 37 40 36 36 C39 40 40 38 38 44 Z" stroke-width="1.5"/>
+</svg>`,
+
+    binoculars: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Left barrel -->
+  <rect x="10" y="32" width="22" height="28" rx="10"/>
+  <circle cx="21" cy="52" r="7"/>
+  <circle cx="21" cy="52" r="3"/>
+  <!-- Right barrel -->
+  <rect x="48" y="32" width="22" height="28" rx="10"/>
+  <circle cx="59" cy="52" r="7"/>
+  <circle cx="59" cy="52" r="3"/>
+  <!-- Bridge -->
+  <path d="M32 38 Q40 34 48 38"/>
+  <!-- Eye cups top -->
+  <rect x="12" y="28" width="18" height="8" rx="4"/>
+  <rect x="50" y="28" width="18" height="8" rx="4"/>
+  <!-- Strap hint -->
+  <line x1="15" y1="28" x2="12" y2="22"/>
+  <line x1="65" y1="28" x2="68" y2="22"/>
+</svg>`,
+
+    axe: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Handle -->
+  <line x1="55" y1="20" x2="25" y2="65"/>
+  <!-- Head top edge -->
+  <path d="M55 20 C62 14 68 20 64 30 L52 36 Z"/>
+  <!-- Head back curve -->
+  <path d="M55 20 L52 36"/>
+  <!-- Grain on handle -->
+  <line x1="48" y1="30" x2="44" y2="36"/>
+  <line x1="42" y1="40" x2="38" y2="46"/>
+  <line x1="36" y1="50" x2="32" y2="56"/>
+</svg>`,
+
+    map: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Map body with fold lines -->
+  <path d="M12 18 L32 14 L48 18 L68 14 L68 62 L48 66 L32 62 L12 66 Z"/>
+  <!-- Fold creases -->
+  <line x1="32" y1="14" x2="32" y2="62"/>
+  <line x1="48" y1="18" x2="48" y2="66"/>
+  <line x1="12" y1="40" x2="68" y2="40"/>
+  <!-- X mark -->
+  <line x1="52" y1="28" x2="60" y2="36"/>
+  <line x1="60" y1="28" x2="52" y2="36"/>
+  <!-- Route line -->
+  <path d="M20 52 Q24 46 30 50 Q36 54 40 48" stroke-width="1.5"/>
+  <!-- Start dot -->
+  <circle cx="20" cy="52" r="2" fill="#1A1A1A" stroke="none"/>
+</svg>`,
+
+    lantern: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Top cap -->
+  <path d="M32 18 L48 18 L52 26 L28 26 Z"/>
+  <!-- Handle arc -->
+  <path d="M34 18 Q40 10 46 18"/>
+  <!-- Body -->
+  <rect x="26" y="26" width="28" height="34" rx="4"/>
+  <!-- Glass panels (vertical lines) -->
+  <line x1="34" y1="26" x2="34" y2="60"/>
+  <line x1="40" y1="26" x2="40" y2="60"/>
+  <line x1="46" y1="26" x2="46" y2="60"/>
+  <!-- Base -->
+  <path d="M24 60 L56 60 L54 68 L26 68 Z"/>
+  <!-- Flame -->
+  <path d="M40 44 C38 40 36 37 38 33 C39 36 41 35 40 31 C43 35 44 33 43 38 C45 35 46 38 44 42 C43 39 41 40 42 44 Z" stroke-width="1.5"/>
+</svg>`,
+
+    tent: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Main tent body -->
+  <path d="M8 62 L40 14 L72 62 Z"/>
+  <!-- Inner door triangle -->
+  <path d="M30 62 L40 38 L50 62 Z"/>
+  <!-- Ridge line -->
+  <line x1="40" y1="14" x2="40" y2="8"/>
+  <!-- Stake left -->
+  <line x1="8" y1="62" x2="4" y2="70"/>
+  <!-- Stake right -->
+  <line x1="72" y1="62" x2="76" y2="70"/>
+  <!-- Guy line left -->
+  <line x1="40" y1="8" x2="4" y2="70"/>
+  <!-- Guy line right -->
+  <line x1="40" y1="8" x2="76" y2="70"/>
+  <!-- Ground line -->
+  <line x1="4" y1="62" x2="76" y2="62"/>
+</svg>`,
+
+    'bear-paw': `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Main pad -->
+  <ellipse cx="40" cy="52" rx="18" ry="16"/>
+  <!-- Toe pads -->
+  <ellipse cx="24" cy="34" rx="6" ry="7" transform="rotate(-15 24 34)"/>
+  <ellipse cx="34" cy="28" rx="6" ry="7"/>
+  <ellipse cx="46" cy="28" rx="6" ry="7"/>
+  <ellipse cx="56" cy="34" rx="6" ry="7" transform="rotate(15 56 34)"/>
+  <!-- Claw marks -->
+  <line x1="22" y1="27" x2="20" y2="20"/>
+  <line x1="32" y1="21" x2="31" y2="14"/>
+  <line x1="44" y1="21" x2="45" y2="14"/>
+  <line x1="54" y1="27" x2="57" y2="20"/>
+</svg>`,
+  };
+
+  return illustrations[name] || illustrations['bear-paw'];
+}
+
+const TAG_TO_ILLUSTRATION = {
+  'leadership': 'campfire',
+  'remote-work': 'tent',
+  'culture': 'campfire',
+  'ai': 'compass',
+  'infrastructure': 'axe',
+  'sustainability': 'lantern',
+  'deployment': 'map',
+  'devops': 'axe',
+  'engineering-leadership': 'compass',
+  'agentic-engineering': 'compass',
+  'productivity': 'binoculars',
+  'software-engineering': 'axe',
+  'distributed-systems': 'map',
+};
+
+function selectIllustration(post) {
+  if (post.illustration && post.illustration.trim()) {
+    return post.illustration.trim();
+  }
+  for (const tag of (post.tags || [])) {
+    const normalizedTag = tag.toLowerCase();
+    if (TAG_TO_ILLUSTRATION[normalizedTag]) {
+      return TAG_TO_ILLUSTRATION[normalizedTag];
+    }
+  }
+  return 'bear-paw';
+}
+
+// ─── Paths ───────────────────────────────────────────────────────────────────
+
 const BLOG_DIR = path.join(__dirname, '..', 'blog');
 const POSTS_DIR = path.join(BLOG_DIR, 'posts');
 const GENERATED_DIR = path.join(BLOG_DIR, 'generated');
@@ -52,6 +220,9 @@ function parsePost(filePath) {
     date: data.date || new Date().toISOString().split('T')[0],
     excerpt: data.excerpt || '',
     tags: data.tags || [],
+    subtitle: data.subtitle || '',
+    category: data.category || '',
+    illustration: data.illustration || '',
     content: marked(content),
     rawContent: content,
   };
@@ -59,6 +230,27 @@ function parsePost(filePath) {
 
 // Generate HTML page for a single post
 function generatePostPage(post) {
+  const readingTime = estimateReadTime(post.rawContent);
+  const formattedDate = formatDate(post.date);
+
+  // Auto-split title on " — " (em dash) if subtitle not already set in frontmatter
+  let displayTitle = post.title;
+  let displaySubtitle = post.subtitle;
+  if (!displaySubtitle && post.title.includes(' \u2014 ')) {
+    const parts = post.title.split(' \u2014 ');
+    displayTitle = parts[0].trim();
+    displaySubtitle = parts.slice(1).join(' \u2014 ').trim();
+  }
+
+  const illustrationName = selectIllustration(post);
+  const illustrationSVG = getIllustration(illustrationName);
+
+  const tagsHTML = post.tags.length > 0
+    ? `<div class="blog-post-tags">
+          ${post.tags.map(tag => `<span class="blog-post-tag">${escapeHtml(tag)}</span>`).join('')}
+      </div>`
+    : '';
+
   const template = `<!DOCTYPE html>
 <html lang="en">
 <head>
@@ -92,41 +284,113 @@ function generatePostPage(post) {
 
     <style>
         .blog-post {
-            max-width: 800px;
+            max-width: 1000px;
             margin: 0 auto;
             padding: var(--spacing-2xl) var(--spacing-lg);
         }
-        .blog-post-header {
-            margin-bottom: var(--spacing-2xl);
+        .blog-post-back {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        /* ── Hero ── */
+        .blog-post-hero {
+            display: flex;
+            gap: 64px;
+            align-items: flex-start;
+            margin-bottom: 64px;
+        }
+        .blog-post-hero-main {
+            flex: 1;
+            min-width: 0;
+        }
+        .blog-post-illustration {
+            width: 120px;
+            height: 120px;
+            background: #FF8A5B;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            flex-shrink: 0;
+        }
+        @media (prefers-color-scheme: dark) {
+            .blog-post-illustration {
+                background: #E56D42;
+            }
+        }
+        [data-theme="dark"] .blog-post-illustration {
+            background: #E56D42;
         }
         .blog-post-title {
-            font-size: var(--font-size-3xl);
+            font-size: 39px;
             font-weight: 700;
             line-height: 1.2;
             margin-bottom: var(--spacing-md);
             color: var(--color-text-primary);
         }
-        .blog-post-meta {
-            display: flex;
-            gap: var(--spacing-md);
-            align-items: center;
+        .blog-post-subtitle {
+            font-size: 25px;
+            font-weight: 400;
             color: var(--color-text-secondary);
-            font-size: var(--font-size-sm);
+            margin-top: 8px;
             margin-bottom: var(--spacing-lg);
+            line-height: 1.3;
         }
         .blog-post-tags {
             display: flex;
             gap: var(--spacing-sm);
             flex-wrap: wrap;
+            margin-top: var(--spacing-md);
         }
         .blog-post-tag {
             padding: 4px 12px;
-            background: var(--color-bg-secondary);
+            background: var(--color-background-light);
             border-radius: 4px;
             font-size: var(--font-size-sm);
             color: var(--color-text-secondary);
         }
+
+        /* ── Sidebar ── */
+        .blog-post-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-label {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        .sidebar-copy-link {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-primary);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .sidebar-copy-link:hover {
+            color: var(--color-primary-dark);
+        }
+
+        /* ── Content ── */
         .blog-post-content {
+            max-width: 720px;
             font-size: var(--font-size-base);
             line-height: 1.8;
             color: var(--color-text-primary);
@@ -156,14 +420,14 @@ function generatePostPage(post) {
             margin-bottom: var(--spacing-sm);
         }
         .blog-post-content code {
-            background: var(--color-bg-secondary);
+            background: var(--color-background-light);
             padding: 2px 6px;
             border-radius: 4px;
             font-family: 'Monaco', 'Courier New', monospace;
             font-size: 0.9em;
         }
         .blog-post-content pre {
-            background: var(--color-bg-secondary);
+            background: var(--color-background-light);
             padding: var(--spacing-lg);
             border-radius: 8px;
             overflow-x: auto;
@@ -187,13 +451,66 @@ function generatePostPage(post) {
         .blog-post-content a:hover {
             color: var(--color-primary-dark);
         }
-        .blog-post-back {
-            margin-bottom: var(--spacing-xl);
+
+        /* ── Tables ── */
+        .blog-post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 32px 0;
+            font-size: 15px;
         }
+        .blog-post-content thead th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--color-text-primary);
+        }
+        .blog-post-content tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: top;
+        }
+        .blog-post-content tbody td:first-child {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .blog-post-content tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── Footer ── */
         .blog-post-footer {
+            max-width: 720px;
             margin-top: var(--spacing-2xl);
             padding-top: var(--spacing-2xl);
             border-top: 1px solid var(--color-border);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .blog-post-hero {
+                flex-direction: column;
+                gap: 32px;
+            }
+            .blog-post-sidebar {
+                position: static;
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 16px;
+                padding-top: 24px;
+                border-top: 1px solid var(--color-border);
+            }
+            .sidebar-item {
+                flex: 1;
+                min-width: 120px;
+            }
+            .blog-post-content {
+                max-width: 100%;
+            }
+            .blog-post-footer {
+                max-width: 100%;
+            }
         }
     </style>
 </head>
@@ -228,21 +545,37 @@ function generatePostPage(post) {
     <main>
         <article class="blog-post">
             <div class="blog-post-back">
-                <a href="/blog/" class="btn btn-secondary">← Back to Blog</a>
+                <a href="/blog/" class="btn btn-secondary">&larr; Back to Blog</a>
             </div>
 
-            <header class="blog-post-header">
-                <h1 class="blog-post-title">${escapeHtml(post.title)}</h1>
-                <div class="blog-post-meta">
-                    <time datetime="${post.date}">${formatDate(post.date)}</time>
-                    ${post.tags.length > 0 ? `<span>•</span>` : ''}
+            <div class="blog-post-hero">
+                <div class="blog-post-hero-main">
+                    <div class="blog-post-illustration">
+                        ${illustrationSVG}
+                    </div>
+                    <h1 class="blog-post-title">${escapeHtml(displayTitle)}</h1>
+                    ${displaySubtitle ? `<p class="blog-post-subtitle">${escapeHtml(displaySubtitle)}</p>` : ''}
+                    ${tagsHTML}
                 </div>
-                ${post.tags.length > 0 ? `
-                <div class="blog-post-tags">
-                    ${post.tags.map(tag => `<span class="blog-post-tag">${escapeHtml(tag)}</span>`).join('')}
-                </div>
-                ` : ''}
-            </header>
+                <aside class="blog-post-sidebar">
+                    ${post.category ? `<div class="sidebar-item">
+                        <span class="sidebar-label">Category</span>
+                        <span class="sidebar-value">${escapeHtml(post.category)}</span>
+                    </div>` : ''}
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Date</span>
+                        <span class="sidebar-value">${formattedDate}</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Reading time</span>
+                        <span class="sidebar-value">${readingTime} min</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Share</span>
+                        <a class="sidebar-copy-link" href="#" onclick="(function(el){navigator.clipboard.writeText(window.location.href).then(function(){var t=el.textContent;el.textContent='Copied!';setTimeout(function(){el.textContent=t;},2000);});})(this);return false;">Copy link</a>
+                    </div>
+                </aside>
+            </div>
 
             <div class="blog-post-content">
                 ${post.content}
@@ -250,7 +583,7 @@ function generatePostPage(post) {
 
             <footer class="blog-post-footer">
                 <div class="text-center">
-                    <h3>Join Bear Essentials 🐻</h3>
+                    <h3>Join Bear Essentials</h3>
                     <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
                         Get bi-weekly insights on engineering leadership, AI agents, distributed systems, and sustainable tech.
                     </p>
@@ -291,7 +624,7 @@ function generatePostPage(post) {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Miguel Tineo. All rights reserved.</p>
+                <p>&copy; 2026 Miguel Tineo. All rights reserved.</p>
             </div>
         </div>
     </footer>
@@ -314,10 +647,10 @@ function generateBlogIndex(posts) {
   const postsHTML = sortedPosts.map(post => `
                     <article class="card">
                         <h3 class="card-title">${escapeHtml(post.title)}</h3>
-                        <p class="card-meta">${formatDate(post.date)} • ${estimateReadTime(post.rawContent)} min read</p>
+                        <p class="card-meta">${formatDate(post.date)} &bull; ${estimateReadTime(post.rawContent)} min read</p>
                         ${post.tags.length > 0 ? `
                         <div style="display: flex; gap: var(--spacing-sm); flex-wrap: wrap; margin-bottom: var(--spacing-sm);">
-                            ${post.tags.map(tag => `<span style="padding: 2px 8px; background: var(--color-bg-secondary); border-radius: 4px; font-size: 12px;">${escapeHtml(tag)}</span>`).join('')}
+                            ${post.tags.map(tag => `<span style="padding: 2px 8px; background: var(--color-background-light); border-radius: 4px; font-size: 12px;">${escapeHtml(tag)}</span>`).join('')}
                         </div>
                         ` : ''}
                         <p class="card-description">
@@ -333,7 +666,7 @@ function generateBlogIndex(posts) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Engineering leadership insights, team building strategies, and distributed systems thinking from Miguel Tineo.">
-    <title>Blog & Newsletter - Miguel Tineo</title>
+    <title>Blog &amp; Newsletter - Miguel Tineo</title>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/main.css">
@@ -390,10 +723,10 @@ function generateBlogIndex(posts) {
         <section class="section bg-light">
             <div class="container container-narrow">
                 <div class="card text-center">
-                    <h2 style="margin-bottom: var(--spacing-md);">Bear Essentials 🐻</h2>
+                    <h2 style="margin-bottom: var(--spacing-md);">Bear Essentials</h2>
                     <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg); max-width: 600px; margin-left: auto; margin-right: auto;">
                         Bi-weekly insights on engineering leadership, AI agents, distributed systems,
-                        and sustainable tech. The essential wisdom for modern builders—distilled, thoughtful, no fluff.
+                        and sustainable tech. The essential wisdom for modern builders&mdash;distilled, thoughtful, no fluff.
                     </p>
                     <form class="newsletter-form" action="https://buttondown.email/api/emails/embed-subscribe/bearessentials" method="POST" target="popupwindow">
                         <input
@@ -432,19 +765,19 @@ function generateBlogIndex(posts) {
                     </p>
                     <ul style="list-style: none; padding: 0; max-width: 600px; margin: var(--spacing-lg) auto 0;">
                         <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Building psychological safety in remote teams
+                            &bull; Building psychological safety in remote teams
                         </li>
                         <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • The engineering manager's guide to 1-on-1s
+                            &bull; The engineering manager's guide to 1-on-1s
                         </li>
                         <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Scaling microservices: lessons from the trenches
+                            &bull; Scaling microservices: lessons from the trenches
                         </li>
                         <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Career development frameworks for engineers
+                            &bull; Career development frameworks for engineers
                         </li>
                         <li style="margin-bottom: var(--spacing-sm); color: var(--color-text-secondary);">
-                            • Cloud cost optimization strategies that actually work
+                            &bull; Cloud cost optimization strategies that actually work
                         </li>
                     </ul>
                 </div>
@@ -550,7 +883,7 @@ function generateBlogIndex(posts) {
                 </div>
             </div>
             <div class="footer-bottom">
-                <p>&copy; 2025 Miguel Tineo. All rights reserved.</p>
+                <p>&copy; 2026 Miguel Tineo. All rights reserved.</p>
             </div>
         </div>
     </footer>
