@@ -104,7 +104,16 @@ Track bi-weekly blog posts and newsletter sends.
 
 ### Current Cycle
 
-No active cycle. Run `/content-start` to begin a new one.
+- **Dates:** 2026-04-09 to 2026-04-23
+- **Topic:** From Typing Code to Orchestrating Outcomes (Type A vs Type B Engineers)
+- **Brief:** `content-pipeline/content-briefs/2026-04-09-orchestrating-outcomes.md`
+- [x] Content interview completed
+- [x] Content brief created
+- [x] Blog draft written
+- [x] Blog published (2026-04-09)
+- [ ] Newsletter drafted
+- [ ] Newsletter sent
+- [ ] Archived
 
 ---
 
@@ -189,4 +198,4 @@ Ideas that might become tasks later:
 
 ---
 
-**Last Updated:** 2026-03-31 (Pipeline reset, stale cycle archived)
+**Last Updated:** 2026-04-09 (New cycle started: AI/LLMs in Engineering)

@@ -40,6 +40,27 @@ Track articles, podcasts, talks, and other content you consume that might be wor
 
 ## Used in Published Content
 
+### 2026-04-09 - From Typing Code to Orchestrating Outcomes
+- ✅ **"My LLM Coding Workflow Going Into 2026" — Addy Osmani**
+  - Link: https://addyosmani.com/blog/ai-coding-workflow/
+  - Key insight: AI shifts engineers from carpenters to architects; focus moves to system design and validation, not typing
+  - Used in: Point 1 (Type A vs Type B paradigm framing)
+
+- ✅ **"The Agentic Organization: Contours of the Next Paradigm for the AI Era" — McKinsey**
+  - Link: https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/the-agentic-organization-contours-of-the-next-paradigm-for-the-ai-era
+  - Key insight: A team of 2-5 humans can supervise 50-100 specialized agents; demand rising for engineers who orchestrate across vendors, agents, and teams
+  - Used in: Point 2 (Engineer as PM workflow section)
+
+- ✅ **"How AI Makes Every Software Engineer a Product Manager" — Allstacks**
+  - Link: https://www.allstacks.com/blog/ai-software-engineer-product-decisions-2026
+  - Key insight: Engineers who thrive will operate at a higher level of abstraction, exercising product judgment AI cannot replicate
+  - Used in: Point 3 (Ownership bar and expanded scope)
+
+- ✅ **"When AI Writes Almost All Code, What Happens to Software Engineering?" — The Pragmatic Engineer**
+  - Link: https://newsletter.pragmaticengineer.com/p/when-ai-writes-almost-all-code-what
+  - Key insight: Skills that matter are judgment, system design, and outcome evaluation — not syntax recall
+  - Used in: Optional supporting cite for intro or conclusion
+
 ### 2025-01-15 - Psychological Safety in Remote Teams
 - ✅ **Google Project Aristotle Research**
   - Key insight: Psychological safety is #1 predictor of team performance

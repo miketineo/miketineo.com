@@ -1,0 +1,496 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Two engineers, same tools, very different results. The gap isn&#039;t the software—it&#039;s the paradigm. Here&#039;s how to shift from Type A to Type B.">
+    <meta name="author" content="Miguel Tineo">
+
+    <!-- Open Graph / Social Media -->
+    <meta property="og:type" content="article">
+    <meta property="og:url" content="https://miketineo.com/blog/orchestrating-outcomes.html">
+    <meta property="og:title" content="From Typing Code to Orchestrating Outcomes">
+    <meta property="og:description" content="Two engineers, same tools, very different results. The gap isn&#039;t the software—it&#039;s the paradigm. Here&#039;s how to shift from Type A to Type B.">
+
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="From Typing Code to Orchestrating Outcomes">
+    <meta name="twitter:description" content="Two engineers, same tools, very different results. The gap isn&#039;t the software—it&#039;s the paradigm. Here&#039;s how to shift from Type A to Type B.">
+
+    <title>From Typing Code to Orchestrating Outcomes - Miguel Tineo</title>
+
+    <!-- Stylesheets -->
+    <link rel="stylesheet" href="/css/main.css">
+    <link rel="stylesheet" href="/css/components.css">
+
+    <!-- Theme must load before page renders to prevent flash -->
+    <script src="/js/theme.js"></script>
+
+    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <script src="/js/cookie-consent.js" defer></script>
+
+    <style>
+        .blog-post {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: var(--spacing-2xl) var(--spacing-lg);
+        }
+        .blog-post-back {
+            margin-bottom: var(--spacing-xl);
+        }
+
+        /* ── Hero ── */
+        .blog-post-hero {
+            display: flex;
+            gap: 64px;
+            align-items: flex-start;
+            margin-bottom: 64px;
+        }
+        .blog-post-hero-main {
+            flex: 1;
+            min-width: 0;
+        }
+        .blog-post-illustration {
+            width: 120px;
+            height: 120px;
+            background: #FF8A5B;
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 32px;
+            flex-shrink: 0;
+        }
+        @media (prefers-color-scheme: dark) {
+            .blog-post-illustration {
+                background: #E56D42;
+            }
+        }
+        [data-theme="dark"] .blog-post-illustration {
+            background: #E56D42;
+        }
+        .blog-post-title {
+            font-size: 39px;
+            font-weight: 700;
+            line-height: 1.2;
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+        .blog-post-subtitle {
+            font-size: 25px;
+            font-weight: 400;
+            color: var(--color-text-secondary);
+            margin-top: 8px;
+            margin-bottom: var(--spacing-lg);
+            line-height: 1.3;
+        }
+        .blog-post-tags {
+            display: flex;
+            gap: var(--spacing-sm);
+            flex-wrap: wrap;
+            margin-top: var(--spacing-md);
+        }
+        .blog-post-tag {
+            padding: 4px 12px;
+            background: var(--color-background-light);
+            border-radius: 4px;
+            font-size: var(--font-size-sm);
+            color: var(--color-text-secondary);
+        }
+
+        /* ── Sidebar ── */
+        .blog-post-sidebar {
+            width: 200px;
+            flex-shrink: 0;
+            position: sticky;
+            top: 100px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+        .sidebar-item {
+            display: flex;
+            flex-direction: column;
+            gap: 4px;
+        }
+        .sidebar-label {
+            font-size: 13px;
+            color: var(--color-text-secondary);
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .sidebar-value {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+        }
+        .sidebar-copy-link {
+            font-size: 15px;
+            font-weight: 600;
+            color: var(--color-primary);
+            cursor: pointer;
+            text-decoration: none;
+        }
+        .sidebar-copy-link:hover {
+            color: var(--color-primary-dark);
+        }
+
+        /* ── Content ── */
+        .blog-post-content {
+            max-width: 720px;
+            font-size: var(--font-size-base);
+            line-height: 1.8;
+            color: var(--color-text-primary);
+        }
+        .blog-post-content h2 {
+            font-size: var(--font-size-2xl);
+            font-weight: 700;
+            margin-top: var(--spacing-2xl);
+            margin-bottom: var(--spacing-lg);
+            color: var(--color-text-primary);
+        }
+        .blog-post-content h3 {
+            font-size: var(--font-size-xl);
+            font-weight: 700;
+            margin-top: var(--spacing-xl);
+            margin-bottom: var(--spacing-md);
+            color: var(--color-text-primary);
+        }
+        .blog-post-content p {
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-content ul, .blog-post-content ol {
+            margin-bottom: var(--spacing-lg);
+            padding-left: var(--spacing-xl);
+        }
+        .blog-post-content li {
+            margin-bottom: var(--spacing-sm);
+        }
+        .blog-post-content code {
+            background: var(--color-background-light);
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Monaco', 'Courier New', monospace;
+            font-size: 0.9em;
+        }
+        .blog-post-content pre {
+            background: var(--color-background-light);
+            padding: var(--spacing-lg);
+            border-radius: 8px;
+            overflow-x: auto;
+            margin-bottom: var(--spacing-lg);
+        }
+        .blog-post-content pre code {
+            background: none;
+            padding: 0;
+        }
+        .blog-post-content blockquote {
+            border-left: 4px solid var(--color-primary);
+            padding-left: var(--spacing-lg);
+            margin: var(--spacing-xl) 0;
+            font-style: italic;
+            color: var(--color-text-secondary);
+        }
+        .blog-post-content a {
+            color: var(--color-primary);
+            text-decoration: underline;
+        }
+        .blog-post-content a:hover {
+            color: var(--color-primary-dark);
+        }
+
+        /* ── Tables ── */
+        .blog-post-content table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 32px 0;
+            font-size: 15px;
+        }
+        .blog-post-content thead th {
+            text-align: left;
+            padding: 12px 16px;
+            font-weight: 700;
+            border-bottom: 2px solid var(--color-text-primary);
+        }
+        .blog-post-content tbody td {
+            padding: 12px 16px;
+            border-bottom: 1px solid var(--color-border);
+            vertical-align: top;
+        }
+        .blog-post-content tbody td:first-child {
+            font-weight: 600;
+            white-space: nowrap;
+        }
+        .blog-post-content tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        /* ── Footer ── */
+        .blog-post-footer {
+            max-width: 720px;
+            margin-top: var(--spacing-2xl);
+            padding-top: var(--spacing-2xl);
+            border-top: 1px solid var(--color-border);
+        }
+
+        /* ── Responsive ── */
+        @media (max-width: 768px) {
+            .blog-post-hero {
+                flex-direction: column;
+                gap: 32px;
+            }
+            .blog-post-sidebar {
+                position: static;
+                width: 100%;
+                flex-direction: row;
+                flex-wrap: wrap;
+                gap: 16px;
+                padding-top: 24px;
+                border-top: 1px solid var(--color-border);
+            }
+            .sidebar-item {
+                flex: 1;
+                min-width: 120px;
+            }
+            .blog-post-content {
+                max-width: 100%;
+            }
+            .blog-post-footer {
+                max-width: 100%;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav class="nav" role="navigation" aria-label="Main navigation">
+        <div class="nav-container">
+            <a href="/" class="nav-logo" aria-label="Miguel Tineo Home">Miguel Tineo</a>
+            <button class="nav-toggle" aria-label="Toggle navigation menu" aria-expanded="false">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+            <ul class="nav-menu">
+                <li><a href="/" class="nav-link">Home</a></li>
+                <li><a href="/about.html" class="nav-link">About</a></li>
+                <li><a href="/experience.html" class="nav-link">Experience</a></li>
+                <li><a href="/speaking.html" class="nav-link">Speaking</a></li>
+                <li><a href="/blog/" class="nav-link active">Blog</a></li>
+                <li><a href="/contact.html" class="nav-link">Contact</a></li>
+                <li>
+                    <button class="theme-toggle" data-current-theme="auto" aria-label="Toggle theme">
+                        <span class="theme-toggle-indicator">
+                            <span class="theme-toggle-icon"></span>
+                        </span>
+                    </button>
+                </li>
+            </ul>
+        </div>
+    </nav>
+
+    <main>
+        <article class="blog-post">
+            <div class="blog-post-back">
+                <a href="/blog/" class="btn btn-secondary">&larr; Back to Blog</a>
+            </div>
+
+            <div class="blog-post-hero">
+                <div class="blog-post-hero-main">
+                    <div class="blog-post-illustration">
+                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="40" cy="40" r="28"/>
+  <circle cx="40" cy="40" r="4"/>
+  <!-- Cardinal marks -->
+  <line x1="40" y1="12" x2="40" y2="18"/>
+  <line x1="40" y1="62" x2="40" y2="68"/>
+  <line x1="12" y1="40" x2="18" y2="40"/>
+  <line x1="62" y1="40" x2="68" y2="40"/>
+  <!-- N label -->
+  <text x="37" y="10" font-size="7" stroke-width="1.2" fill="#1A1A1A" font-family="Georgia,serif">N</text>
+  <!-- Needle north (dark) -->
+  <polygon points="40,20 37,40 40,36 43,40" fill="#1A1A1A" stroke="none"/>
+  <!-- Needle south (light) -->
+  <polygon points="40,60 37,40 40,44 43,40" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+</svg>
+                    </div>
+                    <h1 class="blog-post-title">From Typing Code to Orchestrating Outcomes</h1>
+                    <p class="blog-post-subtitle">Why the engineers who win with AI aren&#039;t typing faster</p>
+                    <div class="blog-post-tags">
+          <span class="blog-post-tag">ai</span><span class="blog-post-tag">engineering-leadership</span><span class="blog-post-tag">agentic-engineering</span><span class="blog-post-tag">productivity</span><span class="blog-post-tag">software-engineering</span>
+      </div>
+                </div>
+                <aside class="blog-post-sidebar">
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Category</span>
+                        <span class="sidebar-value">Engineering Leadership</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Date</span>
+                        <span class="sidebar-value">April 9, 2026</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Reading time</span>
+                        <span class="sidebar-value">9 min</span>
+                    </div>
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Share</span>
+                        <a class="sidebar-copy-link" href="#" onclick="(function(el){navigator.clipboard.writeText(window.location.href).then(function(){var t=el.textContent;el.textContent='Copied!';setTimeout(function(){el.textContent=t;},2000);});})(this);return false;">Copy link</a>
+                    </div>
+                </aside>
+            </div>
+
+            <div class="blog-post-content">
+                <h2>Two Engineers, Same Tools, Completely Different Results</h2>
+<p>A few weeks ago, I overheard an engineer describing how they use their AI coding assistant. They chat with it mid-function, accept the smart suggestions, move faster than before. On the surface, it looks like AI adoption. Check the box. Benefit unlocked.</p>
+<p>Then I thought about another engineer on a team I&#39;ve worked with closely. They don&#39;t use AI the same way at all. They start with a JIRA ticket or a short PRD, write a one-paragraph problem statement, dispatch that to an agentic workflow, review the resulting pull request, and push it through the team&#39;s normal review process — all before lunch. They&#39;re not chatting with AI mid-keystroke. They&#39;re directing it like a capable team member.</p>
+<p>The first engineer saves some keystrokes. The second engineer ships full features.</p>
+<p>That output delta isn&#39;t incremental. It&#39;s multiplicative.</p>
+<p>Here&#39;s the thing: they&#39;re often using the same underlying tools. The tool isn&#39;t the variable. <strong>The paradigm is.</strong></p>
+<h2>The Gap That&#39;s Quietly Opening</h2>
+<p>There are two types of engineers navigating the AI moment right now, and the gap between them is growing fast.</p>
+<table>
+<thead>
+<tr>
+<th></th>
+<th><strong>Type A</strong></th>
+<th><strong>Type B</strong></th>
+</tr>
+</thead>
+<tbody><tr>
+<td><strong>Starting question</strong></td>
+<td>How do I implement this?</td>
+<td>What problem needs solving here?</td>
+</tr>
+<tr>
+<td><strong>AI role</strong></td>
+<td>Smarter autocomplete</td>
+<td>Fast, capable team member</td>
+</tr>
+<tr>
+<td><strong>Human role</strong></td>
+<td>Implementation</td>
+<td>Planning, review, judgment</td>
+</tr>
+<tr>
+<td><strong>Output</strong></td>
+<td>Incremental gains</td>
+<td>Multiplicative gains</td>
+</tr>
+<tr>
+<td><strong>Mental model</strong></td>
+<td>Craftsperson</td>
+<td>PM of a small agent team</td>
+</tr>
+</tbody></table>
+<p>Type A engineers are optimizing typing. They&#39;ve layered AI onto an existing workflow and gotten faster at what they were already doing. That&#39;s real — but it&#39;s the equivalent of getting a better hammer when the job was always going to require a different approach.</p>
+<p>Type B engineers are optimizing outcomes. They&#39;ve changed their fundamental relationship with implementation. They still write code — but they&#39;ve moved the seat of judgment from &quot;how does this get built?&quot; to &quot;is the right thing getting built, and is it built correctly?&quot;</p>
+<p>Addy Osmani put it well: AI isn&#39;t making developers faster typists — it&#39;s shifting them from carpenters to architects. The human focus moves to system architecture, business requirements, and validation. That shift is the whole ballgame.</p>
+<h2>Why Most Teams Aren&#39;t Seeing the Gains</h2>
+<p>A 2025 study found that while 75% of engineers use AI tools regularly, most organizations see no measurable gains in delivery at the company level.</p>
+<p>That number makes total sense once you understand the Type A / Type B distinction.</p>
+<p>If the majority of engineers are adding AI to their existing workflow rather than adopting a new one, the output curve stays flat. You get faster typists across the board, but the bottlenecks — requirements clarity, review quality, deployment reliability, architectural decisions — remain exactly where they were. AI accelerated the easy parts. It didn&#39;t touch the hard parts.</p>
+<p>Type B engineers found the hard parts. That&#39;s why their teams see results that look anomalous from the outside.</p>
+<p>The shift isn&#39;t about which tool you use. It&#39;s about which question you ask when you open it.</p>
+<h2>The Engineer as PM</h2>
+<p>When you treat AI as a team member rather than an autocomplete, your job description changes quietly but completely. You&#39;re no longer the primary implementer. You&#39;re defining requirements, reviewing output, iterating on quality, and pushing results through review gates. If you squint, that&#39;s a product manager&#39;s job — applied to an agent team.</p>
+<p>McKinsey&#39;s research on agentic organizations found that a human team of two to five people can already supervise 50 to 100 specialized agents running an end-to-end process. The leverage is real. But — and this is the part that gets lost in the hype — it only works if the humans running those agents are thinking at the right level of abstraction.</p>
+<p>Here&#39;s a concrete example. One of the highest-leverage things I&#39;ve seen recently is engineers pairing AI-powered design tools with agentic workflows to prototype full feature experiences before writing a line of implementation code. The engineer isn&#39;t doing less work — they&#39;re doing more important work earlier in the cycle, when changes are cheap. That&#39;s the PM mindset applied precisely.</p>
+<p>The practical move: take your current sprint tasks and map them into two columns.</p>
+<ul>
+<li><strong>Column A:</strong> Things you&#39;re writing yourself</li>
+<li><strong>Column B:</strong> Things you could hand off to an agent with a well-written prompt or structured input</li>
+</ul>
+<p>Most engineers are surprised how much belongs in the second column. Start there. The PM mindset shows up in how you write the ticket — the specificity of the problem statement, the clarity of the acceptance criteria — not in how you write the code.</p>
+<h2>The Ownership Bar</h2>
+<p>When the cost of implementation drops, the ceiling on what a single engineer can own rises.</p>
+<p>Ideas that used to require a two-sprint roadmap can now be prototyped in a day. That changes what it means to take ownership of a problem — you can go further, faster, without waiting for team bandwidth to open up. The scope of ownership expands, but so does the type of judgment required to use it well.</p>
+<p>Allstacks describes it clearly: engineers who thrive in AI-forward organizations are &quot;the ones who make the micro product decisions that AI cannot make, filling gaps that AI cannot identify, and exercising product judgment that specs could never fully capture.&quot;</p>
+<p>That&#39;s a much more interesting job than what most engineers signed up for — in the best way.</p>
+<p>The practical reframe: the next time you&#39;re scoping a feature, don&#39;t start with &quot;how long will this take to build?&quot; Start with &quot;what decision needs to be made here, and what do I need to know to make it?&quot; The build is now a smaller fraction of the work. The judgment is the job.</p>
+<h2>The Leadership Shift</h2>
+<p>For engineering managers and directors, the Type A vs Type B dynamic plays out at the team level — and it changes your job too.</p>
+<p>When engineers can move faster and own more scope, the manager&#39;s role shifts. You spend less time unblocking implementation and more time setting guardrails. Less &quot;let me clear the path&quot; and more &quot;go — but keep security, quality, and the team&#39;s standards in frame.&quot;</p>
+<p>I&#39;ve started using AI for synthesis work that used to eat hours: DORA metric summaries, performance review inputs, leadership presentations. That&#39;s not because those things don&#39;t matter — it&#39;s because they&#39;re exactly the kind of structured, high-volume, low-ambiguity work that agents handle well. Which frees me to focus on the judgment calls that require context AI doesn&#39;t have: organizational dynamics, trust calibration, sequencing decisions that depend on reading the room.</p>
+<p>The practical move for leaders: in your next team planning session, identify one decision that currently routes through you before it can move forward. Ask whether the engineer on the other side of that bottleneck could own it with the right guardrails in place. If the answer is yes, write the guardrail document together and hand it off. That&#39;s what enabling autonomy looks like in practice — not abdication, but deliberate transfer with a clear frame.</p>
+<h2>Which Type Are You?</h2>
+<p>Here&#39;s the honest audit:</p>
+<p><strong>For the next three days</strong>, every time you open an AI tool, ask yourself: am I telling it <em>how</em> to do something, or am I telling it <em>what</em> to solve? That&#39;s the whole test. Most engineers are surprised by the ratio when they actually track it.</p>
+<p>Then try this: before writing a single line of code on your next ticket, write a one-paragraph problem statement. Hand that to your AI system as the starting point. Don&#39;t touch the implementation until you&#39;ve seen what comes back and decided how to evaluate it.</p>
+<p>That one change is the starting posture of a Type B engineer.</p>
+<p>The other habit that makes a real difference: <strong>write your review criteria before you review AI output</strong>. Define what &quot;done&quot; looks like before you look at the generated code. This forces you into the PM mindset — and it catches more issues than reviewing with fresh eyes, because you know what you&#39;re looking for.</p>
+<h2>Two Common Objections</h2>
+<p><strong>&quot;I still need to understand the code — I can&#39;t just trust what the AI generates.&quot;</strong></p>
+<p>Correct. Type B engineers review everything. The shift is not from reviewing to blind trust — it&#39;s from writing to reviewing. A senior engineer who can evaluate a pull request in 20 minutes is more valuable than one who spent four hours writing it. Your judgment about the output is the job, and that judgment gets sharper the more you practice it.</p>
+<p><strong>&quot;This only works for simple tasks. Complex architectural work still requires a human in the seat.&quot;</strong></p>
+<p>Yes and no. Architectural decisions still require deep human judgment — nobody&#39;s arguing otherwise. But the <em>implementation</em> of architectural decisions — the code, the scaffolding, the configuration — is increasingly something agents can handle with the right inputs. The question isn&#39;t whether AI can do the whole job. It&#39;s whether you&#39;re spending your time on the judgment calls or on the scaffolding. Type B engineers protect their time for the former.</p>
+<h2>Key Takeaways</h2>
+<ul>
+<li><strong>The tool isn&#39;t the variable. The paradigm is.</strong> Type A asks the AI how to do something. Type B tells the AI what problem to solve. One refines the old workflow. The other operates in a new one.</li>
+<li><strong>Think of yourself as the PM of a small agent team.</strong> Your job is requirements, review, judgment, and quality standards — not implementation volume.</li>
+<li><strong>The scope of ownership expands when the cost of implementation drops.</strong> Use that headroom deliberately.</li>
+<li><strong>Leaders shift from unblocking to enabling.</strong> Guardrails replace bottlenecks. Autonomy is the outcome.</li>
+<li><strong>The audit is simple:</strong> Are you telling AI <em>how</em> or <em>what</em>? Track it for three days. Then change the ratio.</li>
+</ul>
+<h2>What&#39;s Next?</h2>
+<p>This week, pick one task from your backlog and run it entirely as a Type B engineer. Problem statement first, in plain language. AI handles the implementation. You handle the review and judgment.</p>
+<p>Note what changes — about the output, about your time, about what the work actually feels like.</p>
+<p>Then come back and tell me. I&#39;m genuinely curious where this lands for people who are already deep in the tools and trying to figure out what the real shift looks like. Reply to the next Bear Essentials newsletter with what you observed — what worked, what didn&#39;t, and what surprised you.</p>
+<p>That&#39;s the only way this gets better.</p>
+<hr>
+<p><em>This post is part of a bi-weekly series on engineering leadership. <a href="/blog/">Subscribe to Bear Essentials newsletter</a> to get the next post delivered to your inbox.</em></p>
+
+            </div>
+
+            <footer class="blog-post-footer">
+                <div class="text-center">
+                    <h3>Join Bear Essentials</h3>
+                    <p style="color: var(--color-text-secondary); margin-bottom: var(--spacing-lg);">
+                        Get bi-weekly insights on engineering leadership, AI agents, distributed systems, and sustainable tech.
+                    </p>
+                    <a href="/blog/" class="btn btn-primary">Subscribe</a>
+                </div>
+            </footer>
+        </article>
+    </main>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h4>Miguel Tineo</h4>
+                    <p style="color: var(--color-text-secondary); font-size: 14px;">
+                        Engineering Leader focused on building teams and systems that scale.
+                    </p>
+                </div>
+                <div class="footer-section">
+                    <h4>Quick Links</h4>
+                    <ul class="footer-links">
+                        <li><a href="/about.html">About</a></li>
+                        <li><a href="/experience.html">Experience</a></li>
+                        <li><a href="/speaking.html">Speaking</a></li>
+                        <li><a href="/blog/">Blog</a></li>
+                    </ul>
+                </div>
+                <div class="footer-section">
+                    <h4>Connect</h4>
+                    <ul class="footer-links">
+                        <li><a href="https://www.linkedin.com/in/miketineo" target="_blank" rel="noopener">LinkedIn</a></li>
+                        <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
+                        <li><a href="mailto:miketineo@gmail.com">Email</a></li>
+                        <li><a href="/contact.html">Contact Form</a></li>
+                        <li><a href="#cookie-settings" id="cookie-settings-link">Cookie Settings</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div class="footer-bottom">
+                <p>&copy; 2026 Miguel Tineo. All rights reserved.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="/js/main.js" defer></script>
+</body>
+</html>
