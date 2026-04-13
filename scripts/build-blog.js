@@ -183,6 +183,8 @@ function selectIllustration(post) {
 const BLOG_DIR = path.join(__dirname, '..', 'blog');
 const POSTS_DIR = path.join(BLOG_DIR, 'posts');
 const GENERATED_DIR = path.join(BLOG_DIR, 'generated');
+const AUDIO_DIR = path.join(BLOG_DIR, 'audio');
+const AUDIO_MANIFEST = path.join(AUDIO_DIR, '.audio-manifest.json');
 const POSTS_JSON = path.join(BLOG_DIR, 'posts.json');
 
 // Ensure directories exist
@@ -205,7 +207,7 @@ function getMarkdownFiles() {
 }
 
 // Parse markdown file and extract metadata
-function parsePost(filePath) {
+function parsePost(filePath, audioManifest) {
   const fileContent = fs.readFileSync(filePath, 'utf-8');
   const { data, content } = matter(fileContent);
 
@@ -213,6 +215,14 @@ function parsePost(filePath) {
   const filename = path.basename(filePath, '.md');
   // Remove date prefix if exists (e.g., "2025-01-15-title" -> "title")
   const slug = filename.replace(/^\d{4}-\d{2}-\d{2}-/, '');
+  const audioEnabled = Boolean(data.audio);
+  const audioMetadata = resolveAudioMetadata({
+    slug,
+    audioEnabled,
+    audioTitle: data.audioTitle || 'Listen to this article',
+    rawContent: content,
+    audioManifest,
+  });
 
   return {
     slug,
@@ -223,6 +233,8 @@ function parsePost(filePath) {
     subtitle: data.subtitle || '',
     category: data.category || '',
     illustration: data.illustration || '',
+    audioEnabled,
+    audio: audioMetadata,
     content: marked(content),
     rawContent: content,
   };
@@ -232,6 +244,8 @@ function parsePost(filePath) {
 function generatePostPage(post) {
   const readingTime = estimateReadTime(post.rawContent);
   const formattedDate = formatDate(post.date);
+  const audioWidget = post.audio ? renderAudioWidget(post.audio) : '';
+  const compactAudioWidget = post.audio ? renderCompactAudioWidget(post.audio) : '';
 
   // Auto-split title on " — " (em dash) if subtitle not already set in frontmatter
   let displayTitle = post.title;
@@ -394,6 +408,47 @@ function generatePostPage(post) {
             font-size: var(--font-size-base);
             line-height: 1.8;
             color: var(--color-text-primary);
+        }
+        .blog-audio-card,
+        .blog-audio-card-compact {
+            max-width: 720px;
+            border: 1px solid var(--color-border);
+            background: linear-gradient(135deg, rgba(255, 138, 91, 0.14), rgba(255, 245, 240, 0.85));
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        [data-theme="dark"] .blog-audio-card,
+        [data-theme="dark"] .blog-audio-card-compact {
+            background: linear-gradient(135deg, rgba(229, 109, 66, 0.2), rgba(26, 26, 26, 0.9));
+        }
+        .blog-audio-card-title,
+        .blog-audio-card-compact-title {
+            margin: 0 0 8px;
+            font-size: 22px;
+            color: var(--color-text-primary);
+        }
+        .blog-audio-card-copy,
+        .blog-audio-card-compact-copy {
+            margin: 0 0 16px;
+            color: var(--color-text-secondary);
+        }
+        .blog-audio-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+        .blog-audio-card audio,
+        .blog-audio-card-compact audio {
+            width: 100%;
+        }
+        .blog-audio-card-compact {
+            margin-top: var(--spacing-2xl);
+            margin-bottom: 0;
+            padding: 20px 24px;
         }
         .blog-post-content h2 {
             font-size: var(--font-size-2xl);
@@ -577,9 +632,13 @@ function generatePostPage(post) {
                 </aside>
             </div>
 
+            ${audioWidget}
+
             <div class="blog-post-content">
                 ${post.content}
             </div>
+
+            ${compactAudioWidget}
 
             <footer class="blog-post-footer">
                 <div class="text-center">
@@ -910,6 +969,70 @@ function escapeHtml(text) {
   return text.replace(/[&<>"']/g, m => map[m]);
 }
 
+function loadAudioManifest() {
+  if (!fs.existsSync(AUDIO_MANIFEST)) {
+    return { posts: {} };
+  }
+
+  try {
+    return JSON.parse(fs.readFileSync(AUDIO_MANIFEST, 'utf-8'));
+  } catch (error) {
+    console.warn(`Could not read audio manifest: ${error.message}`);
+    return { posts: {} };
+  }
+}
+
+function resolveAudioMetadata({ slug, audioEnabled, audioTitle, rawContent, audioManifest }) {
+  if (!audioEnabled) {
+    return null;
+  }
+
+  const audioPath = path.join(AUDIO_DIR, `${slug}.mp3`);
+  if (!fs.existsSync(audioPath)) {
+    return null;
+  }
+
+  const manifestEntry = audioManifest.posts ? audioManifest.posts[slug] : null;
+  const durationSeconds = manifestEntry && manifestEntry.durationSeconds ? manifestEntry.durationSeconds : null;
+
+  return {
+    title: audioTitle,
+    url: `/blog/audio/${slug}.mp3`,
+    durationSeconds,
+    listenLabel: durationSeconds ? formatDuration(durationSeconds) : `~${estimateListenTime(rawContent)} min audio`,
+  };
+}
+
+function renderAudioWidget(audio) {
+  return `
+            <section class="blog-audio-card" aria-label="Listen to this article">
+                <h2 class="blog-audio-card-title">${escapeHtml(audio.title)}</h2>
+                <p class="blog-audio-card-copy">Prefer to listen? Play the narrated version while you walk, commute, or take notes.</p>
+                <div class="blog-audio-meta">
+                    <span>${escapeHtml(audio.listenLabel)}</span>
+                    <span>Single voice narration</span>
+                </div>
+                <audio controls preload="none">
+                    <source src="${audio.url}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </section>
+  `;
+}
+
+function renderCompactAudioWidget(audio) {
+  return `
+            <section class="blog-audio-card-compact" aria-label="Audio version">
+                <h2 class="blog-audio-card-compact-title">Want the audio version again?</h2>
+                <p class="blog-audio-card-compact-copy">Keep listening here or reopen the player whenever you want a slower pass through the article.</p>
+                <audio controls preload="none">
+                    <source src="${audio.url}" type="audio/mpeg">
+                    Your browser does not support the audio element.
+                </audio>
+            </section>
+  `;
+}
+
 function formatDate(dateString) {
   const date = new Date(dateString);
   return date.toLocaleDateString('en-US', {
@@ -925,9 +1048,31 @@ function estimateReadTime(content) {
   return Math.ceil(wordCount / wordsPerMinute);
 }
 
+function estimateListenTime(content) {
+  const wordsPerMinute = 160;
+  const wordCount = content.split(/\s+/).length;
+  return Math.ceil(wordCount / wordsPerMinute);
+}
+
+function formatDuration(durationSeconds) {
+  const minutes = Math.floor(durationSeconds / 60);
+  const seconds = durationSeconds % 60;
+
+  if (minutes === 0) {
+    return `${seconds}s audio`;
+  }
+
+  if (seconds === 0) {
+    return `${minutes} min audio`;
+  }
+
+  return `${minutes}m ${String(seconds).padStart(2, '0')}s audio`;
+}
+
 // Main build process
 function build() {
   console.log('Building blog...\n');
+  const audioManifest = loadAudioManifest();
 
   const markdownFiles = getMarkdownFiles();
 
@@ -943,7 +1088,7 @@ function build() {
   console.log(`Found ${markdownFiles.length} post(s):\n`);
 
   const posts = markdownFiles.map(file => {
-    const post = parsePost(file);
+    const post = parsePost(file, audioManifest);
     console.log(`- ${post.title} (${post.date})`);
     generatePostPage(post);
     return post;
@@ -953,7 +1098,12 @@ function build() {
   generateBlogIndex(posts);
 
   console.log('Generating posts.json...');
-  const postsMetadata = posts.map(({ content, rawContent, ...metadata }) => metadata);
+  const postsMetadata = posts.map(({ content, rawContent, audio, ...metadata }) => ({
+    ...metadata,
+    hasAudio: Boolean(audio),
+    audioUrl: audio ? audio.url : '',
+    audioDurationSeconds: audio ? audio.durationSeconds : null,
+  }));
   fs.writeFileSync(POSTS_JSON, JSON.stringify(postsMetadata, null, 2));
 
   console.log(`\nBlog build complete! Generated ${posts.length} post(s).`);

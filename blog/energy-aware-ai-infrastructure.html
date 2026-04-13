@@ -142,6 +142,47 @@
             line-height: 1.8;
             color: var(--color-text-primary);
         }
+        .blog-audio-card,
+        .blog-audio-card-compact {
+            max-width: 720px;
+            border: 1px solid var(--color-border);
+            background: linear-gradient(135deg, rgba(255, 138, 91, 0.14), rgba(255, 245, 240, 0.85));
+            border-radius: 18px;
+            padding: 24px;
+            margin-bottom: 32px;
+        }
+        [data-theme="dark"] .blog-audio-card,
+        [data-theme="dark"] .blog-audio-card-compact {
+            background: linear-gradient(135deg, rgba(229, 109, 66, 0.2), rgba(26, 26, 26, 0.9));
+        }
+        .blog-audio-card-title,
+        .blog-audio-card-compact-title {
+            margin: 0 0 8px;
+            font-size: 22px;
+            color: var(--color-text-primary);
+        }
+        .blog-audio-card-copy,
+        .blog-audio-card-compact-copy {
+            margin: 0 0 16px;
+            color: var(--color-text-secondary);
+        }
+        .blog-audio-meta {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 14px;
+            color: var(--color-text-secondary);
+        }
+        .blog-audio-card audio,
+        .blog-audio-card-compact audio {
+            width: 100%;
+        }
+        .blog-audio-card-compact {
+            margin-top: var(--spacing-2xl);
+            margin-bottom: 0;
+            padding: 20px 24px;
+        }
         .blog-post-content h2 {
             font-size: var(--font-size-2xl);
             font-weight: 700;
@@ -337,6 +378,8 @@
                 </aside>
             </div>
 
+            
+
             <div class="blog-post-content">
                 <h2>When the API Bill Hits €9,000</h2>
 <p>I&#39;m working with European startups that take data locality seriously. One mystery partner is burning €4,000-€9,000 per month on OpenAI, Google, and Claude APIs. They&#39;re processing 2 million tokens per minute at peak (500 to 1,000 API calls per minute) when use cases for processing documents become heavy.</p>
@@ -475,6 +518,8 @@
 <p><em>This post is part of a bi-weekly series on engineering leadership. <a href="/blog/">Subscribe to the newsletter</a> to get the next post delivered to your inbox.</em></p>
 
             </div>
+
+            
 
             <footer class="blog-post-footer">
                 <div class="text-center">

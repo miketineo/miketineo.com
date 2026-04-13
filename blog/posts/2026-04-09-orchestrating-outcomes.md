@@ -6,6 +6,8 @@ tags: ["ai", "engineering-leadership", "agentic-engineering", "productivity", "s
 subtitle: "Why the engineers who win with AI aren't typing faster"
 category: "Engineering Leadership"
 illustration: "compass"
+audio: true
+audioVoice: Matthew
 ---
 
 ## Two Engineers, Same Tools, Completely Different Results

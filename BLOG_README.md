@@ -113,6 +113,89 @@ Your blog post will be live at:
 https://miketineo.com/blog/generated/your-slug.html
 ```
 
+## Audio Narrations (Optional)
+
+Any post can ship with an AI-generated audio version. The generator synthesizes
+one MP3 per opted-in post using Amazon Polly, caches results by content hash,
+and the blog builder renders a native `<audio>` player at the top and bottom of
+the post page. Everything stays static — there is no runtime backend.
+
+### 1. Opt a post in
+
+Add `audio: true` to the frontmatter:
+
+```yaml
+---
+title: "Your Post"
+date: 2026-04-09
+excerpt: "…"
+tags: ["…"]
+audio: true
+audioVoice: Matthew       # optional Polly voice ID, defaults to Matthew
+audioTitle: "Listen to this article"  # optional
+audioIntro: "A short intro read before the post body."  # optional
+---
+```
+
+Polly neural voice suggestions: `Matthew`, `Stephen`, `Gregory` (male);
+`Ruth`, `Joanna`, `Danielle` (female). See the full list with
+`aws polly describe-voices --language-code en-US`.
+
+### 2. Install the local dependencies
+
+- AWS CLI v2 on your `PATH` (`brew install awscli`, verify with `aws --version`)
+- `ffmpeg` and `ffprobe` on your `PATH` (`brew install ffmpeg` on macOS)
+- An AWS profile with `polly:SynthesizeSpeech` permission — this repo uses
+  `tineo-labs-deploy` (the same profile as the S3 deploy user)
+
+### 3. Generate the audio
+
+```bash
+export AWS_PROFILE=tineo-labs-deploy
+npm run build:audio
+```
+
+The script:
+
+- reads every post in `blog/posts/` and filters to `audio: true`
+- builds a narration script from the markdown (strips code blocks, unwraps
+  formatting, and announces list items)
+- splits long text into Polly-safe chunks (max 3000 chars per request)
+- calls `aws polly synthesize-speech` and merges chunks with `ffmpeg`
+- writes `blog/audio/<slug>.mp3` and a cache entry in
+  `blog/audio/.audio-manifest.json`
+
+Re-running with unchanged content is a no-op thanks to the content-hash cache.
+To force a regeneration, delete the matching entry from the manifest (or the
+`.mp3` file) and run `build:audio` again.
+
+### 4. Rebuild the blog
+
+```bash
+npm run build:blog
+# or do both at once:
+npm run build
+```
+
+The generated HTML picks up the audio player automatically, and
+`blog/posts.json` gains `hasAudio`, `audioUrl`, and `audioDurationSeconds`
+fields for any posts with a matching manifest entry.
+
+### Optional environment overrides
+
+| Variable | Default | Purpose |
+|---|---|---|
+| `AWS_PROFILE` | `tineo-labs-deploy` | AWS CLI profile used for the Polly call |
+| `BLOG_AUDIO_ENGINE` | `neural` | Polly engine (`standard`, `neural`, `long-form`, `generative`) |
+| `BLOG_AUDIO_VOICE` | `Matthew` | Fallback voice ID when `audioVoice` is not set in frontmatter |
+
+### Deploying audio
+
+`blog/audio/` is tracked in git — commit the generated MP3s and manifest along
+with the post so the S3 deploy picks them up. There is no CI secret and no
+Polly call during deploy; everything the site needs is a byte-for-byte copy of
+what you validated locally.
+
 ## Blog Post Template
 
 Copy this template for new posts:
