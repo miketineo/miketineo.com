@@ -30,7 +30,7 @@ Daily deployments aren't about moving faster - they're about treating software d
 
 ## Story/Hook
 
-**Setting:** A team that went from monthly deployment disasters (17 engineers, 3-hour war rooms, finger-pointing) to daily deployments with zero drama
+**Setting:** A team that went from monthly deployment disasters (a dozen-plus engineers on the hook, 3-hour war rooms, finger-pointing) to daily deployments with zero drama
 
 **Challenge:** Monthly deploys were nightmares - one bad change in 30 days of work would spoil everything, nobody owned anything, deployments were "events" not routine
 
@@ -50,8 +50,8 @@ Daily deployments aren't about moving faster - they're about treating software d
 - **Practical application:** Start by visualizing your deployment as a restaurant buffet. Monthly = 30 dishes at once (overwhelming, high risk). Daily = 1-2 dishes (manageable, isolated risk). Ask your team: "If this change breaks, how many other changes do we have to roll back with it?"
 
 ### Point 2: Clear Ownership Kills the Committee
-- **Core idea:** In The Bear, Marcus owns pastry. No committee, no consensus, no hot potato. The problem with most teams isn't lack of skills - it's 17 engineers playing hot potato with deployment responsibility.
-- **Evidence:** Miguel's team had the skills all along. The breakthrough came from assigning one owner per environment, not from training or tools. When Marcus owns pastry, there are no excuses. When Sarah owns the test environment deployment, the question isn't "who should deploy?" - it's "Sarah, what's the status?"
+- **Core idea:** In *The Bear*, Marcus owns pastry. No committee, no consensus, no hot potato. The problem with most teams isn't lack of skills — it's a dozen-plus engineers playing hot potato with deployment responsibility.
+- **Evidence:** The team had the skills all along. The breakthrough came from assigning one owner per environment, not from training or tools. When Marcus from *The Bear* owns pastry, there are no excuses. When a single engineer owns the test environment deployment, the question isn't "who should deploy?" — it's "what's the status?"
 - **Practical application:** Tomorrow morning in standup: assign one person as the deployment owner for each environment (test, staging, prod). Not a team, not a rotation - ONE person. That person doesn't do all the work, but they own the service. Watch how fast excuses evaporate.
 
 ### Point 3: Service-Level Accountability - It's Not an Event, It's Service
@@ -149,7 +149,7 @@ Daily deployments aren't about moving faster - they're about treating software d
 **Response:** You're already breaking production monthly - just with more damage. This is like saying one massive surgery is safer than daily checkups. The difference: when you break daily with small changes, you know exactly what broke. When you break monthly with 30 days of changes, you're debugging a haystack. Plus, rollback is trivial when it's one small change vs. a month of work.
 
 **Objection:** "Our team isn't ready for this. We need better tooling/testing/automation first."
-**Response:** That's the committee talking. Pick ONE blocker - the biggest one - and fix it. Miguel's team had the same tools before and after. What changed? Ownership and accountability. Start service with what you have. You'll discover real blockers fast, not theoretical ones.
+**Response:** That's the committee talking. Pick ONE blocker — the biggest one — and fix it. The team had the same tools before and after. What changed? Ownership and accountability. Start service with what you have. You'll discover real blockers fast, not theoretical ones.
 
 **Objection:** "Our business stakeholders won't accept daily deploys - too risky."
 **Response:** Ask them if they'd prefer the restaurant to serve month-old food once per month, or fresh food daily. Frame it correctly: daily deploys with canary rollouts and instant rollback are LESS risky than monthly big-bang deploys. Show them the DORA research - elite performers deploy more frequently AND have lower failure rates.
@@ -197,9 +197,9 @@ Daily deployments aren't about moving faster - they're about treating software d
 
 ## Voice & Tone Reminders
 
-**Miguel's Voice:**
+**Voice:**
 - Direct, no fluff: "Don't announce transformation, don't create committee"
-- Uses concrete imagery: "serving month-old food," "17 engineers playing hot potato"
+- Uses concrete imagery: "serving month-old food," "a dozen-plus engineers playing hot potato"
 - Frames things as service/operations, not projects: "service happens daily"
 - Challenges conventional wisdom: "The problem wasn't lack of skills"
 - Kitchen metaphors throughout (but not overdone - natural, not forced)
@@ -211,7 +211,7 @@ Daily deployments aren't about moving faster - they're about treating software d
 - Keep The Bear references natural - control the metaphor, don't let it control you
 
 **Personal Pronoun Approach:**
-- Mix of "I" for the origin story (Miguel's team transformation)
+- Mix of "I" for the origin story (the transformation observed firsthand)
 - "You" for the practical steps ("Tomorrow morning, ask your team...")
 - Framework descriptions in neutral voice ("The Deployment Brigade System consists of...")
 - Avoid "we" (too vague about who "we" is)

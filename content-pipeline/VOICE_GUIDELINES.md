@@ -1,7 +1,76 @@
 # Miguel Tineo: Voice & Tone Guidelines
 
-**Last Updated:** 2025-10-18
+**Last Updated:** 2026-04-14
 **Extracted From:** Published blog post, website copy, about page
+
+---
+
+## 🚨 NAMES & ATTRIBUTION POLICY (Read First)
+
+**This is a personal blog.** Who gets named matters — the goal is to keep Miguel's personal and work worlds from colliding, and to avoid parasocial shortcuts that weaken the writing. Every piece of content must pass this policy before it ships. The policy is load-bearing: a violation has already happened once (a "famous tech author" whose surname overlapped with a coworker's, reached for under work-context priming), which is exactly the failure mode this section exists to catch.
+
+### ✅ Allowed names
+
+- **Miguel Tineo** — the author, always.
+- **Genuinely famous public figures** *when the name is the point of the sentence*, **and only after the name is explicitly added to the brief's Names Allowlist during the interview gate**. Bar: the paragraph loses its meaning if you remove the name. An example of the shape that passes: a post specifically about a public author's published book, where the book title alone doesn't carry the argument. An example of the shape that fails: "As [someone] said, you should write tests" — generic advice, attribution is decorative, cut the name and keep the advice. Default: prefer citing the published work by title rather than naming the author.
+- **Past employers, schools, and collaborators** — only on the About / Experience / bio pages. Never in blog or newsletter body text.
+- **Current employer** — only on the About / Experience / bio pages. Never in blog or newsletter body text, not even as a setting ("at my company…"), not even obliquely ("the platform I work on…"). If the story can't be told without naming the workplace, change the story, not the policy.
+- **Fictional characters from published works** when the reference is explicit and attributed to its source. Naming a character from a published show or book is allowed *only when the work itself is cited as the anchor* (e.g., "a named character from *[specific show]*" — the work name is what makes the reference legitimate). Without that anchor, the same word reads like an invented persona and falls under the fake-personas rule below.
+
+### ❌ Blocked names
+
+- **Coworker names** — first, last, or any combination. This includes famous public figures whose surname coincides with a coworker's surname; in that overlap, use *neither* name. If you want to cite an idea that a famous figure happens to share with a coworker, paraphrase the idea in first person and drop the attribution entirely.
+- **Work brands** — the employer name, parent/umbrella company, product names, subdomain URLs, internal codenames. Blog and newsletter only; the About / Experience pages are exempt.
+- **Fake example personas** — no "[Name] the engineer", no "a PM named [Name]", no "let's call her [Name]", no composite characters, no mock Slack dialogue between invented people. This rule covers *every* invented first name — obviously-fake, "neutral" placeholder, or real first name borrowed hypothetically — because any invented persona name risks accidentally matching a real person. Use **role labels** instead: "the test-env owner", "a senior engineer I worked with", "the platform team lead", "an engineering manager I know".
+- **Work-specific details that function as identifiers** — even if you scrub the company name, "A100s in Frankfurt", "a partner burning €4–9k/month", "a product launch last month", and internal codenames act as fingerprints. Strip the specifics or genericize them to ranges ("several thousand euros a month", "a recent launch").
+
+### ⚠️ When in doubt
+
+- **Default to role labels and first-person narration.** "I once worked with a team where…" always beats "[any first name] from the platform team…". The role label is stronger writing anyway — it tells the reader what the person *did*, not what they were called.
+- **Cite sources by URL, not by human name.** "[This post](https://example.com/foo) makes the case that…" is fine. "[Firstname Lastname](https://example.com/foo) makes the case that…" is not — the link already does the attribution work, and adding the name creates a name-surface that has to pass the policy.
+- **Paraphrase in first person when borrowing an idea.** "I've come to think of AI less as a faster typewriter and more as a shift from carpenter to architect" is fine. "As [Name] put it, AI is shifting us from carpenters to architects" is not — unless the name is genuinely famous *and* the paragraph collapses without it.
+- **If a name feels necessary, ask the user before writing it.** Do not guess. Do not reach. A moment of friction here prevents a cleanup later.
+
+### 🔒 Pre-publish name audit (automated)
+
+Before any `/content-draft`, `/content-publish`, or `/content-newsletter` command emits or ships a draft, it must run this audit against the staged markdown:
+
+1. **Blocklist grep** — `grep -rEn "Hivenet|compute\.hivenet|hive\.net|Antimatter" <files>`. Any hit = halt. The published About/Experience pages are the only place Hivenet may appear and they're exempt because `/content-publish` operates on blog and newsletter files, not static pages. **The blocklist contains public work brand names only — never person names.** Two reasons: (a) listing a coworker surname in this regex would itself leak that name into version-controlled config (the exact failure mode the policy exists to prevent), and (b) the next grep (proper-noun-surface) already catches every two-word capitalized pattern, making enumeration of specific names redundant. If a near-miss happens with a person's name, **do not** add that name to this regex — the correct response is to strengthen the proper-noun-surface review step below and tighten the Names Allowlist in the brief.
+2. **Proper-noun surface grep** — `grep -rEn "\b[A-Z][a-z]+ [A-Z][a-z]+\b" <files>`. Surface every hit to the user for review. False positives are fine (e.g., "New York", "Black Friday") — the point is to make sure no human name slips by unreviewed. This is the *primary* defense against person names — it's generic, scales automatically as coworker rosters change, and doesn't require maintaining a list.
+3. **Attribution-idiom grep** — `grep -rEn "\bsaid\b|according to|put it well|argues|wrote about|'s book|'s post|'s article|inspired by" <files>`. Any hit means there's an attribution — confirm the attributed entity is on the allowed list before continuing.
+4. **Fake-persona pattern grep** — `grep -rEn "(a developer named|an engineer named|let's call (him|her|them)|for example,? [A-Z][a-z]+ (the|our|a) )" <files>`. Any hit = halt. Rewrite with role labels.
+5. **On any halt**: surface every hit to the user, ask which (if any) are allowed per the policy, and block the publish until the user confirms each one explicitly. Silent edits are not allowed — the user must see the name and approve it.
+
+**Why this is a hard gate:** the previous violation wasn't caught by any review step because there was no review step for names specifically. The whole point of this audit is that it runs *every time*, not "when it feels relevant". If the audit is skipped, the gate doesn't exist.
+
+### Worked examples
+
+**Borrowed-idea paraphrase**
+
+❌ "[Famous Author] put it well: AI isn't making us faster typists — it's shifting us from carpenters to architects."
+✅ "AI isn't making us faster typists. It's shifting us from carpenters to architects — from the people who swing the hammer to the people who decide what gets built."
+
+*Why the rewrite works:* The idea is preserved, the first-person framing makes it feel earned, and there's no attribution surface to audit.
+
+**Fake-persona replacement**
+
+❌ "[Name 1] owns the test environment. [Name 2] runs staging. [Name 3] handles prod."
+✅ "One engineer owns the test environment. Another owns staging. A third owns prod. Each of them is the single accountable person for their station."
+
+*Why the rewrite works:* The structural point (one owner per environment) lands harder without the fake names, because the reader's brain isn't doing persona-tracking on characters it will never see again.
+
+**Work-specifics genericization**
+
+❌ "At Hivenet, we had a mystery partner burning €4–9k/month on A100s in Frankfurt while sitting idle in Cannes."
+✅ "I've seen teams leaving several thousand euros a month on the table — high-end GPUs sitting idle most of the day in a region with expensive electricity."
+
+*Why the rewrite works:* The framework point (cost / control / carbon tradeoff) is intact. The fingerprint details (company, specific hardware SKU, specific cities, exact euro range) are gone.
+
+**Legitimate published-source reference**
+
+✅ "The authors of *Continuous Delivery* establish this principle: reduce batch size to reduce risk."
+
+*Why this is allowed:* The book title is the citation anchor — it points at a specific public work, and the reader can look up the authorship if they want to. No person-name surface is introduced into the draft itself. If the paragraph genuinely collapses without the authors named (e.g., a post specifically about their philosophy), the name may be added per-draft via the Names Allowlist in the brief — but only after an explicit interview-time decision that the name is the point of the paragraph, not decoration.
 
 ---
 
@@ -313,3 +382,58 @@ A thoughtful conversation with an experienced mentor who's been in your shoes, m
 
 **The reader should finish feeling:**
 Informed, equipped, and motivated—with a clear next step and the confidence that they can tackle the challenge ahead.
+
+---
+
+## Audio Narration (Standard for Bear Essentials)
+
+Every new Bear Essentials blog post ships with an AI-generated audio
+narration by default. The narration is rendered as a native `<audio>`
+player at the top and bottom of the post page.
+
+### Defaults
+
+Add these fields to every new post's frontmatter unless there is a
+specific reason to opt out:
+
+```yaml
+audio: true
+audioVoice: Matthew   # Amazon Polly neural voice
+```
+
+`Matthew` is the default voice — warm, steady cadence, closest match to
+the mentor-tone the written voice aims for. Override only when a
+different voice genuinely fits the piece better (e.g. an interview-style
+post might use `Ruth` or `Stephen` for variety).
+
+### Picking a voice
+
+Polly neural voices that fit the Bear Essentials tone:
+
+| Voice | Gender | Why |
+|---|---|---|
+| `Matthew` | Male | Default — warm, steady, mentor-like |
+| `Stephen` | Male | Crisper, more news-anchor — good for punchier posts |
+| `Gregory` | Male | Deeper, slower — good for reflective essays |
+| `Ruth` | Female | Clear, confident — good for assertive pieces |
+| `Joanna` | Female | Warm, conversational — good for personal stories |
+| `Danielle` | Female | Softer cadence — good for vulnerable or emotional posts |
+
+Full list: `aws polly describe-voices --language-code en-US`.
+
+### Opt-out
+
+Skip audio (`audio: false` or omit the field) only when:
+
+- The post is extremely code-heavy (the narrator announces code blocks
+  as "code example omitted" — too many gets noisy)
+- The post is a link roundup or short announcement under ~300 words
+- The post is time-sensitive and you need to ship before the audio can
+  be generated locally
+
+### Running the pipeline
+
+The `/content-publish` command generates the MP3 locally before
+committing — the audio file is tracked in git and deployed by the
+standard S3 sync. Requires `AWS_PROFILE=tineo-labs-deploy` in the
+environment. See `BLOG_README.md` for full details.

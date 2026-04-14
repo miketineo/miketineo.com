@@ -88,24 +88,19 @@ The engineers who win with AI aren't the ones who use it most — they're the on
 
 ### Research/Data
 
-1. **"The Reality of AI-Assisted Software Engineering Productivity" — Addy Osmani / AddyOsmani.com**
-   - Link: https://addyosmani.com/blog/ai-coding-workflow/
-   - Key finding: AI isn't making developers faster typists — it's shifting them from carpenters to architects. The human focus moves to system architecture, business requirements, data curation, and validation.
-   - How to use: Use in Point 1 or the intro to illustrate the paradigm shift framing. The "carpenters to architects" line is a strong complement to the Type A/B framework.
-
-2. **"The Agentic Organization: Contours of the Next Paradigm for the AI Era" — McKinsey**
+1. **"The Agentic Organization: Contours of the Next Paradigm for the AI Era" — McKinsey**
    - Link: https://www.mckinsey.com/capabilities/people-and-organizational-performance/our-insights/the-agentic-organization-contours-of-the-next-paradigm-for-the-ai-era
    - Key finding: A human team of 2-5 can supervise 50-100 specialized agents running an end-to-end process. Demand is rising for engineers who can orchestrate across teams, vendors, and agents.
    - How to use: Use in Point 2 (Engineer as PM) to validate the scale of leverage available and the organizational trend driving it.
 
-3. **"How AI Makes Every Software Engineer a Product Manager" — Allstacks**
+2. **"How AI Makes Every Software Engineer a Product Manager" — Allstacks**
    - Link: https://www.allstacks.com/blog/ai-software-engineer-product-decisions-2026
    - Key finding: Engineers who remain in AI-forward organizations will be those who "operate at a higher level of abstraction — making the micro product decisions that AI cannot make, filling gaps that AI cannot identify."
    - How to use: Use in Point 3 (Ownership Bar) to reinforce that the expanded scope is real and already being observed in engineering organizations.
 
 ### Articles/Books
 
-4. **"When AI Writes Almost All Code, What Happens to Software Engineering?" — The Pragmatic Engineer (Gergely Orosz)**
+3. **"When AI Writes Almost All Code, What Happens to Software Engineering?" — The Pragmatic Engineer**
    - Link: https://newsletter.pragmaticengineer.com/p/when-ai-writes-almost-all-code-what
    - Key takeaway: The skills that matter in an AI-heavy world are judgment, system design, and the ability to define and evaluate outcomes — not typing speed or syntax recall.
    - How to use: Optional supporting cite in intro or conclusion. The Pragmatic Engineer has strong credibility with the target audience (senior engineers).
