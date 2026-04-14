@@ -3,19 +3,19 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact—with real-world numbers from a €4-9k/month API migration.">
+    <meta name="description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact — and why single-axis optimization leaves value on the table.">
     <meta name="author" content="Miguel Tineo">
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="article">
     <meta property="og:url" content="https://miketineo.com/blog/energy-aware-ai-infrastructure.html">
     <meta property="og:title" content="Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle">
-    <meta property="og:description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact—with real-world numbers from a €4-9k/month API migration.">
+    <meta property="og:description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact — and why single-axis optimization leaves value on the table.">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle">
-    <meta name="twitter:description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact—with real-world numbers from a €4-9k/month API migration.">
+    <meta name="twitter:description" content="How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact — and why single-axis optimization leaves value on the table.">
 
     <title>Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle - Miguel Tineo</title>
 
@@ -142,46 +142,173 @@
             line-height: 1.8;
             color: var(--color-text-primary);
         }
-        .blog-audio-card,
-        .blog-audio-card-compact {
+        /* ── Hero audio card (minimal, New Yorker style) ── */
+        .blog-audio-card {
             max-width: 720px;
-            border: 1px solid var(--color-border);
-            background: linear-gradient(135deg, rgba(255, 138, 91, 0.14), rgba(255, 245, 240, 0.85));
-            border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 32px;
+            margin: 24px 0 32px;
+            padding: 14px 0 16px;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
         }
-        [data-theme="dark"] .blog-audio-card,
-        [data-theme="dark"] .blog-audio-card-compact {
-            background: linear-gradient(135deg, rgba(229, 109, 66, 0.2), rgba(26, 26, 26, 0.9));
-        }
-        .blog-audio-card-title,
-        .blog-audio-card-compact-title {
-            margin: 0 0 8px;
-            font-size: 22px;
-            color: var(--color-text-primary);
-        }
-        .blog-audio-card-copy,
-        .blog-audio-card-compact-copy {
-            margin: 0 0 16px;
-            color: var(--color-text-secondary);
-        }
-        .blog-audio-meta {
+        .blog-audio-card-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-            font-size: 14px;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             color: var(--color-text-secondary);
         }
-        .blog-audio-card audio,
-        .blog-audio-card-compact audio {
-            width: 100%;
+        .blog-audio-card-label {
+            color: #E56D42;
         }
-        .blog-audio-card-compact {
-            margin-top: var(--spacing-2xl);
-            margin-bottom: 0;
-            padding: 20px 24px;
+        [data-theme="dark"] .blog-audio-card-label {
+            color: #FF9A6F;
+        }
+        .blog-audio-card-sep {
+            opacity: 0.5;
+        }
+        .blog-audio-card-audio {
+            width: 100%;
+            max-width: 560px;
+            height: 40px;
+            accent-color: #FF8A5B;
+            color-scheme: light;
+        }
+        [data-theme="dark"] .blog-audio-card-audio {
+            color-scheme: dark;
+        }
+
+        /* ── Sticky mini bar ── */
+        .blog-audio-sticky {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            z-index: 50;
+            display: grid;
+            grid-template-columns: 40px 1fr auto;
+            align-items: center;
+            gap: 12px;
+            width: min(560px, calc(100vw - 32px));
+            height: 56px;
+            padding: 8px 12px 8px 8px;
+            background: rgba(255, 249, 247, 0.92);
+            border: 1px solid rgba(240, 232, 228, 0.9);
+            border-radius: 999px;
+            backdrop-filter: blur(18px) saturate(1.1);
+            -webkit-backdrop-filter: blur(18px) saturate(1.1);
+            box-shadow: 0 14px 40px rgba(31, 17, 10, 0.14), 0 2px 6px rgba(31, 17, 10, 0.06);
+            opacity: 0;
+            transform: translate(-50%, 16px);
+            pointer-events: none;
+            transition: opacity 300ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .blog-audio-sticky[data-state="visible"] {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+        [data-theme="dark"] .blog-audio-sticky {
+            background: rgba(22, 22, 22, 0.88);
+            border-color: rgba(42, 42, 42, 0.9);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+        .blog-audio-sticky-toggle {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 999px;
+            background: var(--color-primary);
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 200ms ease;
+            padding: 0;
+        }
+        .blog-audio-sticky-toggle:hover {
+            background: #E56D42;
+        }
+        [data-theme="dark"] .blog-audio-sticky-toggle {
+            color: #0F0F0F;
+        }
+        .blog-audio-sticky-toggle:focus-visible {
+            outline: 2px solid #5BC8CC;
+            outline-offset: 3px;
+        }
+        .blog-audio-sticky-icon {
+            width: 20px;
+            height: 20px;
+        }
+        .blog-audio-sticky-icon--pause {
+            display: none;
+        }
+        .blog-audio-sticky-toggle[aria-pressed="true"] .blog-audio-sticky-icon--play {
+            display: none;
+        }
+        .blog-audio-sticky-toggle[aria-pressed="true"] .blog-audio-sticky-icon--pause {
+            display: block;
+        }
+        .blog-audio-sticky-body {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .blog-audio-sticky-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .blog-audio-sticky-time {
+            margin: 0;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+        .blog-audio-sticky-dismiss {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 200ms ease;
+            padding: 0;
+        }
+        .blog-audio-sticky-dismiss:hover {
+            background: rgba(26, 26, 26, 0.06);
+        }
+        [data-theme="dark"] .blog-audio-sticky-dismiss:hover {
+            background: rgba(245, 245, 245, 0.08);
+        }
+        .blog-audio-sticky-dismiss:focus-visible {
+            outline: 2px solid #5BC8CC;
+            outline-offset: 3px;
+        }
+        .blog-audio-sticky-dismiss svg {
+            width: 14px;
+            height: 14px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .blog-audio-sticky {
+                transition: none;
+            }
+            .blog-audio-sticky[data-state="hidden"] {
+                transform: translate(-50%, 0);
+            }
         }
         .blog-post-content h2 {
             font-size: var(--font-size-2xl);
@@ -300,6 +427,24 @@
                 max-width: 100%;
             }
         }
+        @media (max-width: 480px) {
+            .blog-audio-card-audio {
+                max-width: none;
+            }
+            .blog-audio-sticky {
+                bottom: 16px;
+                width: calc(100vw - 32px);
+            }
+            .blog-audio-sticky-title {
+                display: none;
+            }
+            .blog-audio-sticky-body {
+                align-items: center;
+            }
+            .blog-audio-sticky-time {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -381,23 +526,23 @@
             
 
             <div class="blog-post-content">
-                <h2>When the API Bill Hits €9,000</h2>
-<p>I&#39;m working with European startups that take data locality seriously. One mystery partner is burning €4,000-€9,000 per month on OpenAI, Google, and Claude APIs. They&#39;re processing 2 million tokens per minute at peak (500 to 1,000 API calls per minute) when use cases for processing documents become heavy.</p>
-<p>The costs are unsustainable. They need to migrate 90% of their document processing stack to self-hosted GPU infrastructure running open models (GPT-OSS-20B, Gemma 7B, Llama 3). If you&#39;re exploring similar transitions, check out <a href="https://compute.hivenet.com">compute.hivenet.com</a> (and yes, you can use code MIGUEL70 for a discount at checkout). But the complexity is daunting: gateway architecture, security layers, ethical guardrails, and performance optimization.</p>
-<p>This migration forced a critical realization: modern infrastructure decisions aren&#39;t just about cost anymore. They sit at the intersection of three factors: <strong>cost optimization, operational control, and carbon impact</strong>. Leaders who only optimize for one or two dimensions miss the broader opportunity.</p>
+                <h2>When the API Bill Gets Too Loud to Ignore</h2>
+<p>I&#39;ve been talking to engineering leaders at companies who take data locality seriously and are watching their AI spend spiral. It&#39;s not hard to find teams burning thousands of euros a month on OpenAI, Google, and Claude APIs, processing millions of tokens per minute at peak when document processing workloads get heavy.</p>
+<p>The costs are unsustainable at that scale. These teams are looking at migrating the bulk of their document processing stacks to self-hosted GPU infrastructure running open models (GPT-OSS-20B, Gemma 7B, Llama 3). But the complexity is daunting: gateway architecture, security layers, ethical guardrails, and performance optimization.</p>
+<p>This kind of migration forces a critical realization: modern infrastructure decisions aren&#39;t just about cost anymore. They sit at the intersection of three factors: <strong>cost optimization, operational control, and carbon impact</strong>. Leaders who only optimize for one or two dimensions miss the broader opportunity.</p>
 <h2>The Three-Way Trade-Off You&#39;re Not Tracking</h2>
-<p>Most engineering leaders I talk to evaluate cloud APIs versus self-hosted models through a single lens: cost per token. That&#39;s understandable (money talks). But at Hivenet, we&#39;ve started scoring infrastructure decisions differently.</p>
+<p>Most engineering leaders I talk to evaluate cloud APIs versus self-hosted models through a single lens: cost per token. That&#39;s understandable — money talks. But I&#39;ve started scoring infrastructure decisions differently.</p>
 <p>Here&#39;s what the Cost-Control-Carbon triangle looks like in practice:</p>
-<p><strong>Cost:</strong> The mystery partner migration projects a 60% reduction in monthly spend. We&#39;re still in prototype phase, but the math is solid. Going from €4-9k to €2-3k monthly gives them runway to reinvest in product features.</p>
-<p><strong>Control:</strong> Self-hosting means they control data sovereignty, customize model behavior, and adjust performance characteristics for their specific document processing use case. With APIs, you rent all three.</p>
-<p><strong>Carbon:</strong> Here&#39;s where it gets interesting. Our prototype architecture shows 18-25% lower energy draw per processed document compared to API-based processing. Carbon intensity drops by 30-40g CO₂e per 1,000 tokens.</p>
-<p>The biggest surprise? <strong>When you show engineers that &quot;saving €X also saved Y kWh,&quot; the conversation shifts from procurement to purpose.</strong> Suddenly, everyone wants to know which GPU region has cleaner grid mix that week.</p>
+<p><strong>Cost:</strong> A well-planned migration from commercial APIs to self-hosted open models can project around a 60% reduction in monthly spend at scale. The math is solid once you account for utilization. That delta gives teams runway to reinvest in product features.</p>
+<p><strong>Control:</strong> Self-hosting means you control data sovereignty, customize model behavior, and adjust performance characteristics for your specific document processing use case. With APIs, you rent all three.</p>
+<p><strong>Carbon:</strong> Here&#39;s where it gets interesting. A well-tuned self-hosted architecture can show meaningfully lower energy draw per processed document compared to API-based processing — often in the 18-25% range — with carbon intensity dropping by tens of grams of CO₂e per 1,000 tokens.</p>
+<p>The biggest surprise? <strong>When you show engineers that &quot;saving €X also saved Y kWh,&quot; the conversation shifts from procurement to purpose.</strong> Suddenly, everyone wants to know which GPU region has a cleaner grid mix that week.</p>
 <h2>Why Energy Efficiency Is Now a First-Class Architecture Decision</h2>
-<p>At Hivenet, we are exploring to build a lightweight CSOA-VM (Compute-Sustainability-Optimized-Allocation) model to score VMs by watt-per-token efficiency and grid intensity. The vision is for our orchestrator to pick regions and instance types based on this score, not just performance or cost.</p>
-<p>Here&#39;s a real decision we made last month: <strong>A100s in Frankfurt versus RTX 4090s in Cannes.</strong> Same performance for the customer&#39;s workload. But Cannes&#39; grid mix was 40% cleaner that week. We routed the job to Cannes.</p>
-<p>That decision saved negligible dollars. But it reduced carbon emissions and sent a signal to our team: we optimize for all three factors, not just the obvious one.</p>
+<p>One idea I&#39;ve been exploring is a lightweight scoring model — think of it as a Compute-Sustainability-Optimized-Allocation score — that rates compute options by watt-per-token efficiency and grid intensity. The vision is for an orchestrator to pick regions and instance types based on that score, not just performance or cost.</p>
+<p>Here&#39;s the kind of decision it enables: imagine comparing higher-end GPUs in one region against lower-tier GPUs in a different region. Same performance for the workload, but one region&#39;s grid mix is meaningfully cleaner that week. Route the job to the cleaner region.</p>
+<p>That decision saves negligible dollars. But it reduces carbon emissions and sends a signal to the team: we optimize for all three factors, not just the obvious one.</p>
 <h3>Making It Visible</h3>
-<p>The key is visibility. We surface energy cost alongside dollar cost in our dashboards. Engineers see:</p>
+<p>The key is visibility. Surface energy cost alongside dollar cost in your dashboards. Engineers should be able to see:</p>
 <ul>
 <li><strong>Watt-per-token efficiency</strong> for each workload type</li>
 <li><strong>Grid intensity</strong> for each region (updated hourly)</li>
@@ -406,15 +551,15 @@
 <p>This visibility turns engineers into active participants in sustainability decisions. You don&#39;t need to preach about climate. Just show the data and get out of the way.</p>
 <h2>Gateway Layers Are Way More Complex Than You Think</h2>
 <p>Here&#39;s what most people miss about migrating from cloud APIs to self-hosted AI: <strong>the model inference is the easy part.</strong></p>
-<p>The mystery partner&#39;s gateway layer has to solve three problems simultaneously:</p>
+<p>The gateway layer has to solve three problems simultaneously:</p>
 <ol>
-<li><strong>Dealing with bad actors</strong> - Prompt reverse engineering protection, jailbreak detection</li>
-<li><strong>Protecting infrastructure</strong> - Rate limiting, authentication, abuse monitoring</li>
-<li><strong>Optimizing workflow complexity</strong> - We optimize the heavy lifting on image and document processing to avoid overloading the LLM</li>
+<li><strong>Dealing with bad actors</strong> — prompt reverse engineering protection, jailbreak detection</li>
+<li><strong>Protecting infrastructure</strong> — rate limiting, authentication, abuse monitoring</li>
+<li><strong>Optimizing workflow complexity</strong> — heavy lifting on image and document processing should happen before anything touches the LLM, so you don&#39;t overload it with work that cheaper components can handle</li>
 </ol>
-<p>The gateway handles model routing, parallelization, security, and ethical filters. These aren&#39;t optional components (they&#39;re essential whether you use APIs or self-hosted models). The difference: with self-hosted, you build and control them. With APIs, you hope the vendor got them right.</p>
+<p>The gateway handles model routing, parallelization, security, and ethical filters. These aren&#39;t optional components — they&#39;re essential whether you use APIs or self-hosted models. The difference: with self-hosted, you build and control them. With APIs, you hope the vendor got them right.</p>
 <h3>The Hidden Engineering Cost</h3>
-<p>When we estimated the mystery partner migration, the model deployment was 20% of the engineering effort. The other 80%:</p>
+<p>When I&#39;ve helped size migrations like this, the model deployment is typically around 20% of the engineering effort. The other 80%:</p>
 <ul>
 <li>Security and authentication layers</li>
 <li>Ethical guardrails for open-source models deployed out-of-the-box</li>
@@ -424,23 +569,22 @@
 </ul>
 <p>Don&#39;t underestimate this. Budget for the gateway layer upfront, not as an afterthought.</p>
 <h2>How Agentic Development Changes the Reliability Game</h2>
-<p>While working on energy-aware infrastructure at Hivenet, we&#39;re also pushing the engineering org toward agentic development. These two shifts are more connected than you&#39;d think.</p>
+<p>Alongside the energy-aware infrastructure work, I&#39;ve been pushing engineering orgs toward agentic development. These two shifts are more connected than you&#39;d think.</p>
 <p>When AI agents handle more of the development work (testing, coverage, troubleshooting), your reliability culture has to level up. You can&#39;t fake code coverage. Tests either hit the lines with valid arguments and payloads, or they don&#39;t.</p>
 <h3>The Troubleshooting Agent That Actually Works</h3>
-<p>We created a troubleshooting agent with read-only permissions for our Kubernetes clusters (we run 2 clusters with event-driven cloud instance state management). The agent detects root causes during incidents and has been flawless so far.</p>
-<p>Engineers start from accurate diagnosis instead of hunting through runbooks and logs. They just take action.</p>
+<p>One of the highest-leverage patterns I&#39;ve seen is a troubleshooting agent with read-only permissions on your Kubernetes clusters. The agent detects root causes during incidents and gives engineers an accurate starting point instead of making them hunt through runbooks and logs. They just take action.</p>
 <p>This works because:</p>
 <ol>
-<li><strong>Limited, well-defined permissions</strong> - Read-only access, specific namespaces</li>
-<li><strong>High-signal, low-risk tasks</strong> - Diagnosis, not remediation</li>
-<li><strong>Tangible metrics</strong> - Time to diagnosis dropped measurably</li>
-<li><strong>Clear boundaries</strong> - Agent suggests, humans decide</li>
+<li><strong>Limited, well-defined permissions</strong> — read-only access, specific namespaces</li>
+<li><strong>High-signal, low-risk tasks</strong> — diagnosis, not remediation</li>
+<li><strong>Tangible metrics</strong> — time to diagnosis drops measurably</li>
+<li><strong>Clear boundaries</strong> — agent suggests, humans decide</li>
 </ol>
-<p>I also now create Grafana dashboards in seconds using agents with proper context and API access via MCPs. My focus shifted from writing YAML to reviewing reports and results.</p>
+<p>I now also create Grafana dashboards in seconds using agents with proper context and API access via MCPs. The focus shifts from writing YAML to reviewing reports and results.</p>
 <h3>Addressing Developer Skepticism</h3>
-<p>Some developers on my team resist AI-assisted coding. Their concern is mathematically valid: &quot;AI hallucinations in mathematical proof are mathematically inevitable, even with perfect data and models.&quot;</p>
-<p>They&#39;re right. So we don&#39;t use agents for precision tasks requiring mathematical proof. We use them for repetitive, deterministic tasks: testing, coverage, verification, validation, simulation.</p>
-<p>The key is reshaping culture. Give developers what they need to build better prompts, follow better agentic standards, and use their expertise to train the &quot;Artificial Workforce&quot; to shine where it should (not replacing judgment, but handling the grind).</p>
+<p>I&#39;ve seen teams where developers push back on AI-assisted coding, and their concern is mathematically valid: &quot;AI hallucinations in mathematical proof are mathematically inevitable, even with perfect data and models.&quot;</p>
+<p>They&#39;re right. So don&#39;t use agents for precision tasks requiring mathematical proof. Use them for repetitive, deterministic tasks: testing, coverage, verification, validation, simulation.</p>
+<p>The key is reshaping culture. Give developers what they need to build better prompts, follow better agentic standards, and use their expertise to train the &quot;artificial workforce&quot; to shine where it should — not replacing judgment, but handling the grind.</p>
 <h2>The Framework: Apply the Cost-Control-Carbon Lens</h2>
 <p>Every infrastructure decision should be evaluated across all three dimensions. Here&#39;s how:</p>
 <h3>Step 1: Define Your Baseline</h3>
@@ -453,14 +597,14 @@
 <h3>Step 2: Score Your Options</h3>
 <p>For each alternative (different API vendor, self-hosted region, GPU type):</p>
 <ul>
-<li><strong>Cost:</strong> Direct dollar savings</li>
-<li><strong>Control:</strong> Customization, data sovereignty, performance tuning capability</li>
-<li><strong>Carbon:</strong> Watt-per-token efficiency × regional grid intensity</li>
+<li><strong>Cost:</strong> direct dollar savings</li>
+<li><strong>Control:</strong> customization, data sovereignty, performance tuning capability</li>
+<li><strong>Carbon:</strong> watt-per-token efficiency × regional grid intensity</li>
 </ul>
 <h3>Step 3: Make the Trade-Off Explicit</h3>
 <p>You won&#39;t maximize all three. That&#39;s okay. The goal is making the trade-off <strong>visible and intentional</strong>:</p>
 <ul>
-<li>&quot;We&#39;re choosing AWS Frankfurt over Google Milan because cost savings (25%) outweigh the carbon penalty (5% higher grid intensity)&quot;</li>
+<li>&quot;We&#39;re choosing region A over region B because cost savings (25%) outweigh the carbon penalty (5% higher grid intensity)&quot;</li>
 <li>&quot;We&#39;re self-hosting despite 10% higher operational cost because data sovereignty is non-negotiable&quot;</li>
 </ul>
 <h3>Step 4: Track and Iterate</h3>
@@ -471,55 +615,53 @@
 <li>Cost per token (traditional metric, now contextualized)</li>
 </ul>
 <p>When engineers see these metrics alongside performance and cost, they become active participants in optimization. No preaching required.</p>
-<h2>Real-World Numbers You Can Use</h2>
-<p>The mystery partner migration gives us concrete data:</p>
+<h2>The Shape of the Numbers</h2>
+<p>For a well-planned migration from commercial APIs to a self-hosted stack at meaningful scale, the delta tends to look something like this:</p>
 <p><strong>Before (API-based):</strong></p>
 <ul>
-<li>€4,000-€9,000/month</li>
-<li>~500-1,500 API calls/min at peak</li>
-<li>~3M tokens/min throughput</li>
+<li>Thousands of euros per month, growing with usage</li>
+<li>Hundreds to thousands of API calls per minute at peak</li>
+<li>Millions of tokens per minute throughput</li>
 <li>Zero operational control</li>
 <li>Carbon cost: baseline (vendor-dependent, opaque)</li>
 </ul>
-<p><strong>After (self-hosted prototype):</strong></p>
+<p><strong>After (self-hosted):</strong></p>
 <ul>
-<li>€2,000-€3,000/month (60% reduction)</li>
-<li>Same throughput, better latency</li>
+<li>Roughly 50-60% reduction in monthly spend</li>
+<li>Same throughput, often better latency</li>
 <li>Full operational control (data sovereignty, customization)</li>
 <li>18-25% lower energy draw per document</li>
-<li>30-40g CO₂e reduction per 1K tokens</li>
+<li>Tens of grams of CO₂e reduction per 1K tokens</li>
 </ul>
-<p>The complexity cost: significant engineering investment in gateway layers, security, monitoring. But the ROI justifies it at their scale.</p>
+<p>The complexity cost is real: significant engineering investment in gateway layers, security, monitoring. But at scale, the ROI tends to justify it.</p>
 <h2>Where to Start</h2>
 <p>Pick one area to make energy-aware this quarter:</p>
-<h3>📊 Add Energy Metrics to Dashboards</h3>
+<h3>Add Energy Metrics to Dashboards</h3>
 <p>Surface watt-per-token efficiency and carbon cost alongside dollar cost. Make sustainability visible to your engineering team. This is the lowest-effort, highest-impact starting point.</p>
-<h3>🎯 Evaluate Your Next Compute Decision Using Cost-Control-Carbon</h3>
+<h3>Evaluate Your Next Compute Decision Using Cost-Control-Carbon</h3>
 <p>Next time you&#39;re choosing between regions, instance types, or vendors, score options across all three dimensions. Document the trade-off explicitly.</p>
-<h3>🤖 Create a Limited-Scope Agent for High-Signal Tasks</h3>
+<h3>Create a Limited-Scope Agent for High-Signal Tasks</h3>
 <p>Build a troubleshooting agent with read-only permissions, or an agent that generates test coverage. Build trust through concrete wins before expanding scope.</p>
 <h2>The Long Game</h2>
-<p>We&#39;re at an inflection point. AI workloads are scaling exponentially. The default path—just keep paying API bills—becomes unsustainable economically and environmentally.</p>
-<p>Engineering leaders who integrate energy efficiency into architecture decisions unlock both immediate savings and long-term sustainability wins. Customers might not ask for it directly, but when you &quot;Salt Bae&quot; sustainability on top of cost savings, it always extracts a smile.</p>
-<p>And here&#39;s the thing: <strong>carbon is a secondary benefit for customers but extremely important for our mission.</strong> We help, but cleanly.</p>
+<p>We&#39;re at an inflection point. AI workloads are scaling exponentially. The default path — just keep paying API bills — becomes unsustainable economically and environmentally.</p>
+<p>Engineering leaders who integrate energy efficiency into architecture decisions unlock both immediate savings and long-term sustainability wins. Customers might not ask for it directly, but it compounds — and it changes the kind of engineering culture you build around it.</p>
+<p>Carbon may start as a secondary benefit, but it ends up shaping the architecture decisions you&#39;re proud of a year later.</p>
 <h2>Key Takeaways</h2>
 <ul>
-<li>Modern infrastructure decisions sit at the intersection of cost, control, and carbon (optimize for all three, not just one)</li>
+<li>Modern infrastructure decisions sit at the intersection of cost, control, and carbon — optimize for all three, not just one</li>
 <li>Energy efficiency is a first-class architecture concern: track watt-per-token efficiency and grid intensity alongside traditional metrics</li>
-<li>Gateway layers for self-hosted AI are 80% of the engineering effort (budget for security, ethics, routing, and monitoring upfront)</li>
+<li>Gateway layers for self-hosted AI are 80% of the engineering effort — budget for security, ethics, routing, and monitoring upfront</li>
 <li>Agentic development requires better reliability culture: use agents for deterministic tasks, verify with tangible metrics like code coverage</li>
 <li>Make sustainability visible: &quot;Saving €X also saved Y kWh&quot; shifts conversations from procurement to purpose</li>
 </ul>
 <h2>What&#39;s Next?</h2>
 <p>Pick one strategy from this post and implement it this quarter. Add energy metrics to your dashboard, evaluate your next compute decision using the Cost-Control-Carbon framework, or create a limited-scope troubleshooting agent.</p>
 <p>Start small, measure the impact, and iterate.</p>
-<p>What&#39;s one infrastructure decision you&#39;re facing right now where you could apply the Cost-Control-Carbon lens? <a href="/contact.html">Reach out</a> and tell me—I&#39;d love to hear how you&#39;re thinking about this.</p>
+<p>What&#39;s one infrastructure decision you&#39;re facing right now where you could apply the Cost-Control-Carbon lens? <a href="/contact.html">Reach out</a> and tell me — I&#39;d love to hear how you&#39;re thinking about this.</p>
 <hr>
 <p><em>This post is part of a bi-weekly series on engineering leadership. <a href="/blog/">Subscribe to the newsletter</a> to get the next post delivered to your inbox.</em></p>
 
             </div>
-
-            
 
             <footer class="blog-post-footer">
                 <div class="text-center">
@@ -531,6 +673,7 @@
                 </div>
             </footer>
         </article>
+        
     </main>
 
     <!-- Footer -->
@@ -571,5 +714,80 @@
 
     <!-- Scripts -->
     <script src="/js/main.js" defer></script>
+    <script>
+      (function () {
+        var card = document.querySelector('[data-audio-card]');
+        if (!card) { return; }
+        var audio = card.querySelector('[data-audio-element]');
+        var sticky = document.querySelector('[data-audio-sticky]');
+        if (!audio || !sticky) { return; }
+        var toggle = sticky.querySelector('[data-audio-toggle]');
+        var dismiss = sticky.querySelector('[data-audio-dismiss]');
+        var currentEl = sticky.querySelector('[data-audio-current]');
+        var durationEl = sticky.querySelector('[data-audio-duration]');
+        var hasPlayed = false;
+        var dismissed = false;
+        var cardVisible = true;
+
+        function formatTime(seconds) {
+          if (!isFinite(seconds) || seconds < 0) { return '0:00'; }
+          var m = Math.floor(seconds / 60);
+          var s = Math.floor(seconds % 60);
+          return m + ':' + (s < 10 ? '0' + s : s);
+        }
+
+        function updateStickyState() {
+          if (dismissed || !hasPlayed || cardVisible) {
+            sticky.setAttribute('data-state', 'hidden');
+            sticky.setAttribute('aria-hidden', 'true');
+          } else {
+            sticky.setAttribute('data-state', 'visible');
+            sticky.setAttribute('aria-hidden', 'false');
+          }
+        }
+
+        audio.addEventListener('play', function () {
+          hasPlayed = true;
+          card.setAttribute('data-playing', 'true');
+          toggle.setAttribute('aria-pressed', 'true');
+          toggle.setAttribute('aria-label', 'Pause audio');
+          updateStickyState();
+        });
+        audio.addEventListener('pause', function () {
+          card.setAttribute('data-playing', 'false');
+          toggle.setAttribute('aria-pressed', 'false');
+          toggle.setAttribute('aria-label', 'Play audio');
+        });
+        audio.addEventListener('ended', function () {
+          card.setAttribute('data-playing', 'false');
+          toggle.setAttribute('aria-pressed', 'false');
+          toggle.setAttribute('aria-label', 'Play audio');
+        });
+        audio.addEventListener('loadedmetadata', function () {
+          if (durationEl) { durationEl.textContent = formatTime(audio.duration); }
+        });
+        audio.addEventListener('timeupdate', function () {
+          if (currentEl) { currentEl.textContent = formatTime(audio.currentTime); }
+        });
+
+        toggle.addEventListener('click', function () {
+          if (audio.paused) { audio.play(); } else { audio.pause(); }
+        });
+        dismiss.addEventListener('click', function () {
+          dismissed = true;
+          updateStickyState();
+        });
+
+        if ('IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              cardVisible = entry.intersectionRatio >= 0.1;
+              updateStickyState();
+            });
+          }, { threshold: [0, 0.1] });
+          observer.observe(card);
+        }
+      })();
+    </script>
 </body>
 </html>

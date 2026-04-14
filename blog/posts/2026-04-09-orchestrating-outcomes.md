@@ -38,7 +38,7 @@ Type A engineers are optimizing typing. They've layered AI onto an existing work
 
 Type B engineers are optimizing outcomes. They've changed their fundamental relationship with implementation. They still write code — but they've moved the seat of judgment from "how does this get built?" to "is the right thing getting built, and is it built correctly?"
 
-Addy Osmani put it well: AI isn't making developers faster typists — it's shifting them from carpenters to architects. The human focus moves to system architecture, business requirements, and validation. That shift is the whole ballgame.
+AI isn't making us faster typists — it's shifting us from carpenters to architects. The human focus moves to system architecture, business requirements, and validation. That shift is the whole ballgame.
 
 ## Why Most Teams Aren't Seeing the Gains
 

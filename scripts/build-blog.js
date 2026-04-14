@@ -244,8 +244,6 @@ function parsePost(filePath, audioManifest) {
 function generatePostPage(post) {
   const readingTime = estimateReadTime(post.rawContent);
   const formattedDate = formatDate(post.date);
-  const audioWidget = post.audio ? renderAudioWidget(post.audio) : '';
-  const compactAudioWidget = post.audio ? renderCompactAudioWidget(post.audio) : '';
 
   // Auto-split title on " — " (em dash) if subtitle not already set in frontmatter
   let displayTitle = post.title;
@@ -258,6 +256,13 @@ function generatePostPage(post) {
 
   const illustrationName = selectIllustration(post);
   const illustrationSVG = getIllustration(illustrationName);
+
+  const audioWidget = post.audio
+    ? renderAudioWidget({ audio: post.audio })
+    : '';
+  const stickyAudioWidget = post.audio
+    ? renderAudioSticky({ audio: post.audio, postTitle: displayTitle })
+    : '';
 
   const tagsHTML = post.tags.length > 0
     ? `<div class="blog-post-tags">
@@ -409,46 +414,173 @@ function generatePostPage(post) {
             line-height: 1.8;
             color: var(--color-text-primary);
         }
-        .blog-audio-card,
-        .blog-audio-card-compact {
+        /* ── Hero audio card (minimal, New Yorker style) ── */
+        .blog-audio-card {
             max-width: 720px;
-            border: 1px solid var(--color-border);
-            background: linear-gradient(135deg, rgba(255, 138, 91, 0.14), rgba(255, 245, 240, 0.85));
-            border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 32px;
+            margin: 24px 0 32px;
+            padding: 14px 0 16px;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
         }
-        [data-theme="dark"] .blog-audio-card,
-        [data-theme="dark"] .blog-audio-card-compact {
-            background: linear-gradient(135deg, rgba(229, 109, 66, 0.2), rgba(26, 26, 26, 0.9));
-        }
-        .blog-audio-card-title,
-        .blog-audio-card-compact-title {
-            margin: 0 0 8px;
-            font-size: 22px;
-            color: var(--color-text-primary);
-        }
-        .blog-audio-card-copy,
-        .blog-audio-card-compact-copy {
-            margin: 0 0 16px;
-            color: var(--color-text-secondary);
-        }
-        .blog-audio-meta {
+        .blog-audio-card-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-            font-size: 14px;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             color: var(--color-text-secondary);
         }
-        .blog-audio-card audio,
-        .blog-audio-card-compact audio {
-            width: 100%;
+        .blog-audio-card-label {
+            color: #E56D42;
         }
-        .blog-audio-card-compact {
-            margin-top: var(--spacing-2xl);
-            margin-bottom: 0;
-            padding: 20px 24px;
+        [data-theme="dark"] .blog-audio-card-label {
+            color: #FF9A6F;
+        }
+        .blog-audio-card-sep {
+            opacity: 0.5;
+        }
+        .blog-audio-card-audio {
+            width: 100%;
+            max-width: 560px;
+            height: 40px;
+            accent-color: #FF8A5B;
+            color-scheme: light;
+        }
+        [data-theme="dark"] .blog-audio-card-audio {
+            color-scheme: dark;
+        }
+
+        /* ── Sticky mini bar ── */
+        .blog-audio-sticky {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            z-index: 50;
+            display: grid;
+            grid-template-columns: 40px 1fr auto;
+            align-items: center;
+            gap: 12px;
+            width: min(560px, calc(100vw - 32px));
+            height: 56px;
+            padding: 8px 12px 8px 8px;
+            background: rgba(255, 249, 247, 0.92);
+            border: 1px solid rgba(240, 232, 228, 0.9);
+            border-radius: 999px;
+            backdrop-filter: blur(18px) saturate(1.1);
+            -webkit-backdrop-filter: blur(18px) saturate(1.1);
+            box-shadow: 0 14px 40px rgba(31, 17, 10, 0.14), 0 2px 6px rgba(31, 17, 10, 0.06);
+            opacity: 0;
+            transform: translate(-50%, 16px);
+            pointer-events: none;
+            transition: opacity 300ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .blog-audio-sticky[data-state="visible"] {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+        [data-theme="dark"] .blog-audio-sticky {
+            background: rgba(22, 22, 22, 0.88);
+            border-color: rgba(42, 42, 42, 0.9);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+        .blog-audio-sticky-toggle {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 999px;
+            background: var(--color-primary);
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 200ms ease;
+            padding: 0;
+        }
+        .blog-audio-sticky-toggle:hover {
+            background: #E56D42;
+        }
+        [data-theme="dark"] .blog-audio-sticky-toggle {
+            color: #0F0F0F;
+        }
+        .blog-audio-sticky-toggle:focus-visible {
+            outline: 2px solid #5BC8CC;
+            outline-offset: 3px;
+        }
+        .blog-audio-sticky-icon {
+            width: 20px;
+            height: 20px;
+        }
+        .blog-audio-sticky-icon--pause {
+            display: none;
+        }
+        .blog-audio-sticky-toggle[aria-pressed="true"] .blog-audio-sticky-icon--play {
+            display: none;
+        }
+        .blog-audio-sticky-toggle[aria-pressed="true"] .blog-audio-sticky-icon--pause {
+            display: block;
+        }
+        .blog-audio-sticky-body {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .blog-audio-sticky-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .blog-audio-sticky-time {
+            margin: 0;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+        .blog-audio-sticky-dismiss {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 200ms ease;
+            padding: 0;
+        }
+        .blog-audio-sticky-dismiss:hover {
+            background: rgba(26, 26, 26, 0.06);
+        }
+        [data-theme="dark"] .blog-audio-sticky-dismiss:hover {
+            background: rgba(245, 245, 245, 0.08);
+        }
+        .blog-audio-sticky-dismiss:focus-visible {
+            outline: 2px solid #5BC8CC;
+            outline-offset: 3px;
+        }
+        .blog-audio-sticky-dismiss svg {
+            width: 14px;
+            height: 14px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .blog-audio-sticky {
+                transition: none;
+            }
+            .blog-audio-sticky[data-state="hidden"] {
+                transform: translate(-50%, 0);
+            }
         }
         .blog-post-content h2 {
             font-size: var(--font-size-2xl);
@@ -567,6 +699,24 @@ function generatePostPage(post) {
                 max-width: 100%;
             }
         }
+        @media (max-width: 480px) {
+            .blog-audio-card-audio {
+                max-width: none;
+            }
+            .blog-audio-sticky {
+                bottom: 16px;
+                width: calc(100vw - 32px);
+            }
+            .blog-audio-sticky-title {
+                display: none;
+            }
+            .blog-audio-sticky-body {
+                align-items: center;
+            }
+            .blog-audio-sticky-time {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -638,8 +788,6 @@ function generatePostPage(post) {
                 ${post.content}
             </div>
 
-            ${compactAudioWidget}
-
             <footer class="blog-post-footer">
                 <div class="text-center">
                     <h3>Join Bear Essentials</h3>
@@ -650,6 +798,7 @@ function generatePostPage(post) {
                 </div>
             </footer>
         </article>
+        ${stickyAudioWidget}
     </main>
 
     <!-- Footer -->
@@ -690,6 +839,81 @@ function generatePostPage(post) {
 
     <!-- Scripts -->
     <script src="/js/main.js" defer></script>
+    <script>
+      (function () {
+        var card = document.querySelector('[data-audio-card]');
+        if (!card) { return; }
+        var audio = card.querySelector('[data-audio-element]');
+        var sticky = document.querySelector('[data-audio-sticky]');
+        if (!audio || !sticky) { return; }
+        var toggle = sticky.querySelector('[data-audio-toggle]');
+        var dismiss = sticky.querySelector('[data-audio-dismiss]');
+        var currentEl = sticky.querySelector('[data-audio-current]');
+        var durationEl = sticky.querySelector('[data-audio-duration]');
+        var hasPlayed = false;
+        var dismissed = false;
+        var cardVisible = true;
+
+        function formatTime(seconds) {
+          if (!isFinite(seconds) || seconds < 0) { return '0:00'; }
+          var m = Math.floor(seconds / 60);
+          var s = Math.floor(seconds % 60);
+          return m + ':' + (s < 10 ? '0' + s : s);
+        }
+
+        function updateStickyState() {
+          if (dismissed || !hasPlayed || cardVisible) {
+            sticky.setAttribute('data-state', 'hidden');
+            sticky.setAttribute('aria-hidden', 'true');
+          } else {
+            sticky.setAttribute('data-state', 'visible');
+            sticky.setAttribute('aria-hidden', 'false');
+          }
+        }
+
+        audio.addEventListener('play', function () {
+          hasPlayed = true;
+          card.setAttribute('data-playing', 'true');
+          toggle.setAttribute('aria-pressed', 'true');
+          toggle.setAttribute('aria-label', 'Pause audio');
+          updateStickyState();
+        });
+        audio.addEventListener('pause', function () {
+          card.setAttribute('data-playing', 'false');
+          toggle.setAttribute('aria-pressed', 'false');
+          toggle.setAttribute('aria-label', 'Play audio');
+        });
+        audio.addEventListener('ended', function () {
+          card.setAttribute('data-playing', 'false');
+          toggle.setAttribute('aria-pressed', 'false');
+          toggle.setAttribute('aria-label', 'Play audio');
+        });
+        audio.addEventListener('loadedmetadata', function () {
+          if (durationEl) { durationEl.textContent = formatTime(audio.duration); }
+        });
+        audio.addEventListener('timeupdate', function () {
+          if (currentEl) { currentEl.textContent = formatTime(audio.currentTime); }
+        });
+
+        toggle.addEventListener('click', function () {
+          if (audio.paused) { audio.play(); } else { audio.pause(); }
+        });
+        dismiss.addEventListener('click', function () {
+          dismissed = true;
+          updateStickyState();
+        });
+
+        if ('IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              cardVisible = entry.intersectionRatio >= 0.1;
+              updateStickyState();
+            });
+          }, { threshold: [0, 0.1] });
+          observer.observe(card);
+        }
+      })();
+    </script>
 </body>
 </html>`;
 
@@ -994,43 +1218,77 @@ function resolveAudioMetadata({ slug, audioEnabled, audioTitle, rawContent, audi
 
   const manifestEntry = audioManifest.posts ? audioManifest.posts[slug] : null;
   const durationSeconds = manifestEntry && manifestEntry.durationSeconds ? manifestEntry.durationSeconds : null;
+  const voice = manifestEntry && manifestEntry.voice ? manifestEntry.voice : null;
+  const engine = manifestEntry && manifestEntry.engine ? manifestEntry.engine : null;
 
   return {
     title: audioTitle,
     url: `/blog/audio/${slug}.mp3`,
     durationSeconds,
     listenLabel: durationSeconds ? formatDuration(durationSeconds) : `~${estimateListenTime(rawContent)} min audio`,
+    durationLabel: durationSeconds ? formatDurationBrief(durationSeconds) : `~${estimateListenTime(rawContent)} min`,
+    voice,
+    engine,
   };
 }
 
-function renderAudioWidget(audio) {
+function renderAudioWidget({ audio }) {
+  const voiceLabel = audio.voice || 'Matthew';
+  const durationLabel = audio.durationLabel || '';
   return `
-            <section class="blog-audio-card" aria-label="Listen to this article">
-                <h2 class="blog-audio-card-title">${escapeHtml(audio.title)}</h2>
-                <p class="blog-audio-card-copy">Prefer to listen? Play the narrated version while you walk, commute, or take notes.</p>
-                <div class="blog-audio-meta">
-                    <span>${escapeHtml(audio.listenLabel)}</span>
-                    <span>Single voice narration</span>
-                </div>
-                <audio controls preload="none">
+            <figure class="blog-audio-card" data-audio-card data-playing="false" aria-label="Audio version of this post">
+                <p class="blog-audio-card-meta">
+                    <span class="blog-audio-card-label">Listen</span>
+                    <span class="blog-audio-card-sep" aria-hidden="true">·</span>
+                    <span>${escapeHtml(durationLabel)}</span>
+                    <span class="blog-audio-card-sep" aria-hidden="true">·</span>
+                    <span>Narrated by ${escapeHtml(voiceLabel)} (AI)</span>
+                </p>
+                <audio class="blog-audio-card-audio" controls preload="metadata" data-audio-element>
                     <source src="${audio.url}" type="audio/mpeg">
-                    Your browser does not support the audio element.
+                    Your browser doesn't support embedded audio. <a href="${audio.url}">Download the MP3</a>.
                 </audio>
-            </section>
+            </figure>
   `;
 }
 
-function renderCompactAudioWidget(audio) {
+function renderAudioSticky({ audio, postTitle }) {
+  const totalLabel = audio.durationSeconds ? formatShortDuration(audio.durationSeconds) : '';
   return `
-            <section class="blog-audio-card-compact" aria-label="Audio version">
-                <h2 class="blog-audio-card-compact-title">Want the audio version again?</h2>
-                <p class="blog-audio-card-compact-copy">Keep listening here or reopen the player whenever you want a slower pass through the article.</p>
-                <audio controls preload="none">
-                    <source src="${audio.url}" type="audio/mpeg">
-                    Your browser does not support the audio element.
-                </audio>
-            </section>
+            <aside class="blog-audio-sticky" data-audio-sticky data-state="hidden" role="complementary" aria-label="Audio player" aria-hidden="true">
+                <button type="button" class="blog-audio-sticky-toggle" data-audio-toggle aria-pressed="false" aria-label="Play audio">
+                    <svg class="blog-audio-sticky-icon blog-audio-sticky-icon--play" viewBox="0 0 20 20" aria-hidden="true"><path d="M5.5 3.5 L15.5 10 L5.5 16.5 Z" fill="currentColor"/></svg>
+                    <svg class="blog-audio-sticky-icon blog-audio-sticky-icon--pause" viewBox="0 0 20 20" aria-hidden="true"><path d="M6 3.5 H8.5 V16.5 H6 Z M11.5 3.5 H14 V16.5 H11.5 Z" fill="currentColor"/></svg>
+                </button>
+                <div class="blog-audio-sticky-body">
+                    <p class="blog-audio-sticky-title">${escapeHtml(postTitle)}</p>
+                    <p class="blog-audio-sticky-time" aria-live="off">
+                        <span data-audio-current>0:00</span><span class="blog-audio-sticky-time-sep" aria-hidden="true"> / </span><span data-audio-duration>${escapeHtml(totalLabel)}</span>
+                    </p>
+                </div>
+                <button type="button" class="blog-audio-sticky-dismiss" data-audio-dismiss aria-label="Dismiss audio player">
+                    <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M4 4 L12 12 M12 4 L4 12" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" fill="none"/></svg>
+                </button>
+            </aside>
   `;
+}
+
+function capitalize(str) {
+  return str ? str.charAt(0).toUpperCase() + str.slice(1) : str;
+}
+
+function formatShortDuration(durationSeconds) {
+  const minutes = Math.floor(durationSeconds / 60);
+  const seconds = Math.floor(durationSeconds % 60);
+  return `${minutes}:${seconds.toString().padStart(2, '0')}`;
+}
+
+function formatDurationBrief(durationSeconds) {
+  const minutes = Math.floor(durationSeconds / 60);
+  const seconds = durationSeconds % 60;
+  if (minutes === 0) return `${seconds}s`;
+  if (seconds === 0) return `${minutes} min`;
+  return `${minutes}m ${String(seconds).padStart(2, '0')}s`;
 }
 
 function formatDate(dateString) {

@@ -142,46 +142,173 @@
             line-height: 1.8;
             color: var(--color-text-primary);
         }
-        .blog-audio-card,
-        .blog-audio-card-compact {
+        /* ── Hero audio card (minimal, New Yorker style) ── */
+        .blog-audio-card {
             max-width: 720px;
-            border: 1px solid var(--color-border);
-            background: linear-gradient(135deg, rgba(255, 138, 91, 0.14), rgba(255, 245, 240, 0.85));
-            border-radius: 18px;
-            padding: 24px;
-            margin-bottom: 32px;
+            margin: 24px 0 32px;
+            padding: 14px 0 16px;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
         }
-        [data-theme="dark"] .blog-audio-card,
-        [data-theme="dark"] .blog-audio-card-compact {
-            background: linear-gradient(135deg, rgba(229, 109, 66, 0.2), rgba(26, 26, 26, 0.9));
-        }
-        .blog-audio-card-title,
-        .blog-audio-card-compact-title {
-            margin: 0 0 8px;
-            font-size: 22px;
-            color: var(--color-text-primary);
-        }
-        .blog-audio-card-copy,
-        .blog-audio-card-compact-copy {
-            margin: 0 0 16px;
-            color: var(--color-text-secondary);
-        }
-        .blog-audio-meta {
+        .blog-audio-card-meta {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-bottom: 16px;
-            font-size: 14px;
+            align-items: center;
+            gap: 8px;
+            margin: 0 0 10px;
+            font-size: 11px;
+            font-weight: 600;
+            letter-spacing: 0.1em;
+            text-transform: uppercase;
             color: var(--color-text-secondary);
         }
-        .blog-audio-card audio,
-        .blog-audio-card-compact audio {
-            width: 100%;
+        .blog-audio-card-label {
+            color: #E56D42;
         }
-        .blog-audio-card-compact {
-            margin-top: var(--spacing-2xl);
-            margin-bottom: 0;
-            padding: 20px 24px;
+        [data-theme="dark"] .blog-audio-card-label {
+            color: #FF9A6F;
+        }
+        .blog-audio-card-sep {
+            opacity: 0.5;
+        }
+        .blog-audio-card-audio {
+            width: 100%;
+            max-width: 560px;
+            height: 40px;
+            accent-color: #FF8A5B;
+            color-scheme: light;
+        }
+        [data-theme="dark"] .blog-audio-card-audio {
+            color-scheme: dark;
+        }
+
+        /* ── Sticky mini bar ── */
+        .blog-audio-sticky {
+            position: fixed;
+            left: 50%;
+            bottom: 24px;
+            z-index: 50;
+            display: grid;
+            grid-template-columns: 40px 1fr auto;
+            align-items: center;
+            gap: 12px;
+            width: min(560px, calc(100vw - 32px));
+            height: 56px;
+            padding: 8px 12px 8px 8px;
+            background: rgba(255, 249, 247, 0.92);
+            border: 1px solid rgba(240, 232, 228, 0.9);
+            border-radius: 999px;
+            backdrop-filter: blur(18px) saturate(1.1);
+            -webkit-backdrop-filter: blur(18px) saturate(1.1);
+            box-shadow: 0 14px 40px rgba(31, 17, 10, 0.14), 0 2px 6px rgba(31, 17, 10, 0.06);
+            opacity: 0;
+            transform: translate(-50%, 16px);
+            pointer-events: none;
+            transition: opacity 300ms ease, transform 300ms cubic-bezier(0.22, 1, 0.36, 1);
+        }
+        .blog-audio-sticky[data-state="visible"] {
+            opacity: 1;
+            transform: translate(-50%, 0);
+            pointer-events: auto;
+        }
+        [data-theme="dark"] .blog-audio-sticky {
+            background: rgba(22, 22, 22, 0.88);
+            border-color: rgba(42, 42, 42, 0.9);
+            box-shadow: 0 14px 40px rgba(0, 0, 0, 0.55), 0 2px 6px rgba(0, 0, 0, 0.35);
+        }
+        .blog-audio-sticky-toggle {
+            width: 40px;
+            height: 40px;
+            border: none;
+            border-radius: 999px;
+            background: var(--color-primary);
+            color: #FFFFFF;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 200ms ease;
+            padding: 0;
+        }
+        .blog-audio-sticky-toggle:hover {
+            background: #E56D42;
+        }
+        [data-theme="dark"] .blog-audio-sticky-toggle {
+            color: #0F0F0F;
+        }
+        .blog-audio-sticky-toggle:focus-visible {
+            outline: 2px solid #5BC8CC;
+            outline-offset: 3px;
+        }
+        .blog-audio-sticky-icon {
+            width: 20px;
+            height: 20px;
+        }
+        .blog-audio-sticky-icon--pause {
+            display: none;
+        }
+        .blog-audio-sticky-toggle[aria-pressed="true"] .blog-audio-sticky-icon--play {
+            display: none;
+        }
+        .blog-audio-sticky-toggle[aria-pressed="true"] .blog-audio-sticky-icon--pause {
+            display: block;
+        }
+        .blog-audio-sticky-body {
+            min-width: 0;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+        }
+        .blog-audio-sticky-title {
+            margin: 0;
+            font-size: 14px;
+            font-weight: 600;
+            color: var(--color-text-primary);
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .blog-audio-sticky-time {
+            margin: 0;
+            font-size: 12px;
+            color: var(--color-text-secondary);
+            font-variant-numeric: tabular-nums;
+        }
+        .blog-audio-sticky-dismiss {
+            width: 32px;
+            height: 32px;
+            border: none;
+            border-radius: 999px;
+            background: transparent;
+            color: var(--color-text-secondary);
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: background-color 200ms ease;
+            padding: 0;
+        }
+        .blog-audio-sticky-dismiss:hover {
+            background: rgba(26, 26, 26, 0.06);
+        }
+        [data-theme="dark"] .blog-audio-sticky-dismiss:hover {
+            background: rgba(245, 245, 245, 0.08);
+        }
+        .blog-audio-sticky-dismiss:focus-visible {
+            outline: 2px solid #5BC8CC;
+            outline-offset: 3px;
+        }
+        .blog-audio-sticky-dismiss svg {
+            width: 14px;
+            height: 14px;
+        }
+        @media (prefers-reduced-motion: reduce) {
+            .blog-audio-sticky {
+                transition: none;
+            }
+            .blog-audio-sticky[data-state="hidden"] {
+                transform: translate(-50%, 0);
+            }
         }
         .blog-post-content h2 {
             font-size: var(--font-size-2xl);
@@ -300,6 +427,24 @@
                 max-width: 100%;
             }
         }
+        @media (max-width: 480px) {
+            .blog-audio-card-audio {
+                max-width: none;
+            }
+            .blog-audio-sticky {
+                bottom: 16px;
+                width: calc(100vw - 32px);
+            }
+            .blog-audio-sticky-title {
+                display: none;
+            }
+            .blog-audio-sticky-body {
+                align-items: center;
+            }
+            .blog-audio-sticky-time {
+                text-align: center;
+            }
+        }
     </style>
 </head>
 <body>
@@ -382,7 +527,7 @@
 
             <div class="blog-post-content">
                 <h2>Stop Serving Month-Old Food</h2>
-<p>A few years back, like many teams, we were stuck in deployment hell. Monthly releases, 17 engineers, three-hour war rooms. One bad change in 30 days of work would spoil everything. Nobody owned anything. Deployments were &quot;events&quot; not routine.</p>
+<p>A few years back, like many teams, I watched an engineering org get stuck in deployment hell. Monthly releases, a dozen-plus engineers on the hook, three-hour war rooms. One bad change in 30 days of work would spoil everything. Nobody owned anything. Deployments were &quot;events,&quot; not routine.</p>
 <p>Sound familiar?</p>
 <p>Here&#39;s what we&#39;re building with modern practices like GitOps, FluxCD, and Kubernetes: daily deployments with zero drama. Routine rollbacks, not crisis. Teams that never ask &quot;when will we deploy?&quot; because service runs on schedule. It&#39;s continuous improvement, and the principles below will accelerate your journey.</p>
 <p>The breakthrough didn&#39;t come from new tools or extensive retraining. It came from applying three principles from <em>The Bear</em>—yes, the FX show about a struggling restaurant kitchen. When we stopped treating deployments as crisis events and started treating them like dinner service, everything changed.</p>
@@ -401,11 +546,11 @@
 <p>That question exposes the real cost of batching. When the answer is &quot;all 47 PRs from the last month,&quot; you&#39;ve identified the problem.</p>
 <h2>Principle 2: Clear Ownership Kills the Committee</h2>
 <p>In <em>The Bear</em>, Marcus owns pastry. Not a committee. Not consensus. Not a rotation. Marcus. When pastry&#39;s late, there are no excuses. When pastry&#39;s perfect, Marcus gets the credit.</p>
-<p>The problem with most engineering teams isn&#39;t lack of skills—it&#39;s 17 engineers playing hot potato with deployment responsibility. My team had the skills all along. The breakthrough came when we assigned one owner per environment.</p>
+<p>The problem with most engineering teams isn&#39;t lack of skills — it&#39;s a dozen-plus engineers playing hot potato with deployment responsibility. The team had the skills all along. The breakthrough came when one owner was assigned per environment.</p>
 <p>Not a team. Not a rotation. <strong>One person.</strong></p>
-<p>When Sarah owns the test environment deployment, the question isn&#39;t &quot;who should deploy?&quot; It&#39;s &quot;Sarah, what&#39;s the status?&quot; Excuses evaporate. Ownership creates accountability. Accountability creates results.</p>
-<p>This was uncomfortable at first. Managers worried about single points of failure. Engineers worried about being blamed. But here&#39;s what happened: Sarah didn&#39;t do all the work—she owned the service. She coordinated, she unblocked, she made the call when we needed to rollback. The team supported her, but she owned it.</p>
-<p>Within two weeks, test environment deployments went from &quot;whenever someone has time&quot; to &quot;10am daily, Sarah runs service.&quot;</p>
+<p>When a single engineer owns the test environment deployment, the question isn&#39;t &quot;who should deploy?&quot; It&#39;s &quot;what&#39;s the status?&quot; Excuses evaporate. Ownership creates accountability. Accountability creates results.</p>
+<p>This was uncomfortable at first. Managers worried about single points of failure. Engineers worried about being blamed. But here&#39;s what happened: the owner didn&#39;t do all the work — they owned the service. They coordinated, they unblocked, they made the call when the team needed to rollback. The team supported them, but they owned it.</p>
+<p>Within two weeks, test environment deployments went from &quot;whenever someone has time&quot; to &quot;10am daily, the test-env owner runs service.&quot;</p>
 <p><strong>Tomorrow morning in standup:</strong></p>
 <p>Assign one person as the deployment owner for each environment (test, staging, prod). Not a team, not a rotation—ONE person. That person doesn&#39;t do all the work, but they own the service.</p>
 <p>Watch how fast &quot;we&#39;re not ready&quot; becomes &quot;here&#39;s what we need to be ready.&quot;</p>
@@ -429,11 +574,11 @@
 <h3>2. Station Ownership</h3>
 <p>Each environment has one owner, like stations in a kitchen:</p>
 <ul>
-<li>Test environment: Sarah</li>
-<li>Staging: Marcus</li>
-<li>Production: Alex</li>
+<li>Test environment: one engineer owns it</li>
+<li>Staging: one engineer owns it</li>
+<li>Production: one engineer owns it</li>
 </ul>
-<p>They don&#39;t do everything—they own the service. They coordinate, unblock, make the call.</p>
+<p>They don&#39;t do everything — they own the service. They coordinate, unblock, make the call.</p>
 <h3>3. Service Standards</h3>
 <p>Clear definition of &quot;ready for service&quot;:</p>
 <ul>
@@ -456,10 +601,10 @@
 </ul>
 <p>This isn&#39;t a long retrospective. It&#39;s a quick sync to close the loop and prep for next service.</p>
 <h2>How It Works in Practice</h2>
-<p><strong>Morning standup (9am):</strong><br>&quot;What&#39;s ready for the 10am service?&quot;<br>Sarah: &quot;I&#39;ve got the new payment flow—tests green, ready to go.&quot;<br>Marcus: &quot;My feature needs one more test fix—I&#39;ll target 2pm service.&quot;</p>
-<p><strong>First service window (10am):</strong><br>Sarah deploys to test, checks canary metrics for 15 minutes. Clean. Proceeds to prod with canary rollout: 5% → 50% → 100%. Monitors error rates, latency, key business metrics.</p>
-<p><strong>Issue detected (10:18am):</strong><br>Alex: &quot;Behind! Error rate spike on checkout endpoint.&quot;<br>Sarah: &quot;Rolling back now.&quot;<br>Within 3 minutes, rollback complete. Service restored.</p>
-<p><strong>Second service window (2pm):</strong><br>Marcus runs his deploy. Tests pass, canary clean, full rollout complete by 2:20pm.</p>
+<p><strong>Morning standup (9am):</strong><br>&quot;What&#39;s ready for the 10am service?&quot; The test-env owner flags the new payment flow — tests green, good to go. Another engineer mentions their feature needs one more test fix and will target 2pm service.</p>
+<p><strong>First service window (10am):</strong><br>The test-env owner deploys to test and checks canary metrics for 15 minutes. Clean. The prod owner proceeds with a canary rollout: 5% → 50% → 100%, monitoring error rates, latency, and key business metrics.</p>
+<p><strong>Issue detected (10:18am):</strong><br>The prod owner calls &quot;Behind!&quot; in Slack — error rate spike on the checkout endpoint. Rollback starts immediately. Within three minutes, rollback is complete. Service restored.</p>
+<p><strong>Second service window (2pm):</strong><br>The staging lead runs their deploy. Tests pass, canary clean, full rollout complete by 2:20pm.</p>
 <p><strong>End of day:</strong><br>Two features shipped. One rollback (no drama). Tomorrow&#39;s menu identified.</p>
 <h2>Measuring What Matters</h2>
 <p>Track four metrics:</p>
@@ -495,7 +640,7 @@
 <p>You&#39;re already breaking production monthly—just with more damage. This is like saying one massive surgery is safer than daily checkups. When you break daily with small changes, you know exactly what broke. When you break monthly with 30 days of changes, you&#39;re debugging a haystack.</p>
 <p>Plus, rollback is trivial when it&#39;s one small change versus a month of work.</p>
 <p><strong>&quot;We need better tooling first.&quot;</strong></p>
-<p>My team had the same tools before and after. What changed? Ownership and accountability. Start service with what you have. You&#39;ll discover real blockers fast, not theoretical ones.</p>
+<p>The team had the same tools before and after. What changed? Ownership and accountability. Start service with what you have. You&#39;ll discover real blockers fast, not theoretical ones.</p>
 <p>Pick ONE blocker—the biggest one—and fix it. Don&#39;t wait for the perfect toolchain.</p>
 <p><strong>&quot;Daily deploys will expose who&#39;s actually slow.&quot;</strong></p>
 <p>Yes. That&#39;s the point.</p>
@@ -526,8 +671,6 @@
 
             </div>
 
-            
-
             <footer class="blog-post-footer">
                 <div class="text-center">
                     <h3>Join Bear Essentials</h3>
@@ -538,6 +681,7 @@
                 </div>
             </footer>
         </article>
+        
     </main>
 
     <!-- Footer -->
@@ -578,5 +722,80 @@
 
     <!-- Scripts -->
     <script src="/js/main.js" defer></script>
+    <script>
+      (function () {
+        var card = document.querySelector('[data-audio-card]');
+        if (!card) { return; }
+        var audio = card.querySelector('[data-audio-element]');
+        var sticky = document.querySelector('[data-audio-sticky]');
+        if (!audio || !sticky) { return; }
+        var toggle = sticky.querySelector('[data-audio-toggle]');
+        var dismiss = sticky.querySelector('[data-audio-dismiss]');
+        var currentEl = sticky.querySelector('[data-audio-current]');
+        var durationEl = sticky.querySelector('[data-audio-duration]');
+        var hasPlayed = false;
+        var dismissed = false;
+        var cardVisible = true;
+
+        function formatTime(seconds) {
+          if (!isFinite(seconds) || seconds < 0) { return '0:00'; }
+          var m = Math.floor(seconds / 60);
+          var s = Math.floor(seconds % 60);
+          return m + ':' + (s < 10 ? '0' + s : s);
+        }
+
+        function updateStickyState() {
+          if (dismissed || !hasPlayed || cardVisible) {
+            sticky.setAttribute('data-state', 'hidden');
+            sticky.setAttribute('aria-hidden', 'true');
+          } else {
+            sticky.setAttribute('data-state', 'visible');
+            sticky.setAttribute('aria-hidden', 'false');
+          }
+        }
+
+        audio.addEventListener('play', function () {
+          hasPlayed = true;
+          card.setAttribute('data-playing', 'true');
+          toggle.setAttribute('aria-pressed', 'true');
+          toggle.setAttribute('aria-label', 'Pause audio');
+          updateStickyState();
+        });
+        audio.addEventListener('pause', function () {
+          card.setAttribute('data-playing', 'false');
+          toggle.setAttribute('aria-pressed', 'false');
+          toggle.setAttribute('aria-label', 'Play audio');
+        });
+        audio.addEventListener('ended', function () {
+          card.setAttribute('data-playing', 'false');
+          toggle.setAttribute('aria-pressed', 'false');
+          toggle.setAttribute('aria-label', 'Play audio');
+        });
+        audio.addEventListener('loadedmetadata', function () {
+          if (durationEl) { durationEl.textContent = formatTime(audio.duration); }
+        });
+        audio.addEventListener('timeupdate', function () {
+          if (currentEl) { currentEl.textContent = formatTime(audio.currentTime); }
+        });
+
+        toggle.addEventListener('click', function () {
+          if (audio.paused) { audio.play(); } else { audio.pause(); }
+        });
+        dismiss.addEventListener('click', function () {
+          dismissed = true;
+          updateStickyState();
+        });
+
+        if ('IntersectionObserver' in window) {
+          var observer = new IntersectionObserver(function (entries) {
+            entries.forEach(function (entry) {
+              cardVisible = entry.intersectionRatio >= 0.1;
+              updateStickyState();
+            });
+          }, { threshold: [0, 0.1] });
+          observer.observe(card);
+        }
+      })();
+    </script>
 </body>
 </html>
