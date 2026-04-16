@@ -252,9 +252,31 @@ tags: ["tag1", "tag2", "tag3"]
 - Include specific metrics: "20%", "50+ engineers", "10M+ requests"
 - Link to relevant pages when appropriate
 
-#### Bear Essentials Newsletter (150-200 words)
+#### Bear Essentials Newsletter
 
-**Structure:**
+The newsletter supports two layout variants selected via the `LAYOUT` parameter.
+See `content-pipeline/templates/newsletter-template.md` → "Layout Variants" for
+the canonical template with full guidelines and examples.
+
+**LAYOUT: single** (default, 150–200 words)
+
+One featured blog post. Hook → Insight → Takeaway → Link → CTA → Signature.
+
+**LAYOUT: icymi** (160–210 words)
+
+One featured blog post (same structure as single), plus an "If you missed
+these" block after the blog link and before the CTA. The ICYMI block contains
+1 line per older post — title as a link + a descriptive hook (8-15 words, NOT
+a title repeat). Total ICYMI budget: ~30-50 additional words.
+
+When the orchestrator passes `LAYOUT: icymi`, it also passes `ICYMI_ITEMS` — a
+list of `{title, blog_url, hook}` objects. Use these verbatim for the ICYMI
+block. If no `hook` is provided for an item, read the blog post's frontmatter
+`excerpt` field and compress it to 8-15 words.
+
+**IMPORTANT:** ICYMI items reference blog posts the reader may have missed on
+the site. They do NOT need to have appeared in a prior newsletter.
+
 ```markdown
 Subject: [Compelling subject line - under 50 chars]
 
@@ -264,7 +286,12 @@ Subject: [Compelling subject line - under 50 chars]
 
 [Practical takeaway - one actionable step]
 
-[Link to full blog post if applicable]
+Read the full post: https://miketineo.com/blog/[slug-without-date].html
+
+---                            ← only present when LAYOUT=icymi
+
+If you missed these:           ← only present when LAYOUT=icymi
+- [Title](url) — [hook]       ← only present when LAYOUT=icymi
 
 [Call to action - reply, share, discuss]
 

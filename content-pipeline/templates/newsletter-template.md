@@ -7,7 +7,69 @@
 
 ---
 
-## Template Structure
+## Layout Variants
+
+The newsletter supports two layouts. The copy-writer agent selects one based on
+how many posts are ready — single when one post is pending, ICYMI when there is
+a backlog. The ICYMI block sits after the feature post's link and before the CTA.
+
+### Single Feature (default, 150–200 words)
+
+```
+Subject: [Compelling subject line - under 50 characters]
+
+[Opening hook - 1-2 punchy sentences that grab attention]
+
+[Core insight - the main point in 3-4 sentences]
+
+[Practical takeaway - one specific actionable step]
+
+Read the full post: https://miketineo.com/blog/[slug-without-date].html
+
+[Call to action - engage, reply, share, discuss]
+
+— Miguel
+
+P.S. [Optional: Quick personal note or related resource]
+```
+
+### Feature + ICYMI (160–210 words)
+
+The feature section follows the same structure as Single Feature. The ICYMI
+block is strictly additional — 1 line per older post, each with a descriptive
+hook (not just a title repeat). Total ICYMI budget: ~30–50 words.
+
+**IMPORTANT:** Only reference posts whose blog URL is live. ICYMI does NOT
+require the referenced posts to have been in a previous newsletter — these are
+blog posts the reader may have missed on the site, not newsletter reruns.
+
+```
+Subject: [Compelling subject line - under 50 characters]
+
+[Opening hook - 1-2 punchy sentences that grab attention]
+
+[Core insight - the main point in 3-4 sentences]
+
+[Practical takeaway - one specific actionable step]
+
+Read the full post: https://miketineo.com/blog/[slug-without-date].html
+
+---
+
+If you missed these:
+- [Title 1](https://miketineo.com/blog/[slug1].html) — [1-line hook, 8-15 words]
+- [Title 2](https://miketineo.com/blog/[slug2].html) — [1-line hook, 8-15 words]
+
+[Call to action - engage, reply, share, discuss]
+
+— Miguel
+
+P.S. [Optional: Quick personal note or related resource]
+```
+
+---
+
+## Template Structure (reference — same as Single Feature)
 
 ```
 Subject: [Compelling subject line - under 50 characters]
