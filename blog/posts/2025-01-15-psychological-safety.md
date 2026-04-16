@@ -3,6 +3,7 @@ title: "Building Psychological Safety in Remote Teams"
 date: 2025-01-15
 excerpt: "Learn practical strategies for creating trust and safety in distributed engineering teams, enabling innovation and honest communication."
 tags: ["leadership", "remote-work", "culture"]
+illustration: "campfire"
 ---
 
 ## Why Psychological Safety Matters

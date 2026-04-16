@@ -3,6 +3,7 @@ title: "Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangl
 date: 2025-10-18
 excerpt: "How engineering leaders can optimize AI infrastructure for cost, control, and carbon impact — and why single-axis optimization leaves value on the table."
 tags: ["ai", "infrastructure", "sustainability", "cost-optimization"]
+illustration: "lantern"
 ---
 
 ## When the API Bill Gets Too Loud to Ignore

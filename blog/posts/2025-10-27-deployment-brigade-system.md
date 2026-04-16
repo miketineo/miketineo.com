@@ -3,6 +3,7 @@ title: "What The Bear Taught Me About Daily Deployments"
 date: 2025-10-27
 excerpt: "Monthly deployments are like serving 30-day-old food. Here's how three principles from professional kitchens can transform deployment hell into daily routine."
 tags: ["continuous-delivery", "deployment", "engineering-culture", "devops"]
+illustration: "map"
 ---
 
 ## Stop Serving Month-Old Food

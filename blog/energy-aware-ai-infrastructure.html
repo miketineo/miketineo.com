@@ -26,7 +26,7 @@
     <!-- Theme must load before page renders to prevent flash -->
     <script src="/js/theme.js"></script>
 
-    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <!-- Cookie Consent & Analytics (PostHog) -->
     <script src="/js/cookie-consent.js" defer></script>
 
     <style>
@@ -485,19 +485,20 @@
                 <div class="blog-post-hero-main">
                     <div class="blog-post-illustration">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <circle cx="40" cy="40" r="28"/>
-  <circle cx="40" cy="40" r="4"/>
-  <!-- Cardinal marks -->
-  <line x1="40" y1="12" x2="40" y2="18"/>
-  <line x1="40" y1="62" x2="40" y2="68"/>
-  <line x1="12" y1="40" x2="18" y2="40"/>
-  <line x1="62" y1="40" x2="68" y2="40"/>
-  <!-- N label -->
-  <text x="37" y="10" font-size="7" stroke-width="1.2" fill="#1A1A1A" font-family="Georgia,serif">N</text>
-  <!-- Needle north (dark) -->
-  <polygon points="40,20 37,40 40,36 43,40" fill="#1A1A1A" stroke="none"/>
-  <!-- Needle south (light) -->
-  <polygon points="40,60 37,40 40,44 43,40" fill="none" stroke="#1A1A1A" stroke-width="2"/>
+  <!-- Top cap -->
+  <path d="M32 18 L48 18 L52 26 L28 26 Z"/>
+  <!-- Handle arc -->
+  <path d="M34 18 Q40 10 46 18"/>
+  <!-- Body -->
+  <rect x="26" y="26" width="28" height="34" rx="4"/>
+  <!-- Glass panels (vertical lines) -->
+  <line x1="34" y1="26" x2="34" y2="60"/>
+  <line x1="40" y1="26" x2="40" y2="60"/>
+  <line x1="46" y1="26" x2="46" y2="60"/>
+  <!-- Base -->
+  <path d="M24 60 L56 60 L54 68 L26 68 Z"/>
+  <!-- Flame -->
+  <path d="M40 44 C38 40 36 37 38 33 C39 36 41 35 40 31 C43 35 44 33 43 38 C45 35 46 38 44 42 C43 39 41 40 42 44 Z" stroke-width="1.5"/>
 </svg>
                     </div>
                     <h1 class="blog-post-title">Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle</h1>

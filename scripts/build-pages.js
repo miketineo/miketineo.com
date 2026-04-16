@@ -93,7 +93,7 @@ function generatePage(pageConfig) {
     <!-- Theme must load before page renders to prevent flash -->
     <script src="/js/theme.js"></script>
 
-    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <!-- Cookie Consent & Analytics (PostHog) -->
     <script src="/js/cookie-consent.js" defer></script>
 
     <!-- JSON-LD Structured Data (for homepage only) -->

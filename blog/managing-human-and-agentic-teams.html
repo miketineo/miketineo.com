@@ -3,21 +3,21 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="Monthly deployments are like serving 30-day-old food. Here&#039;s how three principles from professional kitchens can transform deployment hell into daily routine.">
+    <meta name="description" content="Agile was designed for humans. When agents join the team, the entire management system needs to shift — from input quality to output quality, from conversation to context.">
     <meta name="author" content="Miguel Tineo">
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="article">
-    <meta property="og:url" content="https://miketineo.com/blog/deployment-brigade-system.html">
-    <meta property="og:title" content="What The Bear Taught Me About Daily Deployments">
-    <meta property="og:description" content="Monthly deployments are like serving 30-day-old food. Here&#039;s how three principles from professional kitchens can transform deployment hell into daily routine.">
+    <meta property="og:url" content="https://miketineo.com/blog/managing-human-and-agentic-teams.html">
+    <meta property="og:title" content="Managing Human and Agentic Engineering Teams">
+    <meta property="og:description" content="Agile was designed for humans. When agents join the team, the entire management system needs to shift — from input quality to output quality, from conversation to context.">
 
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="What The Bear Taught Me About Daily Deployments">
-    <meta name="twitter:description" content="Monthly deployments are like serving 30-day-old food. Here&#039;s how three principles from professional kitchens can transform deployment hell into daily routine.">
+    <meta name="twitter:title" content="Managing Human and Agentic Engineering Teams">
+    <meta name="twitter:description" content="Agile was designed for humans. When agents join the team, the entire management system needs to shift — from input quality to output quality, from conversation to context.">
 
-    <title>What The Bear Taught Me About Daily Deployments - Miguel Tineo</title>
+    <title>Managing Human and Agentic Engineering Teams - Miguel Tineo</title>
 
     <!-- Stylesheets -->
     <link rel="stylesheet" href="/css/main.css">
@@ -485,36 +485,44 @@
                 <div class="blog-post-hero-main">
                     <div class="blog-post-illustration">
                         <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-  <!-- Map body with fold lines -->
-  <path d="M12 18 L32 14 L48 18 L68 14 L68 62 L48 66 L32 62 L12 66 Z"/>
-  <!-- Fold creases -->
-  <line x1="32" y1="14" x2="32" y2="62"/>
-  <line x1="48" y1="18" x2="48" y2="66"/>
-  <line x1="12" y1="40" x2="68" y2="40"/>
-  <!-- X mark -->
-  <line x1="52" y1="28" x2="60" y2="36"/>
-  <line x1="60" y1="28" x2="52" y2="36"/>
-  <!-- Route line -->
-  <path d="M20 52 Q24 46 30 50 Q36 54 40 48" stroke-width="1.5"/>
-  <!-- Start dot -->
-  <circle cx="20" cy="52" r="2" fill="#1A1A1A" stroke="none"/>
+  <!-- Left arm -->
+  <path d="M8 38 L22 38"/>
+  <!-- Right arm -->
+  <path d="M58 38 L72 38"/>
+  <!-- Left hand fingers -->
+  <path d="M22 38 L30 34 L38 38 L46 34"/>
+  <!-- Right hand fingers -->
+  <path d="M58 38 L50 34 L46 34"/>
+  <!-- Clasp (the grip) -->
+  <path d="M34 32 Q40 26 46 32"/>
+  <path d="M32 40 Q40 46 48 40"/>
+  <!-- Wrist cuffs -->
+  <rect x="6" y="34" width="16" height="8" rx="2"/>
+  <rect x="58" y="34" width="16" height="8" rx="2"/>
+  <!-- Motion lines -->
+  <line x1="36" y1="22" x2="38" y2="18"/>
+  <line x1="40" y1="20" x2="40" y2="16"/>
+  <line x1="44" y1="22" x2="42" y2="18"/>
 </svg>
                     </div>
-                    <h1 class="blog-post-title">What The Bear Taught Me About Daily Deployments</h1>
-                    
+                    <h1 class="blog-post-title">Managing Human and Agentic Engineering Teams</h1>
+                    <p class="blog-post-subtitle">What changes when agents join the team, and where management attention has to go</p>
                     <div class="blog-post-tags">
-          <span class="blog-post-tag">continuous-delivery</span><span class="blog-post-tag">deployment</span><span class="blog-post-tag">engineering-culture</span><span class="blog-post-tag">devops</span>
+          <span class="blog-post-tag">engineering-leadership</span><span class="blog-post-tag">agentic-engineering</span><span class="blog-post-tag">ai</span><span class="blog-post-tag">team-management</span>
       </div>
                 </div>
                 <aside class="blog-post-sidebar">
-                    
+                    <div class="sidebar-item">
+                        <span class="sidebar-label">Category</span>
+                        <span class="sidebar-value">Engineering Leadership</span>
+                    </div>
                     <div class="sidebar-item">
                         <span class="sidebar-label">Date</span>
-                        <span class="sidebar-value">October 27, 2025</span>
+                        <span class="sidebar-value">April 16, 2026</span>
                     </div>
                     <div class="sidebar-item">
                         <span class="sidebar-label">Reading time</span>
-                        <span class="sidebar-value">10 min</span>
+                        <span class="sidebar-value">5 min</span>
                     </div>
                     <div class="sidebar-item">
                         <span class="sidebar-label">Share</span>
@@ -526,148 +534,51 @@
             
 
             <div class="blog-post-content">
-                <h2>Stop Serving Month-Old Food</h2>
-<p>A few years back, like many teams, I watched an engineering org get stuck in deployment hell. Monthly releases, a dozen-plus engineers on the hook, three-hour war rooms. One bad change in 30 days of work would spoil everything. Nobody owned anything. Deployments were &quot;events,&quot; not routine.</p>
-<p>Sound familiar?</p>
-<p>Here&#39;s what we&#39;re building with modern practices like GitOps, FluxCD, and Kubernetes: daily deployments with zero drama. Routine rollbacks, not crisis. Teams that never ask &quot;when will we deploy?&quot; because service runs on schedule. It&#39;s continuous improvement, and the principles below will accelerate your journey.</p>
-<p>The breakthrough didn&#39;t come from new tools or extensive retraining. It came from applying three principles from <em>The Bear</em>—yes, the FX show about a struggling restaurant kitchen. When we stopped treating deployments as crisis events and started treating them like dinner service, everything changed.</p>
-<h2>The Monthly Deployment Buffet Problem</h2>
-<p>Monthly deployments are like serving a 30-dish buffet where every item has been sitting for a day. When something tastes wrong, you can&#39;t isolate which dish is the problem—you&#39;re throwing out the entire buffet or doing emergency surgery to extract the bad item.</p>
-<p>According to <a href="https://dora.dev/">DORA&#39;s State of DevOps research</a>, elite performers deploy on-demand, multiple times per day, with lead times under one hour. They&#39;re not serving month-old food. They&#39;re serving fresh dishes, one at a time, with immediate feedback.</p>
-<p>The shift from monthly chaos to daily service isn&#39;t about moving faster for speed&#39;s sake. It&#39;s about reducing batch size, establishing clear ownership, and treating software delivery as a service operation with standards and accountability.</p>
-<p>Here&#39;s how to make it happen.</p>
-<h2>Principle 1: Reduce Batch Size - One Dish at a Time</h2>
-<p>In <em>The Bear</em>, Marcus doesn&#39;t serve 30 different pastries at once. He serves one perfect donut. When something&#39;s off, he fixes that one item and moves on.</p>
-<p>Your monthly deployment is a 30-day buffet. A single bad change requires rolling back everything or debugging which of hundreds of commits broke production. With daily deploys, you&#39;re serving 1-2 changes at a time. If something breaks, you know exactly what broke it. Rollback is trivial.</p>
-<p>This isn&#39;t theoretical. Jez Humble and David Farley established this principle in <em>Continuous Delivery</em>: reduce batch size to reduce risk. Small batches mean faster feedback, easier debugging, and lower-stakes rollbacks.</p>
-<p><strong>Try this tomorrow:</strong></p>
-<p>Visualize your deployment as a restaurant buffet. Monthly = 30 dishes at once (overwhelming, high risk). Daily = 1-2 dishes (manageable, isolated risk).</p>
-<p>Ask your team: &quot;If this change breaks, how many other changes do we have to roll back with it?&quot;</p>
-<p>That question exposes the real cost of batching. When the answer is &quot;all 47 PRs from the last month,&quot; you&#39;ve identified the problem.</p>
-<h2>Principle 2: Clear Ownership Kills the Committee</h2>
-<p>In <em>The Bear</em>, Marcus owns pastry. Not a committee. Not consensus. Not a rotation. Marcus. When pastry&#39;s late, there are no excuses. When pastry&#39;s perfect, Marcus gets the credit.</p>
-<p>The problem with most engineering teams isn&#39;t lack of skills — it&#39;s a dozen-plus engineers playing hot potato with deployment responsibility. The team had the skills all along. The breakthrough came when one owner was assigned per environment.</p>
-<p>Not a team. Not a rotation. <strong>One person.</strong></p>
-<p>When a single engineer owns the test environment deployment, the question isn&#39;t &quot;who should deploy?&quot; It&#39;s &quot;what&#39;s the status?&quot; Excuses evaporate. Ownership creates accountability. Accountability creates results.</p>
-<p>This was uncomfortable at first. Managers worried about single points of failure. Engineers worried about being blamed. But here&#39;s what happened: the owner didn&#39;t do all the work — they owned the service. They coordinated, they unblocked, they made the call when the team needed to rollback. The team supported them, but they owned it.</p>
-<p>Within two weeks, test environment deployments went from &quot;whenever someone has time&quot; to &quot;10am daily, the test-env owner runs service.&quot;</p>
-<p><strong>Tomorrow morning in standup:</strong></p>
-<p>Assign one person as the deployment owner for each environment (test, staging, prod). Not a team, not a rotation—ONE person. That person doesn&#39;t do all the work, but they own the service.</p>
-<p>Watch how fast &quot;we&#39;re not ready&quot; becomes &quot;here&#39;s what we need to be ready.&quot;</p>
-<h2>Principle 3: Service-Level Accountability - It&#39;s Not an Event, It&#39;s Service</h2>
-<p>The biggest shift wasn&#39;t technical. It was linguistic.</p>
-<p>We stopped calling them &quot;deployments.&quot; We started calling them &quot;service.&quot;</p>
-<p>When it&#39;s a &quot;deployment,&quot; teams can say &quot;we&#39;re not ready.&quot; When it&#39;s &quot;service,&quot; the question becomes &quot;what do we need to run service today?&quot;</p>
-<p>In a restaurant, you don&#39;t cancel dinner service because the kitchen&#39;s messy. You work the problem. The guests are coming at 6pm whether you&#39;re ready or not.</p>
-<p>This mental model shift is everything. Deployments are events that happen when convenient. Service is an operation that runs on schedule. Service has standards. Service has customers waiting.</p>
-<p>The language shaped behavior. Once we started saying &quot;What time is service?&quot; instead of &quot;When should we deploy?&quot;, the team treated it like something that must happen, not something that might happen.</p>
-<p><strong>This week:</strong></p>
-<p>Change your language. Stop saying &quot;deployment.&quot; Say &quot;service.&quot;</p>
-<p>In Slack: &quot;What time is deployment service today?&quot;<br>In standup: &quot;Are we ready for service?&quot;<br>In retrospectives: &quot;How did service go this week?&quot;</p>
-<p>Language shapes culture. When you call it service, teams treat it like a professional operation with standards, not a special event that requires perfect conditions.</p>
-<h2>The Deployment Brigade System</h2>
-<p>Here&#39;s the framework that emerged from applying these three principles:</p>
-<h3>1. Daily Service Schedule</h3>
-<p>Just like dinner service starts at 6pm, deployment service runs on a schedule. We picked two time windows: 10am and 2pm.</p>
-<p>Code ready by 9:30am? It goes in the 10am service.<br>Not ready? It waits for 2pm.</p>
-<p>No more &quot;when will this deploy?&quot; questions. The schedule is the schedule.</p>
-<h3>2. Station Ownership</h3>
-<p>Each environment has one owner, like stations in a kitchen:</p>
-<ul>
-<li>Test environment: one engineer owns it</li>
-<li>Staging: one engineer owns it</li>
-<li>Production: one engineer owns it</li>
-</ul>
-<p>They don&#39;t do everything — they own the service. They coordinate, unblock, make the call.</p>
-<h3>3. Service Standards</h3>
-<p>Clear definition of &quot;ready for service&quot;:</p>
-<ul>
-<li>Tests pass (green CI pipeline)</li>
-<li>Canary deployment plan ready</li>
-<li>Rollback plan verified</li>
-<li>Metrics dashboard clean</li>
-</ul>
-<p>No standards? No service. Simple as that.</p>
-<h3>4. &quot;Behind!&quot; Protocol</h3>
-<p>In professional kitchens, when something&#39;s wrong, you shout &quot;Behind!&quot; The brigade doesn&#39;t blame—they help.</p>
-<p>We adopted the same protocol. When something breaks during service, the owner calls &quot;Behind!&quot; in Slack. No blame. No finger-pointing. The team swarms to help or executes immediate rollback.</p>
-<p>This created urgency culture, not blame culture. Problems get surfaced instantly because surfacing them brings help, not punishment.</p>
-<h3>5. Post-Service Review</h3>
-<p>At the end of each service window, a quick 5-minute recap:</p>
-<ul>
-<li>What went out?</li>
-<li>Any issues?</li>
-<li>What&#39;s on tomorrow&#39;s menu?</li>
-</ul>
-<p>This isn&#39;t a long retrospective. It&#39;s a quick sync to close the loop and prep for next service.</p>
-<h2>How It Works in Practice</h2>
-<p><strong>Morning standup (9am):</strong><br>&quot;What&#39;s ready for the 10am service?&quot; The test-env owner flags the new payment flow — tests green, good to go. Another engineer mentions their feature needs one more test fix and will target 2pm service.</p>
-<p><strong>First service window (10am):</strong><br>The test-env owner deploys to test and checks canary metrics for 15 minutes. Clean. The prod owner proceeds with a canary rollout: 5% → 50% → 100%, monitoring error rates, latency, and key business metrics.</p>
-<p><strong>Issue detected (10:18am):</strong><br>The prod owner calls &quot;Behind!&quot; in Slack — error rate spike on the checkout endpoint. Rollback starts immediately. Within three minutes, rollback is complete. Service restored.</p>
-<p><strong>Second service window (2pm):</strong><br>The staging lead runs their deploy. Tests pass, canary clean, full rollout complete by 2:20pm.</p>
-<p><strong>End of day:</strong><br>Two features shipped. One rollback (no drama). Tomorrow&#39;s menu identified.</p>
-<h2>Measuring What Matters</h2>
-<p>Track four metrics:</p>
-<p><strong>1. Deployment Frequency</strong></p>
-<ul>
-<li>Before: 1x per month (often slipped to 6 weeks)</li>
-<li>Target: 1x per day minimum, work up to 6+</li>
-<li>How: Count successful production deployments per day</li>
-</ul>
-<p><strong>2. Lead Time for Changes</strong></p>
-<ul>
-<li>Before: 30 days (monthly cycle)</li>
-<li>Target: Same day (code merged → deployed)</li>
-<li>How: Track time from PR merge to production</li>
-</ul>
-<p><strong>3. Change Failure Rate</strong></p>
-<ul>
-<li>Before: Unknown (too many changes to isolate)</li>
-<li>Target: &lt;15% initially (will improve)</li>
-<li>How: Deployments requiring rollback ÷ total deployments</li>
-</ul>
-<p><strong>4. Time to Restore Service</strong></p>
-<ul>
-<li>Before: Hours (debugging which change broke)</li>
-<li>Target: &lt;15 minutes (rollback is routine)</li>
-<li>How: Time from incident to service restored</li>
-</ul>
-<p><strong>The Non-Obvious Metric:</strong><br>Track how many times per week someone asks &quot;when will this deploy?&quot;</p>
-<p>Target: Zero.</p>
-<p>When service runs daily, nobody asks—they know the schedule.</p>
-<h2>What Stops Most Teams (And How to Fix It)</h2>
-<p><strong>&quot;We&#39;ll break production daily instead of monthly.&quot;</strong></p>
-<p>You&#39;re already breaking production monthly—just with more damage. This is like saying one massive surgery is safer than daily checkups. When you break daily with small changes, you know exactly what broke. When you break monthly with 30 days of changes, you&#39;re debugging a haystack.</p>
-<p>Plus, rollback is trivial when it&#39;s one small change versus a month of work.</p>
-<p><strong>&quot;We need better tooling first.&quot;</strong></p>
-<p>The team had the same tools before and after. What changed? Ownership and accountability. Start service with what you have. You&#39;ll discover real blockers fast, not theoretical ones.</p>
-<p>Pick ONE blocker—the biggest one—and fix it. Don&#39;t wait for the perfect toolchain.</p>
-<p><strong>&quot;Daily deploys will expose who&#39;s actually slow.&quot;</strong></p>
-<p>Yes. That&#39;s the point.</p>
-<p>Monthly cycles let everyone hide. Daily service makes velocity visible. This is the unspoken objection that kills most transformation efforts. Middle managers resist because they can&#39;t obscure problems anymore.</p>
-<p>But if you&#39;re serious about improvement, transparency is required. <em>The Bear</em> succeeds because there&#39;s nowhere to hide during service. That pressure drives excellence.</p>
-<h2>Start Service Tomorrow</h2>
-<p>Don&#39;t announce a transformation. Don&#39;t create a roadmap. Don&#39;t form a committee.</p>
-<p>Tomorrow morning, ask your team one question: &quot;What would need to be true for us to deploy today?&quot;</p>
-<p>Write down every excuse. Those are your actual blockers.</p>
-<p>Pick the biggest one. Assign ONE owner. Give them 48 hours to fix it or propose a fix.</p>
-<p>Then pick a pilot team—your strongest team, the one closest to weekly deploys already. Let them be the pilot kitchen. When they&#39;re deploying daily without drama, fear evaporates across the organization.</p>
-<p>Start with what you have. Change your language. Assign owners. Run service.</p>
+                <h2>Agile Was Designed for Humans</h2>
+<p>Sprint planning. Acceptance criteria. Standups. Every part of the Agile system assumes the person receiving the ticket will ask questions, push back, and bring judgment to the work.</p>
+<p>Agents don&#39;t do any of that. They just run.</p>
+<p>The moment you try to apply your existing management system to a growing <strong>agent fleet</strong> is the moment you realize it doesn&#39;t translate. No meeting to invite an agent to. No back-and-forth on acceptance criteria. The agent opens the ticket and starts working.</p>
+<p>I wrote recently about <a href="/blog/orchestrating-outcomes.html">the individual workflow shift</a> — the difference between engineers who use AI as a faster keyboard and engineers who run autonomous workflows to ship full features. That post covered the engineer&#39;s perspective. This one is about the manager&#39;s.</p>
+<hr>
+<h2>From Input Quality to Output Quality</h2>
+<p>Traditional engineering management is front-loaded. The highest-leverage work happens before development starts: clear requirements, aligned acceptance criteria, shared understanding. With human engineers, that investment pays off because humans bring judgment to ambiguous specs.</p>
+<p>Agents don&#39;t. An agent handed an underspecified task doesn&#39;t ask for clarification. It produces output — technically correct, possibly functionally wrong. That&#39;s a downstream catch problem, not an upstream alignment problem.</p>
+<p>So the management energy has to move. The pre-development conversation gets replaced by two things: the quality of context you provide before the agent starts, and the quality of your review infrastructure after it finishes.</p>
+<p>This requires a new skill: <strong>context engineering</strong> — setting up the agent environment so completely that the agent can operate without hand-holding. Structured inputs. Organized directories. Memory files. This is where sprint planning energy goes in a <strong>hybrid team</strong>.</p>
+<p>Here&#39;s how I think about where the work lives now:</p>
+<p><strong>1. Context Engineering Layer</strong> — Preparing structured inputs: task specs, organized repos, process docs, memory files. The investment that used to go into pre-development conversation now goes into artifacts that replace it.</p>
+<p><strong>2. Agent Execution Layer</strong> — Agents run, loop through their own feedback cycles — catching bugs, flagging edge cases — and surface results. The human is intentionally not in this loop. If you&#39;re supervising work in flight, you&#39;re managing a chatbot, not an agent fleet.</p>
+<p><strong>3. Output Review Layer</strong> — Smoke tests, guardrails, quality gates. The question isn&#39;t &quot;did we align on approach?&quot; — it&#39;s &quot;is what came out correct, safe, and ready?&quot;</p>
+<p><strong>4. Accountability Layer</strong> — Named owners for agent quality. When output degrades, the feedback loop runs back to a specific person. Not &quot;the AI.&quot; Not &quot;the team.&quot; A person.</p>
+<hr>
+<h2>Accountability Never Moves</h2>
+<p>Agents can be efficient, precise, and fast. They are still machines. When something goes wrong, accountability lands on the human who built and deployed the agent system. This isn&#39;t a limitation — it&#39;s a structural feature.</p>
+<p>The real engineering work becomes improving agent performance over time: reducing hallucinations, managing token consumption, tightening tool usage, improving memory management. None of that can be delegated to the agents themselves.</p>
+<p>Give every agent a named human owner. Not a team. A specific person accountable for quality, not just deployment.</p>
+<hr>
+<h2>Agents Amplify What You Already Are</h2>
+<p>Introducing agents into a disorganized environment doesn&#39;t fix the disorganization. It amplifies it. Agents don&#39;t compensate for sloppy context — they sprint straight into it and produce confident, well-formatted output that misses the point.</p>
+<p><strong>Fix the environment before you introduce agents.</strong> Audit your repository structure — can a system with no prior context navigate it? Are your process documents current? Are your task definitions specific enough to run without clarification? These aren&#39;t nice-to-haves. They&#39;re prerequisites.</p>
+<hr>
+<h2>Trust Is Earned by Quality</h2>
+<p>Resistance to agentic AI on engineering teams is real and legitimate. Skepticism about non-deterministic output, hallucinations, security — these are not irrational concerns.</p>
+<p>What shifts the conversation is not an argument. It&#39;s quality. The turning point comes after a sustained period of consistent output — enough for skeptical engineers to notice the pattern and update their position.</p>
+<p>Don&#39;t pitch agent workflows to your team. Demo them. Pick one well-defined workflow, apply rigorous context engineering, and let the output speak. If the quality isn&#39;t there, the context engineering work isn&#39;t done yet.</p>
+<p>One more thing: the framing that matters is individual ownership. Engineers become skeptical when agents are introduced at the team level before they&#39;ve built their own relationship with the tooling. When each engineer gets to run their own agent workflows first, skepticism resolves through direct experience.</p>
+<hr>
 <h2>Key Takeaways</h2>
 <ul>
-<li><strong>Reduce batch size</strong>: Monthly deploys are 30-day-old food. Daily deploys mean smaller changes, easier rollbacks, faster feedback.</li>
-<li><strong>Clear ownership</strong>: Assign one owner per environment. Committees create excuses, ownership creates accountability.</li>
-<li><strong>Service-level accountability</strong>: Stop calling them &quot;deployments.&quot; Start calling them &quot;service.&quot; Language shapes behavior.</li>
-<li><strong>The Deployment Brigade System</strong>: Daily service schedule, station ownership, service standards, &quot;Behind!&quot; protocol, post-service reviews.</li>
-<li><strong>Start small</strong>: Pick one blocker, assign one owner, pilot with one team. Daily deploys expose everything—that transparency drives improvement.</li>
+<li><strong>Management energy moves</strong> from input quality (conversation before work) to output quality (context before agents + review after they finish).</li>
+<li><strong>Accountability never moves.</strong> Every agent needs a named human owner responsible for quality, not just deployment.</li>
+<li><strong>Fix the environment first.</strong> Agents amplify what you already are — organized or messy. Get your foundations right before introducing agents.</li>
+<li><strong>Demo, don&#39;t pitch.</strong> Trust follows quality, not persuasion. Give it the time it needs.</li>
+<li>If you want to feel what managing an autonomous team is like before doing it at scale, tools like <a href="https://www.paperclip.ai">PaperClip</a> let you experience the shift firsthand.</li>
 </ul>
-<h2>What&#39;s Next?</h2>
-<p>What would Carmen from <em>The Bear</em> do? He wouldn&#39;t have a meeting about meetings. He&#39;d start service.</p>
-<p>Your turn.</p>
-<p>Tomorrow morning, ask your team: &quot;What would need to be true for us to deploy today?&quot; Don&#39;t announce a transformation. Just fix that one thing. Then ask again the next day.</p>
-<p>That&#39;s how you start service.</p>
 <hr>
-<p><em>This post is part of a bi-weekly series on engineering leadership. <a href="/blog/">Subscribe to Bear Essentials newsletter</a> to get the next post delivered to your inbox.</em></p>
+<p>Start with one thing this week: audit your development environment for agent-readiness. Find the biggest gap and close it. That&#39;s the first step.</p>
+<p>If you&#39;re leading a team where agents are already part of the picture — or where that question is coming — I&#39;d like to hear where you&#39;re getting stuck. <a href="/blog/">Subscribe to Bear Essentials</a> to get the next post delivered to your inbox.</p>
+<hr>
+<p><em>This post is part of a bi-weekly series on engineering leadership and agentic systems. <a href="/blog/">Subscribe to the newsletter</a> to get the next post delivered to your inbox.</em></p>
 
             </div>
 

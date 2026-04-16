@@ -144,37 +144,37 @@ function getIllustration(name) {
   <line x1="44" y1="21" x2="45" y2="14"/>
   <line x1="54" y1="27" x2="57" y2="20"/>
 </svg>`,
+
+    handshake: `<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 80 80" width="64" height="64" fill="none" stroke="#1A1A1A" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <!-- Left arm -->
+  <path d="M8 38 L22 38"/>
+  <!-- Right arm -->
+  <path d="M58 38 L72 38"/>
+  <!-- Left hand fingers -->
+  <path d="M22 38 L30 34 L38 38 L46 34"/>
+  <!-- Right hand fingers -->
+  <path d="M58 38 L50 34 L46 34"/>
+  <!-- Clasp (the grip) -->
+  <path d="M34 32 Q40 26 46 32"/>
+  <path d="M32 40 Q40 46 48 40"/>
+  <!-- Wrist cuffs -->
+  <rect x="6" y="34" width="16" height="8" rx="2"/>
+  <rect x="58" y="34" width="16" height="8" rx="2"/>
+  <!-- Motion lines -->
+  <line x1="36" y1="22" x2="38" y2="18"/>
+  <line x1="40" y1="20" x2="40" y2="16"/>
+  <line x1="44" y1="22" x2="42" y2="18"/>
+</svg>`,
   };
 
   return illustrations[name] || illustrations['bear-paw'];
 }
 
-const TAG_TO_ILLUSTRATION = {
-  'leadership': 'campfire',
-  'remote-work': 'tent',
-  'culture': 'campfire',
-  'ai': 'compass',
-  'infrastructure': 'axe',
-  'sustainability': 'lantern',
-  'deployment': 'map',
-  'devops': 'axe',
-  'engineering-leadership': 'compass',
-  'agentic-engineering': 'compass',
-  'productivity': 'binoculars',
-  'software-engineering': 'axe',
-  'distributed-systems': 'map',
-};
-
 function selectIllustration(post) {
   if (post.illustration && post.illustration.trim()) {
     return post.illustration.trim();
   }
-  for (const tag of (post.tags || [])) {
-    const normalizedTag = tag.toLowerCase();
-    if (TAG_TO_ILLUSTRATION[normalizedTag]) {
-      return TAG_TO_ILLUSTRATION[normalizedTag];
-    }
-  }
+  console.warn(`  ⚠ No illustration set for "${post.title}" — add illustration: "name" to frontmatter. Using bear-paw fallback.`);
   return 'bear-paw';
 }
 
@@ -298,7 +298,7 @@ function generatePostPage(post) {
     <!-- Theme must load before page renders to prevent flash -->
     <script src="/js/theme.js"></script>
 
-    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <!-- Cookie Consent & Analytics (PostHog) -->
     <script src="/js/cookie-consent.js" defer></script>
 
     <style>
@@ -958,7 +958,7 @@ function generateBlogIndex(posts) {
     <!-- Theme must load before page renders to prevent flash -->
     <script src="/js/theme.js"></script>
 
-    <!-- Cookie Consent (must load BEFORE Mixpanel) -->
+    <!-- Cookie Consent & Analytics (PostHog) -->
     <script src="/js/cookie-consent.js" defer></script>
 </head>
 <body>
@@ -1351,6 +1351,16 @@ function build() {
     generatePostPage(post);
     return post;
   });
+
+  // Check for duplicate illustrations
+  const illustrationMap = {};
+  for (const post of posts) {
+    const ill = selectIllustration(post);
+    if (illustrationMap[ill]) {
+      console.warn(`  ⚠ Duplicate illustration "${ill}" used by "${illustrationMap[ill]}" and "${post.title}"`);
+    }
+    illustrationMap[ill] = post.title;
+  }
 
   console.log('\nGenerating blog index...');
   generateBlogIndex(posts);

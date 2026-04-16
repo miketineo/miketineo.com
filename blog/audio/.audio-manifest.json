@@ -5,11 +5,12 @@
       "audioTitle": "Listen to this article",
       "url": "/blog/audio/orchestrating-outcomes.mp3",
       "durationSeconds": 592,
-      "contentHash": "c3c505ef82f693c76b11730e0b3b3e252a378d1e3ec0e75a4543d15bb5c29ba2",
+      "contentHash": "f75fca81acc1d126cc9ca1afe633a2e5c4945a450bbed484b5c44b79fd437a80",
+      "backend": "polly",
       "engine": "neural",
       "voice": "Matthew",
-      "generatedAt": "2026-04-14T12:26:00.698Z"
+      "generatedAt": "2026-04-16T10:45:23.851Z"
     }
   },
-  "generatedAt": "2026-04-14T12:26:00.701Z"
+  "generatedAt": "2026-04-16T10:46:20.249Z"
 }
