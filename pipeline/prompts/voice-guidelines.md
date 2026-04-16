@@ -1,0 +1,1 @@
+../../content-pipeline/VOICE_GUIDELINES.md

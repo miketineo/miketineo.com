@@ -98,55 +98,9 @@ Task tracking for website and content operations.
 
 ---
 
-## Content Pipeline Tracker
+## Content Pipeline
 
-Track bi-weekly blog posts and newsletter sends.
-
-### Current Cycle
-
-- **Dates:** 2026-04-09 to 2026-04-23
-- **Topic:** From Typing Code to Orchestrating Outcomes (Type A vs Type B Engineers)
-- **Brief:** `content-pipeline/content-briefs/2026-04-09-orchestrating-outcomes.md`
-- [x] Content interview completed
-- [x] Content brief created
-- [x] Blog draft written
-- [x] Blog published (2026-04-09)
-- [ ] Newsletter drafted
-- [ ] Newsletter sent
-- [ ] Archived
-
----
-
-### Published Content
-
-#### 2025-10-27 - What The Bear Taught Me About Daily Deployments
-- Blog: https://miketineo.com/blog/deployment-brigade-system.html
-- Newsletter: Skipped (cycle went dormant)
-- Archived: 2026-03-31
-- Tags: continuous-delivery, deployment, engineering-culture, devops
-
-#### 2025-10-18 - Building Energy-Aware AI Infrastructure: The Cost-Control-Carbon Triangle
-- ✅ Blog: https://miketineo.com/blog/energy-aware-ai-infrastructure.html
-- ✅ Newsletter sent: 2025-10-23
-- ✅ Archived: 2025-10-23
-- 📊 Stats: [Update after 24 hours from Buttondown]
-- Tags: ai, infrastructure, sustainability, cost-optimization
-
-#### 2025-01-15 - Building Psychological Safety in Remote Teams
-- ✅ Blog: https://miketineo.com/blog/psychological-safety.html
-- ✅ Newsletter: Sent [date if sent]
-- 📊 Stats: [Open rate, CTR when available]
-- Tags: leadership, remote-work, culture
-
----
-
-### Upcoming Topics Queue
-
-Ideas for future blog posts (in priority order):
-
-1. [Topic idea 1]
-2. [Topic idea 2]
-3. [Topic idea 3]
+Tracked by `./scripts/bear status` and `pipeline/state.json`. See CLAUDE.md for commands.
 
 ---
 

@@ -1,0 +1,1234 @@
+#!/usr/bin/env bash
+#
+# bear — CLI dispatcher for the Bear Essentials content pipeline
+#
+# Usage:
+#   ./scripts/bear seed <text>           Create a new content seed from text
+#   ./scripts/bear seed <file.m4a>       Create a seed from a voice memo (transcribes first)
+#   ./scripts/bear seed                  Process oldest file from inbox/voice/ or inbox/text/
+#   ./scripts/bear seed --answers <id>   Mark interview questions as answered (thin seeds)
+#   ./scripts/bear process               Advance the oldest eligible seed one phase
+#   ./scripts/bear approve [FLAGS] [ID]  Approve, revise, or reject an audited seed
+#   ./scripts/bear status                Show all seeds and pipeline config
+#   ./scripts/bear help                  Show this help message
+#
+# State machine: SEEDED -> CHALLENGED -> INTERVIEWED -> DRAFTED -> AUDITED -> APPROVED -> SHIPPED -> ARCHIVED
+
+set -euo pipefail
+
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ROOT_DIR="$(cd "$SCRIPT_DIR/.." && pwd)"
+STATE_FILE="$ROOT_DIR/pipeline/state.json"
+SEEDS_DIR="$ROOT_DIR/pipeline/seeds"
+AUDIT_SCRIPT="$ROOT_DIR/scripts/audit.sh"
+TRANSCRIBE_SCRIPT="$ROOT_DIR/scripts/transcribe.sh"
+INBOX_VOICE="$ROOT_DIR/inbox/voice"
+INBOX_TEXT="$ROOT_DIR/inbox/text"
+
+# Audio file extensions recognized for voice memo detection
+AUDIO_EXTENSIONS="m4a|mp3|wav|ogg|webm"
+
+# ── Preflight ───────────────────────────────────────────────────────────
+
+if ! command -v jq &>/dev/null; then
+  echo "ERROR: 'jq' is required but not found on PATH." >&2
+  echo "Install with: brew install jq" >&2
+  exit 1
+fi
+
+# ── State Management ────────────────────────────────────────────────────
+
+INITIAL_STATE='{
+  "seeds": [],
+  "published": [],
+  "config": {
+    "ai_cli": "claude",
+    "transcription": "mlx-whisper",
+    "tts_backend": "piper",
+    "newsletter_service": "buttondown"
+  }
+}'
+
+state_ensure() {
+  if [[ ! -f "$STATE_FILE" ]]; then
+    echo "Initializing state.json..." >&2
+    mkdir -p "$(dirname "$STATE_FILE")"
+    echo "$INITIAL_STATE" | jq '.' > "$STATE_FILE"
+  fi
+  # Validate JSON
+  if ! jq '.' "$STATE_FILE" &>/dev/null; then
+    echo "ERROR: state.json is malformed. Fix or delete it to reinitialize." >&2
+    exit 1
+  fi
+}
+
+state_read() {
+  cat "$STATE_FILE"
+}
+
+state_write() {
+  local tmp
+  tmp=$(mktemp "$STATE_FILE.XXXXXX")
+  if jq '.' > "$tmp"; then
+    mv "$tmp" "$STATE_FILE"
+  else
+    rm -f "$tmp"
+    echo "ERROR: failed to write state.json — invalid JSON on stdin." >&2
+    return 1
+  fi
+}
+
+state_get_seed() {
+  local id="$1"
+  jq -e --arg id "$id" '.seeds[] | select(.id == $id)' "$STATE_FILE"
+}
+
+state_update_seed() {
+  local id="$1" phase="$2"
+  local now
+  now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  state_read | jq --arg id "$id" --arg phase "$phase" --arg now "$now" \
+    '(.seeds[] | select(.id == $id)) |= (.phase = $phase | .updated = $now)' \
+    | state_write
+}
+
+state_add_seed() {
+  local seed_json="$1"
+  state_read | jq --argjson seed "$seed_json" '.seeds += [$seed]' | state_write
+}
+
+# ── Helpers ─────────────────────────────────────────────────────────────
+
+slugify() {
+  # Take first ~5 meaningful words, lowercase, kebab-case
+  echo "$1" \
+    | tr '[:upper:]' '[:lower:]' \
+    | sed 's/[^a-z0-9 ]/ /g' \
+    | tr -s ' ' \
+    | awk '{for(i=1;i<=NF && i<=5;i++) printf "%s%s",$i,(i<NF && i<5?"-":""); print ""}' \
+    | sed 's/-$//'
+}
+
+generate_id() {
+  local text="$1"
+  local date_prefix
+  date_prefix=$(date +"%Y-%m-%d")
+  local slug
+  slug=$(slugify "$text")
+  local base_id="${date_prefix}-${slug}"
+  local candidate="$base_id"
+  local counter=2
+
+  # Check for collisions in state.json
+  while state_get_seed "$candidate" &>/dev/null; do
+    candidate="${base_id}-${counter}"
+    ((counter++))
+  done
+
+  echo "$candidate"
+}
+
+is_audio_file() {
+  local file="$1"
+  [[ -f "$file" ]] || return 1
+  local ext="${file##*.}"
+  ext=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+  [[ "$ext" =~ ^(${AUDIO_EXTENSIONS})$ ]]
+}
+
+seed_quality() {
+  local word_count="$1"
+  local text="$2"
+
+  # Count sentences containing assertive/predictive verbs
+  local claim_count
+  claim_count=$(echo "$text" \
+    | tr '.' '\n' \
+    | grep -icE '\b(will|should|must|can|is|are|means|requires|shifts|replaces|enables|creates|drives|proves|shows|demonstrates|suggests|implies|needs|demands|transforms|eliminates|prevents|ensures|allows)\b' \
+    || true)
+
+  if [[ "$word_count" -lt 100 ]] || [[ "$claim_count" -lt 3 ]]; then
+    echo "thin"
+  else
+    echo "rich"
+  fi
+}
+
+inbox_oldest_file() {
+  # Find the oldest unprocessed file in inbox/voice/ and inbox/text/
+  # Returns the path, or empty string if nothing found
+  local oldest=""
+  local oldest_ts=""
+
+  # Check voice inbox for audio files
+  if [[ -d "$INBOX_VOICE" ]]; then
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      [[ "$(basename "$f")" == ".gitkeep" ]] && continue
+      # Skip the processed/ subdirectory
+      [[ "$f" == */processed/* ]] && continue
+      if is_audio_file "$f"; then
+        local ts
+        ts=$(stat -f "%m" "$f" 2>/dev/null || stat -c "%Y" "$f" 2>/dev/null || echo "0")
+        if [[ -z "$oldest_ts" ]] || [[ "$ts" -lt "$oldest_ts" ]]; then
+          oldest="$f"
+          oldest_ts="$ts"
+        fi
+      fi
+    done < <(find "$INBOX_VOICE" -maxdepth 1 -type f 2>/dev/null)
+  fi
+
+  # Check text inbox for .txt / .md files
+  if [[ -d "$INBOX_TEXT" ]]; then
+    while IFS= read -r f; do
+      [[ -z "$f" ]] && continue
+      [[ "$(basename "$f")" == ".gitkeep" ]] && continue
+      local ext="${f##*.}"
+      ext=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+      if [[ "$ext" == "txt" ]] || [[ "$ext" == "md" ]]; then
+        local ts
+        ts=$(stat -f "%m" "$f" 2>/dev/null || stat -c "%Y" "$f" 2>/dev/null || echo "0")
+        if [[ -z "$oldest_ts" ]] || [[ "$ts" -lt "$oldest_ts" ]]; then
+          oldest="$f"
+          oldest_ts="$ts"
+        fi
+      fi
+    done < <(find "$INBOX_TEXT" -maxdepth 1 -type f 2>/dev/null)
+  fi
+
+  echo "$oldest"
+}
+
+# ── Commands ────────────────────────────────────────────────────────────
+
+cmd_seed() {
+  local input="" source_type="text" source_ref="cli" from_inbox=false
+
+  # ── Intercept --answers flag ───────────────────────────────────────
+  if [[ $# -ge 1 ]] && [[ "$1" == "--answers" ]]; then
+    shift
+    cmd_seed_answers "$@"
+    return $?
+  fi
+
+  # ── No arguments: scan inbox for unprocessed files ─────────────────
+  if [[ $# -eq 0 ]]; then
+    local inbox_file
+    inbox_file=$(inbox_oldest_file)
+
+    if [[ -z "$inbox_file" ]]; then
+      echo "Usage: $0 seed <text|audio_file>" >&2
+      echo >&2
+      echo "  Create a new content seed from quoted text or a voice memo." >&2
+      echo >&2
+      echo "  Examples:" >&2
+      echo "    $0 seed \"Why observability matters more than monitoring\"" >&2
+      echo "    $0 seed ~/voice-memos/idea.m4a" >&2
+      echo >&2
+      echo "  Or drop files into inbox/voice/ or inbox/text/ and run:" >&2
+      echo "    $0 seed" >&2
+      echo >&2
+      echo "  No unprocessed files found in inbox/voice/ or inbox/text/." >&2
+      exit 1
+    fi
+
+    echo "Found inbox file: $inbox_file"
+    from_inbox=true
+
+    if is_audio_file "$inbox_file"; then
+      # Transcribe the audio file
+      echo "Transcribing voice memo..."
+      input=$("$TRANSCRIBE_SCRIPT" "$inbox_file")
+      source_type="voice-memo"
+      source_ref="$inbox_file"
+    else
+      # Text file — read contents
+      input=$(cat "$inbox_file")
+      source_type="text-file"
+      source_ref="$inbox_file"
+      # Move text file to a processed location (delete it from inbox)
+      local basename_f
+      basename_f=$(basename "$inbox_file")
+      mkdir -p "$INBOX_TEXT/processed"
+      mv "$inbox_file" "$INBOX_TEXT/processed/"
+      echo "Moved to inbox/text/processed/$basename_f" >&2
+    fi
+  # ── Argument is an audio file ──────────────────────────────────────
+  elif [[ $# -ge 1 ]] && is_audio_file "$1"; then
+    local audio_path="$1"
+    echo "Transcribing voice memo: $audio_path"
+    input=$("$TRANSCRIBE_SCRIPT" "$audio_path")
+    source_type="voice-memo"
+    source_ref="$audio_path"
+  # ── Argument is a non-audio file that exists ───────────────────────
+  elif [[ $# -eq 1 ]] && [[ -f "$1" ]]; then
+    local ext="${1##*.}"
+    ext=$(echo "$ext" | tr '[:upper:]' '[:lower:]')
+    if [[ "$ext" == "txt" ]] || [[ "$ext" == "md" ]]; then
+      input=$(cat "$1")
+      source_type="text-file"
+      source_ref="$1"
+    else
+      echo "ERROR: Unsupported file type: .$ext" >&2
+      echo "  Supported audio: .m4a .mp3 .wav .ogg .webm" >&2
+      echo "  Supported text:  .txt .md" >&2
+      exit 1
+    fi
+  # ── Plain text argument ────────────────────────────────────────────
+  else
+    input="$*"
+    source_type="text"
+    source_ref="cli"
+  fi
+
+  if [[ -z "$input" ]]; then
+    echo "ERROR: No content to seed. Transcription may have returned empty." >&2
+    exit 1
+  fi
+
+  state_ensure
+
+  local id
+  id=$(generate_id "$input")
+  local now
+  now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  local word_count
+  word_count=$(echo "$input" | wc -w | tr -d ' ')
+
+  # Classify seed quality
+  local quality
+  quality=$(seed_quality "$word_count" "$input")
+
+  # Create seed file with frontmatter
+  local seed_file="$SEEDS_DIR/${id}.md"
+  mkdir -p "$SEEDS_DIR"
+  cat > "$seed_file" <<SEEDEOF
+---
+id: ${id}
+type: ${source_type}
+source: ${source_ref}
+created: ${now}
+word_count: ${word_count}
+quality: ${quality}
+---
+
+${input}
+SEEDEOF
+
+  # Add to state.json
+  local seed_json
+  seed_json=$(jq -n \
+    --arg id "$id" \
+    --arg phase "SEEDED" \
+    --arg source "$source_type" \
+    --arg quality "$quality" \
+    --arg created "$now" \
+    --arg file "pipeline/seeds/${id}.md" \
+    '{id: $id, phase: $phase, source: $source, quality: $quality, created: $created, updated: $created, file: $file}')
+  state_add_seed "$seed_json"
+
+  echo "Seed created: $id"
+  echo "  File: $seed_file"
+  echo "  Phase: SEEDED"
+  echo "  Source: $source_type"
+  echo "  Words: $word_count"
+  echo "  Quality: $quality"
+}
+
+cmd_seed_answers() {
+  # Mark a thin seed's interview questions as answered
+  # Usage: ./scripts/bear seed --answers <id>
+  state_ensure
+
+  if [[ $# -lt 1 ]]; then
+    echo "Usage: $0 seed --answers <seed-id>" >&2
+    exit 1
+  fi
+
+  local target_id="$1"
+
+  # Verify seed exists
+  local current_phase
+  current_phase=$(jq -r --arg id "$target_id" '.seeds[] | select(.id == $id) | .phase // empty' "$STATE_FILE")
+  if [[ -z "$current_phase" ]]; then
+    echo "ERROR: seed not found: $target_id" >&2
+    exit 1
+  fi
+
+  if [[ "$current_phase" != "CHALLENGED" ]]; then
+    echo "ERROR: seed '$target_id' is in phase $current_phase, not CHALLENGED." >&2
+    echo "  The --answers flag is for thin seeds awaiting interview answers." >&2
+    exit 1
+  fi
+
+  local questions_file="$ROOT_DIR/pipeline/challenges/${target_id}-questions.md"
+  if [[ ! -f "$questions_file" ]]; then
+    echo "ERROR: questions file not found: $questions_file" >&2
+    echo "  Run './scripts/bear process' first to generate interview questions." >&2
+    exit 1
+  fi
+
+  if ! grep -q '<!-- AWAITING_ANSWERS -->' "$questions_file"; then
+    echo "Questions already marked as answered for: $target_id"
+    echo "  Run './scripts/bear process' to advance to the interview phase."
+    return 0
+  fi
+
+  # Check that at least one "Your answer:" field has content
+  local answer_count
+  answer_count=$(awk '/^\*\*Your answer:\*\*/{found=1; next} found && /^[[:space:]]*$/{found=0; next} found && /^---$/{found=0; next} found && /^## /{found=0; next} found{print}' "$questions_file" | grep -c '[^[:space:]]' || true)
+
+  if [[ "$answer_count" -eq 0 ]]; then
+    echo "WARNING: No answers detected in $questions_file" >&2
+    echo "  Please fill in your answers below each 'Your answer:' section." >&2
+    echo "  Proceeding anyway, but the content brief may be thin." >&2
+  fi
+
+  # Remove the AWAITING_ANSWERS marker
+  local tmp_file
+  tmp_file=$(mktemp)
+  sed '1{/^<!-- AWAITING_ANSWERS -->$/d;}' "$questions_file" > "$tmp_file"
+  mv "$tmp_file" "$questions_file"
+
+  # Update quality to "answered" in state.json
+  local now
+  now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  state_read | jq --arg id "$target_id" --arg now "$now" \
+    '(.seeds[] | select(.id == $id)) |= (.quality = "answered" | .updated = $now)' \
+    | state_write
+
+  echo "Answers recorded for: $target_id"
+  echo "  Quality updated to: answered"
+  echo "  Run './scripts/bear process' to generate the content brief."
+}
+
+cmd_process() {
+  state_ensure
+
+  # Phase transition order and what each needs
+  local -a PHASES=("SEEDED" "CHALLENGED" "INTERVIEWED" "DRAFTED" "AUDITED" "SHIPPED")
+  local -a NEXT_PHASES=("CHALLENGED" "INTERVIEWED" "DRAFTED" "AUDITED" "APPROVED" "ARCHIVED")
+
+  # Find oldest seed that can advance
+  local found_id="" found_phase=""
+  for phase in "${PHASES[@]}"; do
+    local candidate
+    candidate=$(jq -r --arg p "$phase" \
+      '[.seeds[] | select(.phase == $p)] | sort_by(.created) | .[0].id // empty' \
+      "$STATE_FILE")
+    if [[ -n "$candidate" ]]; then
+      found_id="$candidate"
+      found_phase="$phase"
+      break
+    fi
+  done
+
+  if [[ -z "$found_id" ]]; then
+    echo "No seeds eligible for processing."
+    echo "  Use './scripts/bear seed <text>' to create a new seed."
+    return 0
+  fi
+
+  echo "Processing: $found_id (phase: $found_phase)"
+
+  case "$found_phase" in
+    SEEDED)
+      echo "  Running anti-confirmation-bias challenge..."
+      local adapter_name
+      adapter_name=$(jq -r '.config.ai_cli' "$STATE_FILE")
+      local adapter_file="$ROOT_DIR/pipeline/adapters/${adapter_name}.sh"
+      if [[ ! -f "$adapter_file" ]]; then
+        echo "  ERROR: AI adapter not found: $adapter_file" >&2
+        return 1
+      fi
+      # shellcheck source=../pipeline/adapters/claude.sh
+      source "$adapter_file"
+
+      local seed_file_path
+      seed_file_path=$(jq -r --arg id "$found_id" '.seeds[] | select(.id == $id) | .file' "$STATE_FILE")
+      seed_file_path="$ROOT_DIR/$seed_file_path"
+      if [[ ! -f "$seed_file_path" ]]; then
+        echo "  ERROR: seed file not found: $seed_file_path" >&2
+        return 1
+      fi
+
+      local challenge_output="$ROOT_DIR/pipeline/challenges/${found_id}.md"
+      mkdir -p "$(dirname "$challenge_output")"
+
+      if ai_run "$ROOT_DIR/pipeline/prompts/challenge.md" "$challenge_output" "$seed_file_path"; then
+        echo "  Challenge report written to: $challenge_output"
+        state_update_seed "$found_id" "CHALLENGED"
+        echo "  Advanced to CHALLENGED."
+      else
+        echo "  ERROR: AI challenge failed. Seed remains in SEEDED phase." >&2
+      fi
+      ;;
+    CHALLENGED)
+      echo "  Running interview phase..."
+      local adapter_name
+      adapter_name=$(jq -r '.config.ai_cli' "$STATE_FILE")
+      local adapter_file="$ROOT_DIR/pipeline/adapters/${adapter_name}.sh"
+      if [[ ! -f "$adapter_file" ]]; then
+        echo "  ERROR: AI adapter not found: $adapter_file" >&2
+        return 1
+      fi
+      source "$adapter_file"
+
+      local seed_file_path
+      seed_file_path=$(jq -r --arg id "$found_id" '.seeds[] | select(.id == $id) | .file' "$STATE_FILE")
+      seed_file_path="$ROOT_DIR/$seed_file_path"
+      local seed_quality
+      seed_quality=$(jq -r --arg id "$found_id" '.seeds[] | select(.id == $id) | .quality' "$STATE_FILE")
+      local challenge_file="$ROOT_DIR/pipeline/challenges/${found_id}.md"
+
+      if [[ ! -f "$seed_file_path" ]]; then
+        echo "  ERROR: seed file not found: $seed_file_path" >&2
+        return 1
+      fi
+      if [[ ! -f "$challenge_file" ]]; then
+        echo "  ERROR: challenge report not found: $challenge_file" >&2
+        echo "  Run 'process' again to generate it first." >&2
+        return 1
+      fi
+
+      if [[ "$seed_quality" == "thin" ]] || [[ "$seed_quality" == "answered" ]]; then
+        # Thin/answered seed: check if answers have been provided
+        local questions_file="$ROOT_DIR/pipeline/challenges/${found_id}-questions.md"
+        if [[ -f "$questions_file" ]] && ! grep -q '<!-- AWAITING_ANSWERS -->' "$questions_file"; then
+          # Answers exist — run full interview with seed + challenge + answered questions
+          echo "  Answers found. Generating content brief from answered questions..."
+          local brief_output="$ROOT_DIR/content-pipeline/content-briefs/${found_id}.md"
+          mkdir -p "$(dirname "$brief_output")"
+          if ai_run "$ROOT_DIR/pipeline/prompts/interview.md" "$brief_output" "$seed_file_path" "$challenge_file" "$questions_file"; then
+            echo "  Content brief written to: $brief_output"
+            state_update_seed "$found_id" "INTERVIEWED"
+            echo "  Advanced to INTERVIEWED."
+          else
+            echo "  ERROR: AI interview failed. Seed remains in CHALLENGED phase." >&2
+          fi
+        elif [[ -f "$questions_file" ]]; then
+          # Questions exist but unanswered
+          echo "  Questions generated but not yet answered."
+          echo "  Fill in your answers in: $questions_file"
+          echo "  Then run: ./scripts/bear seed --answers $found_id"
+        else
+          # No questions yet — generate them
+          echo "  Thin seed detected (quality: $seed_quality). Generating interview questions..."
+          local questions_output="$ROOT_DIR/pipeline/challenges/${found_id}-questions.md"
+          if ai_run "$ROOT_DIR/pipeline/prompts/interview-qa.md" "$questions_output" "$seed_file_path" "$challenge_file"; then
+            echo "  Interview questions written to: $questions_output"
+            echo "  Fill in your answers, then run: ./scripts/bear seed --answers $found_id"
+          else
+            echo "  ERROR: AI question generation failed." >&2
+          fi
+        fi
+      else
+        # Rich seed: generate content brief directly
+        echo "  Rich seed detected (quality: $seed_quality). Generating content brief..."
+        local brief_output="$ROOT_DIR/content-pipeline/content-briefs/${found_id}.md"
+        mkdir -p "$(dirname "$brief_output")"
+        if ai_run "$ROOT_DIR/pipeline/prompts/interview.md" "$brief_output" "$seed_file_path" "$challenge_file"; then
+          echo "  Content brief written to: $brief_output"
+          state_update_seed "$found_id" "INTERVIEWED"
+          echo "  Advanced to INTERVIEWED."
+        else
+          echo "  ERROR: AI interview failed. Seed remains in CHALLENGED phase." >&2
+        fi
+      fi
+      ;;
+    INTERVIEWED)
+      echo "  Running draft phase..."
+      local adapter_name
+      adapter_name=$(jq -r '.config.ai_cli' "$STATE_FILE")
+      local adapter_file="$ROOT_DIR/pipeline/adapters/${adapter_name}.sh"
+      if [[ ! -f "$adapter_file" ]]; then
+        echo "  ERROR: AI adapter not found: $adapter_file" >&2
+        return 1
+      fi
+      source "$adapter_file"
+
+      # Find the content brief
+      local brief_file="$ROOT_DIR/content-pipeline/content-briefs/${found_id}.md"
+      if [[ ! -f "$brief_file" ]]; then
+        echo "  ERROR: content brief not found: $brief_file" >&2
+        return 1
+      fi
+
+      local voice_file="$ROOT_DIR/pipeline/prompts/voice-guidelines.md"
+      local newsletter_template="$ROOT_DIR/content-pipeline/templates/newsletter-template.md"
+
+      local draft_output
+      draft_output=$(mktemp)
+
+      echo "  Generating blog post + newsletter draft..."
+      if ai_run "$ROOT_DIR/pipeline/prompts/draft.md" "$draft_output" "$brief_file" "$voice_file" "$newsletter_template"; then
+        # Parse the output into separate blog and newsletter files
+        local draft_dir="$ROOT_DIR/content-pipeline/drafts/${found_id}"
+        mkdir -p "$draft_dir"
+
+        local raw_output
+        raw_output=$(cat "$draft_output")
+
+        # Extract blog post (between markers)
+        local blog_content
+        blog_content=$(echo "$raw_output" | sed -n '/^===BLOG_POST_START===$/,/^===BLOG_POST_END===$/{ /^===BLOG_POST_START===$/d; /^===BLOG_POST_END===$/d; p; }')
+
+        # Extract newsletter (between markers)
+        local newsletter_content
+        newsletter_content=$(echo "$raw_output" | sed -n '/^===NEWSLETTER_START===$/,/^===NEWSLETTER_END===$/{ /^===NEWSLETTER_START===$/d; /^===NEWSLETTER_END===$/d; p; }')
+
+        if [[ -z "$blog_content" ]]; then
+          echo "  ERROR: Could not extract blog post from AI output (missing ===BLOG_POST_START=== / ===BLOG_POST_END=== markers)." >&2
+          echo "  Raw output saved to: $draft_output" >&2
+          return 1
+        fi
+        if [[ -z "$newsletter_content" ]]; then
+          echo "  ERROR: Could not extract newsletter from AI output (missing ===NEWSLETTER_START=== / ===NEWSLETTER_END=== markers)." >&2
+          echo "  Raw output saved to: $draft_output" >&2
+          return 1
+        fi
+
+        echo "$blog_content" > "$draft_dir/blog.md"
+        echo "$newsletter_content" > "$draft_dir/newsletter.md"
+        rm -f "$draft_output"
+
+        # Record draft file paths in state
+        local now
+        now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+        state_read | jq --arg id "$found_id" --arg now "$now" \
+          --arg blog "content-pipeline/drafts/${found_id}/blog.md" \
+          --arg newsletter "content-pipeline/drafts/${found_id}/newsletter.md" \
+          '(.seeds[] | select(.id == $id)) |= (.phase = "DRAFTED" | .updated = $now | .draft_blog = $blog | .draft_newsletter = $newsletter)' \
+          | state_write
+
+        echo "  Blog draft:       $draft_dir/blog.md"
+        echo "  Newsletter draft:  $draft_dir/newsletter.md"
+        echo "  Advanced to DRAFTED."
+      else
+        rm -f "$draft_output"
+        echo "  ERROR: AI draft generation failed. Seed remains in INTERVIEWED phase." >&2
+      fi
+      ;;
+    DRAFTED)
+      echo "  Running audit on drafts..."
+      local blog_draft newsletter_draft
+      blog_draft=$(jq -r --arg id "$found_id" '.seeds[] | select(.id == $id) | .draft_blog // empty' "$STATE_FILE")
+      newsletter_draft=$(jq -r --arg id "$found_id" '.seeds[] | select(.id == $id) | .draft_newsletter // empty' "$STATE_FILE")
+
+      local audit_files=()
+      if [[ -n "$blog_draft" ]] && [[ -f "$ROOT_DIR/$blog_draft" ]]; then
+        audit_files+=("$ROOT_DIR/$blog_draft")
+      fi
+      if [[ -n "$newsletter_draft" ]] && [[ -f "$ROOT_DIR/$newsletter_draft" ]]; then
+        audit_files+=("$ROOT_DIR/$newsletter_draft")
+      fi
+
+      if [[ ${#audit_files[@]} -eq 0 ]]; then
+        echo "  ERROR: no draft files found for audit." >&2
+        echo "  Expected: content-pipeline/drafts/${found_id}/blog.md" >&2
+        return 1
+      fi
+
+      local audit_rc=0
+      "$AUDIT_SCRIPT" "${audit_files[@]}" || audit_rc=$?
+
+      case $audit_rc in
+        0)
+          echo "  Audit CLEAN. Advancing to AUDITED."
+          state_update_seed "$found_id" "AUDITED"
+          ;;
+        1)
+          echo "  Audit found HARD BLOCKS. Fix issues before re-running process."
+          echo "  Seed remains in DRAFTED phase."
+          ;;
+        2)
+          echo "  Audit found items for REVIEW. Advancing to AUDITED (review hits noted)."
+          state_update_seed "$found_id" "AUDITED"
+          ;;
+        *)
+          echo "  Audit script failed with unexpected code $audit_rc." >&2
+          return 1
+          ;;
+      esac
+      ;;
+    AUDITED)
+      echo "  Waiting for approval."
+      echo "  Run: ./scripts/bear approve --yes $found_id"
+      echo "       ./scripts/bear approve --revise $found_id"
+      echo "       ./scripts/bear approve --reject $found_id"
+      ;;
+    SHIPPED)
+      echo "  Auto-archiving shipped seed: $found_id"
+      _process_archive "$found_id"
+      ;;
+  esac
+}
+
+cmd_approve() {
+  state_ensure
+
+  local action="" target_id=""
+
+  # Parse arguments
+  while [[ $# -gt 0 ]]; do
+    case "$1" in
+      --yes)    action="approve"; shift ;;
+      --revise) action="revise";  shift ;;
+      --reject) action="reject";  shift ;;
+      -*)
+        echo "Unknown flag: $1" >&2
+        echo "Usage: $0 approve [--yes|--revise|--reject] [ID]" >&2
+        exit 1
+        ;;
+      *)
+        target_id="$1"; shift ;;
+    esac
+  done
+
+  # Get all AUDITED seeds
+  local audited_ids
+  audited_ids=$(jq -r '[.seeds[] | select(.phase == "AUDITED")] | .[].id' "$STATE_FILE")
+
+  if [[ -z "$audited_ids" ]]; then
+    echo "No seeds in AUDITED state."
+    return 0
+  fi
+
+  # If no action specified, show comprehensive review display
+  if [[ -z "$action" ]]; then
+    _approve_review_display "$audited_ids"
+    return 0
+  fi
+
+  # Auto-select if only one AUDITED seed and no ID given
+  local audited_count
+  audited_count=$(echo "$audited_ids" | wc -l | tr -d ' ')
+  if [[ -z "$target_id" ]]; then
+    if [[ "$audited_count" -eq 1 ]]; then
+      target_id=$(echo "$audited_ids" | head -1)
+      echo "Auto-selected only AUDITED seed: $target_id"
+    else
+      echo "Multiple seeds in AUDITED state. Specify an ID:" >&2
+      echo "$audited_ids" | sed 's/^/  /' >&2
+      exit 1
+    fi
+  fi
+
+  # Verify seed exists and is AUDITED
+  local current_phase
+  current_phase=$(jq -r --arg id "$target_id" '.seeds[] | select(.id == $id) | .phase // empty' "$STATE_FILE")
+  if [[ -z "$current_phase" ]]; then
+    echo "ERROR: seed not found: $target_id" >&2
+    exit 1
+  fi
+  if [[ "$current_phase" != "AUDITED" ]]; then
+    echo "ERROR: seed '$target_id' is in phase $current_phase, not AUDITED." >&2
+    exit 1
+  fi
+
+  case "$action" in
+    approve)
+      _approve_and_ship "$target_id"
+      ;;
+    revise)
+      state_update_seed "$target_id" "INTERVIEWED"
+      echo "REVISED: $target_id -> INTERVIEWED"
+      echo "  Send back through draft phase with: ./scripts/bear process"
+      ;;
+    reject)
+      state_update_seed "$target_id" "REJECTED"
+      echo "REJECTED: $target_id"
+      ;;
+  esac
+}
+
+# ── Approve helpers ────────────────────────────────────────────────────
+
+# _approve_find_drafts <seed_id>
+# Sets BLOG_FILE and NEWSLETTER_FILE variables.
+# Handles both subdirectory layout (drafts/<id>/blog.md) and flat layout
+# (drafts/<id>.md + drafts/newsletter-<id>.md).
+_approve_find_drafts() {
+  local seed_id="$1"
+  BLOG_FILE="" NEWSLETTER_FILE=""
+
+  # Try subdirectory layout first (new bear pipeline)
+  local subdir="$ROOT_DIR/content-pipeline/drafts/${seed_id}"
+  if [[ -f "$subdir/blog.md" ]]; then
+    BLOG_FILE="$subdir/blog.md"
+  elif [[ -f "$ROOT_DIR/content-pipeline/drafts/${seed_id}.md" ]]; then
+    BLOG_FILE="$ROOT_DIR/content-pipeline/drafts/${seed_id}.md"
+  fi
+
+  if [[ -f "$subdir/newsletter.md" ]]; then
+    NEWSLETTER_FILE="$subdir/newsletter.md"
+  elif [[ -f "$ROOT_DIR/content-pipeline/drafts/newsletter-${seed_id}.md" ]]; then
+    NEWSLETTER_FILE="$ROOT_DIR/content-pipeline/drafts/newsletter-${seed_id}.md"
+  fi
+}
+
+# _approve_extract_title <blog_file>
+# Extracts the title from blog frontmatter.
+_approve_extract_title() {
+  local file="$1"
+  grep -m1 '^title:' "$file" | sed 's/^title: *//; s/^"//; s/"$//'
+}
+
+# _approve_word_count <file>
+# Counts words in file body (after stripping frontmatter if present).
+_approve_word_count() {
+  local file="$1"
+  # If file starts with ---, strip frontmatter; otherwise count everything
+  if head -1 "$file" | grep -q '^---$'; then
+    awk 'BEGIN{fm=0} /^---$/{fm++; next} fm>=2{print}' "$file" | wc -w | tr -d ' '
+  else
+    wc -w < "$file" | tr -d ' '
+  fi
+}
+
+# _approve_review_display <audited_ids>
+# Shows a comprehensive review of all AUDITED seeds.
+_approve_review_display() {
+  local audited_ids="$1"
+
+  while IFS= read -r sid; do
+    [[ -z "$sid" ]] && continue
+
+    _approve_find_drafts "$sid"
+
+    local title="(unknown)"
+    local blog_words="?"
+    local newsletter_words="?"
+
+    if [[ -n "$BLOG_FILE" ]] && [[ -f "$BLOG_FILE" ]]; then
+      title=$(_approve_extract_title "$BLOG_FILE")
+      [[ -z "$title" ]] && title="(no title in frontmatter)"
+      blog_words=$(_approve_word_count "$BLOG_FILE")
+    fi
+
+    if [[ -n "$NEWSLETTER_FILE" ]] && [[ -f "$NEWSLETTER_FILE" ]]; then
+      newsletter_words=$(_approve_word_count "$NEWSLETTER_FILE")
+    fi
+
+    echo "READY FOR REVIEW: \"$title\""
+    echo ""
+
+    # Blog file path (relative to project root)
+    if [[ -n "$BLOG_FILE" ]]; then
+      local blog_rel="${BLOG_FILE#"$ROOT_DIR/"}"
+      printf "Blog:       %s (%s words)\n" "$blog_rel" "$blog_words"
+    else
+      echo "Blog:       NOT FOUND"
+    fi
+
+    # Newsletter file path
+    if [[ -n "$NEWSLETTER_FILE" ]]; then
+      local newsletter_rel="${NEWSLETTER_FILE#"$ROOT_DIR/"}"
+      printf "Newsletter: %s (%s words)\n" "$newsletter_rel" "$newsletter_words"
+    else
+      echo "Newsletter: NOT FOUND"
+    fi
+
+    echo ""
+
+    # Challenge report summary
+    local challenge_file="$ROOT_DIR/pipeline/challenges/${sid}.md"
+    if [[ -f "$challenge_file" ]]; then
+      local challenge_rel="${challenge_file#"$ROOT_DIR/"}"
+      echo "Challenge Report: $challenge_rel"
+      # Extract rating lines from the challenge report
+      local ratings
+      ratings=$(grep -i '^\*\*Rating:\*\*\|^Rating:' "$challenge_file" 2>/dev/null || true)
+      if [[ -n "$ratings" ]]; then
+        echo "$ratings" | sed 's/^/  /'
+      else
+        echo "  (no rating lines found)"
+      fi
+    else
+      echo "Challenge Report: not found"
+    fi
+
+    echo ""
+
+    # Names audit status
+    if [[ -n "$BLOG_FILE" ]] && [[ -f "$BLOG_FILE" ]]; then
+      local audit_rc=0
+      local audit_output
+      local audit_files=()
+      audit_files+=("$BLOG_FILE")
+      [[ -n "$NEWSLETTER_FILE" ]] && [[ -f "$NEWSLETTER_FILE" ]] && audit_files+=("$NEWSLETTER_FILE")
+
+      audit_output=$("$AUDIT_SCRIPT" "${audit_files[@]}" 2>&1) || audit_rc=$?
+      case $audit_rc in
+        0)
+          echo "Names Audit: PASSED"
+          ;;
+        1)
+          echo "Names Audit: BLOCKED"
+          echo "$audit_output" | grep -v '^RESULT:' | sed 's/^/  /'
+          ;;
+        2)
+          local review_count
+          review_count=$(echo "$audit_output" | grep -c '===' || true)
+          echo "Names Audit: $review_count items for review"
+          echo "$audit_output" | grep -v '^RESULT:' | sed 's/^/  /'
+          ;;
+      esac
+    else
+      echo "Names Audit: SKIPPED (no blog draft)"
+    fi
+
+    echo ""
+    echo "Actions:"
+    echo "  ./scripts/bear approve --yes $sid     Approve and ship"
+    echo "  ./scripts/bear approve --revise $sid   Send back for redraft"
+    echo "  ./scripts/bear approve --reject $sid   Reject this seed"
+    echo ""
+  done <<< "$audited_ids"
+}
+
+# _approve_and_ship <seed_id>
+# Full ship sequence: copy to blog/posts, build, newsletter draft, git commands.
+_approve_and_ship() {
+  local seed_id="$1"
+
+  # Transition to APPROVED
+  state_update_seed "$seed_id" "APPROVED"
+  echo "APPROVED: $seed_id"
+  echo ""
+
+  _approve_find_drafts "$seed_id"
+
+  if [[ -z "$BLOG_FILE" ]] || [[ ! -f "$BLOG_FILE" ]]; then
+    echo "ERROR: blog draft not found for $seed_id" >&2
+    echo "  Looked in content-pipeline/drafts/${seed_id}/blog.md" >&2
+    echo "  and content-pipeline/drafts/${seed_id}.md" >&2
+    return 1
+  fi
+
+  local title
+  title=$(_approve_extract_title "$BLOG_FILE")
+  [[ -z "$title" ]] && title="$seed_id"
+
+  # ── Step 1: Copy blog draft to blog/posts/ ───────────────────────────
+  echo "Step 1: Publishing blog post..."
+  local dest_post="$ROOT_DIR/blog/posts/${seed_id}.md"
+  if [[ -f "$dest_post" ]]; then
+    echo "  Blog post already exists at blog/posts/${seed_id}.md — overwriting."
+  fi
+  cp "$BLOG_FILE" "$dest_post"
+  echo "  Copied to blog/posts/${seed_id}.md"
+  echo ""
+
+  # ── Step 2: Run the build ────────────────────────────────────────────
+  echo "Step 2: Building site..."
+  local build_rc=0
+  (cd "$ROOT_DIR" && npm run build 2>&1) || build_rc=$?
+  if [[ $build_rc -ne 0 ]]; then
+    echo "  WARNING: Build failed (exit $build_rc). Blog file is in place; fix and re-run build manually." >&2
+    echo "    cd $(printf '%q' "$ROOT_DIR") && npm run build" >&2
+  else
+    echo "  Build succeeded."
+  fi
+  echo ""
+
+  # ── Step 3: Newsletter — Buttondown draft ────────────────────────────
+  echo "Step 3: Creating newsletter draft..."
+  local newsletter_ok=false
+
+  if [[ -z "$NEWSLETTER_FILE" ]] || [[ ! -f "$NEWSLETTER_FILE" ]]; then
+    echo "  WARNING: No newsletter draft found. Skipping Buttondown step."
+  else
+    # Check if buttondown-api.sh can be sourced and API key is available (needs bash)
+    local bd_source_ok=false
+    if _BD_ROOT="$ROOT_DIR" bash -c 'source "$_BD_ROOT/scripts/buttondown-api.sh" && bd_key >/dev/null 2>&1'; then
+      bd_source_ok=true
+    fi
+
+    if ! $bd_source_ok; then
+      echo "  WARNING: Buttondown API key not available. Skipping draft creation."
+      echo "    Set BUTTONDOWN_API_KEY env var or configure vault."
+      echo "    Newsletter file: ${NEWSLETTER_FILE#"$ROOT_DIR/"}"
+    else
+      local external_id="bear-essentials-${seed_id}"
+
+      # Extract subject from newsletter (first line matching "Subject:")
+      local subject
+      subject=$(grep -m1 '^Subject:' "$NEWSLETTER_FILE" | sed 's/^Subject: *//' || true)
+      [[ -z "$subject" ]] && subject="Bear Essentials: $title"
+
+      # Create a body file without the Subject: line for the API
+      local body_tmp
+      body_tmp=$(mktemp)
+      grep -v '^Subject:' "$NEWSLETTER_FILE" | sed '/./,$!d' > "$body_tmp"
+
+      # Check for duplicate via bash subshell (export vars to avoid quoting issues)
+      local dup_check
+      dup_check=$(
+        _BD_EXT_ID="$external_id" \
+        _BD_ROOT="$ROOT_DIR" \
+        bash -c 'source "$_BD_ROOT/scripts/buttondown-api.sh"; bd_get_by_external_id "$_BD_EXT_ID" 2>/dev/null'
+      2>/dev/null || true)
+
+      if echo "$dup_check" | jq -e '.id' &>/dev/null 2>&1; then
+        echo "  Newsletter draft already exists in Buttondown (external_id: $external_id)"
+        newsletter_ok=true
+      else
+        # Preflight reconcile (dry-run, non-blocking)
+        echo "  Running reconcile preflight..."
+        local reconcile_rc=0
+        "$ROOT_DIR/scripts/newsletter/reconcile.sh" --dry-run > /dev/null 2>&1 || reconcile_rc=$?
+        if [[ $reconcile_rc -ne 0 ]]; then
+          echo "  WARNING: Reconcile check found issues (exit $reconcile_rc). Review before sending."
+        fi
+
+        # Create the draft (export vars to avoid single-quote issues in subject)
+        echo "  Creating Buttondown draft: \"$subject\""
+        local create_result
+        create_result=$(
+          _BD_ROOT="$ROOT_DIR" \
+          _BD_SUBJECT="$subject" \
+          _BD_BODY="$body_tmp" \
+          _BD_EXT_ID="$external_id" \
+          bash -c 'source "$_BD_ROOT/scripts/buttondown-api.sh"; bd_create_draft --subject "$_BD_SUBJECT" --body-file "$_BD_BODY" --external-id "$_BD_EXT_ID"'
+        2>&1) || {
+          echo "  WARNING: Buttondown draft creation failed."
+          echo "  $create_result" | head -5 | sed 's/^/    /'
+          rm -f "$body_tmp"
+        }
+
+        if [[ -n "$create_result" ]] && echo "$create_result" | jq -e '.id' &>/dev/null 2>&1; then
+          local bd_email_id
+          bd_email_id=$(echo "$create_result" | jq -r '.id')
+          echo "  Buttondown draft created (id: $bd_email_id)"
+          newsletter_ok=true
+
+          # Append to ledger
+          local ledger_entry
+          ledger_entry=$(jq -n \
+            --arg ts "$(date -u +"%Y-%m-%dT%H:%M:%SZ")" \
+            --arg slug "$seed_id" \
+            --arg ext_id "$external_id" \
+            --arg bd_id "$bd_email_id" \
+            --arg status "draft" \
+            --arg subject "$subject" \
+            '{ts:$ts, blog_slug:$slug, external_id:$ext_id, bd_email_id:$bd_id, status:$status, subject:$subject, operation:"create_draft"}')
+          echo "$ledger_entry" >> "$ROOT_DIR/content-pipeline/newsletter-ledger.jsonl"
+          echo "  Ledger updated."
+        fi
+      fi
+
+      rm -f "$body_tmp"
+    fi
+  fi
+  echo ""
+
+  # ── Step 4: Transition to SHIPPED ────────────────────────────────────
+  state_update_seed "$seed_id" "SHIPPED"
+  echo "Step 4: State -> SHIPPED"
+  echo ""
+
+  # ── Step 5: Display git commands ─────────────────────────────────────
+  echo "Blog published and newsletter drafted. To deploy:"
+  echo ""
+  echo "  git add blog/posts/${seed_id}.md \\"
+  echo "          blog/audio/*.mp3 \\"
+  echo "          blog/audio/.audio-manifest.json \\"
+  echo "          content-pipeline/newsletter-ledger.jsonl"
+  echo "  git commit -S -m \"Add blog post: ${title}\""
+  echo "  git push origin main"
+}
+
+# _process_archive <seed_id>
+# Archives a SHIPPED seed: moves brief, drafts, and challenge report to
+# content-pipeline/archive/<id>/, then transitions to ARCHIVED.
+_process_archive() {
+  local seed_id="$1"
+  local archive_dir="$ROOT_DIR/content-pipeline/archive/${seed_id}"
+  mkdir -p "$archive_dir"
+
+  local archived_count=0
+
+  # Archive content brief
+  local brief="$ROOT_DIR/content-pipeline/content-briefs/${seed_id}.md"
+  if [[ -f "$brief" ]]; then
+    mv "$brief" "$archive_dir/content-brief.md"
+    echo "  Archived: content-brief.md"
+    archived_count=$((archived_count + 1))
+  fi
+
+  # Archive challenge report
+  local challenge="$ROOT_DIR/pipeline/challenges/${seed_id}.md"
+  if [[ -f "$challenge" ]]; then
+    mv "$challenge" "$archive_dir/challenge-report.md"
+    echo "  Archived: challenge-report.md"
+    archived_count=$((archived_count + 1))
+  fi
+
+  # Archive interview questions (if thin seed)
+  local questions="$ROOT_DIR/pipeline/challenges/${seed_id}-questions.md"
+  if [[ -f "$questions" ]]; then
+    mv "$questions" "$archive_dir/interview-questions.md"
+    echo "  Archived: interview-questions.md"
+    archived_count=$((archived_count + 1))
+  fi
+
+  # Archive drafts — handle both subdirectory and flat layouts
+  local draft_subdir="$ROOT_DIR/content-pipeline/drafts/${seed_id}"
+  if [[ -d "$draft_subdir" ]]; then
+    # Subdirectory layout: move entire directory contents
+    for f in "$draft_subdir"/*; do
+      [[ -f "$f" ]] || continue
+      local fname
+      fname=$(basename "$f")
+      mv "$f" "$archive_dir/$fname"
+      echo "  Archived: $fname"
+      archived_count=$((archived_count + 1))
+    done
+    rmdir "$draft_subdir" 2>/dev/null || true
+  else
+    # Flat layout: move individual files
+    local flat_blog="$ROOT_DIR/content-pipeline/drafts/${seed_id}.md"
+    if [[ -f "$flat_blog" ]]; then
+      mv "$flat_blog" "$archive_dir/blog-draft.md"
+      echo "  Archived: blog-draft.md"
+      archived_count=$((archived_count + 1))
+    fi
+    local flat_newsletter="$ROOT_DIR/content-pipeline/drafts/newsletter-${seed_id}.md"
+    if [[ -f "$flat_newsletter" ]]; then
+      mv "$flat_newsletter" "$archive_dir/newsletter-draft.md"
+      echo "  Archived: newsletter-draft.md"
+      archived_count=$((archived_count + 1))
+    fi
+  fi
+
+  # Archive seed file
+  local seed_file="$ROOT_DIR/pipeline/seeds/${seed_id}.md"
+  if [[ -f "$seed_file" ]]; then
+    mv "$seed_file" "$archive_dir/seed.md"
+    echo "  Archived: seed.md"
+    archived_count=$((archived_count + 1))
+  fi
+
+  if [[ $archived_count -eq 0 ]]; then
+    echo "  No files found to archive (seed may have been archived manually)."
+  else
+    echo "  Archived $archived_count file(s) to content-pipeline/archive/${seed_id}/"
+  fi
+
+  # Add to published list in state
+  local now
+  now=$(date -u +"%Y-%m-%dT%H:%M:%SZ")
+  state_read | jq --arg id "$seed_id" --arg now "$now" \
+    '.published += [{id: $id, archived: $now}]' | state_write
+
+  state_update_seed "$seed_id" "ARCHIVED"
+  echo "  Advanced to ARCHIVED."
+}
+
+cmd_status() {
+  state_ensure
+
+  local seed_count
+  seed_count=$(jq '.seeds | length' "$STATE_FILE")
+
+  echo "=== Bear Essentials Pipeline Status ==="
+  echo
+
+  if [[ "$seed_count" -eq 0 ]]; then
+    echo "No seeds in pipeline."
+  else
+    # Table header
+    printf "%-36s  %-12s  %-10s  %-12s  %-7s\n" "ID" "PHASE" "CREATED" "SOURCE" "QUALITY"
+    printf "%-36s  %-12s  %-10s  %-12s  %-7s\n" "------------------------------------" "------------" "----------" "------------" "-------"
+
+    # Table rows
+    jq -r '.seeds[] | [.id, .phase, (.created | split("T")[0]), .source, (.quality // "n/a")] | @tsv' "$STATE_FILE" \
+      | while IFS=$'\t' read -r id phase created source quality; do
+          printf "%-36s  %-12s  %-10s  %-12s  %-7s\n" "$id" "$phase" "$created" "$source" "$quality"
+        done
+  fi
+
+  echo
+  echo "--- Config ---"
+  jq -r '.config | to_entries[] | "  \(.key): \(.value)"' "$STATE_FILE"
+  echo
+  echo "Published: $(jq '.published | length' "$STATE_FILE") posts"
+}
+
+cmd_help() {
+  cat <<'HELPEOF'
+bear — CLI dispatcher for the Bear Essentials content pipeline
+
+Usage:
+  ./scripts/bear <command> [arguments]
+
+Commands:
+  seed <text>                  Create a new content seed from text
+  seed <file.m4a>              Create a seed from a voice memo (transcribes first)
+  seed                         Process oldest file from inbox/voice/ or inbox/text/
+  seed --answers <id>          Mark interview questions as answered (thin seeds)
+  process                      Advance the oldest eligible seed one phase
+  approve [FLAGS] [ID]         Act on an audited seed
+    (no flags)                   Show comprehensive review of AUDITED seeds
+    --yes                        Approve, ship (blog + build + newsletter), advance to SHIPPED
+    --revise                     Send back to INTERVIEWED for redraft
+    --reject                     Mark as REJECTED
+  status                       Show all seeds and pipeline config
+  help                         Show this help message
+
+State machine:
+  SEEDED -> CHALLENGED -> INTERVIEWED -> DRAFTED -> AUDITED -> APPROVED -> SHIPPED -> ARCHIVED
+
+Phase transitions (via 'process'):
+  SEEDED -> CHALLENGED       AI runs anti-confirmation-bias challenge on the seed
+  CHALLENGED -> INTERVIEWED  Rich seeds get a content brief; thin seeds get questions
+                             (for thin seeds, answer questions then run 'seed --answers <id>')
+  INTERVIEWED -> DRAFTED     AI generates blog post + newsletter pair
+  DRAFTED -> AUDITED         Automated audit checks names policy, word count, etc.
+  AUDITED -> APPROVED/SHIPPED  Manual approval via 'approve --yes' (ships: blog + build + newsletter)
+  SHIPPED -> ARCHIVED        Auto-archive via 'process' (moves artifacts to archive/)
+
+Seed quality:
+  Seeds are classified as "rich" (100+ words, 3+ claim sentences) or "thin".
+  Thin seeds go through an interview-questions step before generating a brief.
+
+Supported audio formats: .m4a .mp3 .wav .ogg .webm
+Supported text formats:  .txt .md
+
+Examples:
+  ./scripts/bear seed "Why observability matters more than monitoring"
+  ./scripts/bear seed ~/voice-memos/idea.m4a
+  ./scripts/bear seed                          # process oldest inbox file
+  ./scripts/bear process
+  ./scripts/bear approve --yes 2026-04-16-why-observability-matters-more
+  ./scripts/bear status
+HELPEOF
+}
+
+# ── Dispatch ────────────────────────────────────────────────────────────
+
+main() {
+  if [[ $# -eq 0 ]]; then
+    cmd_help
+    exit 0
+  fi
+
+  local command="$1"
+  shift
+
+  case "$command" in
+    seed)     cmd_seed "$@" ;;
+    process)  cmd_process "$@" ;;
+    approve)  cmd_approve "$@" ;;
+    status)   cmd_status "$@" ;;
+    help|--help|-h)  cmd_help ;;
+    *)
+      echo "Unknown command: $command" >&2
+      echo "Run './scripts/bear help' for usage." >&2
+      exit 1
+      ;;
+  esac
+}
+
+main "$@"

@@ -15,6 +15,25 @@ const DEFAULT_ENGINE = process.env.BLOG_AUDIO_ENGINE || 'neural';
 const DEFAULT_VOICE = process.env.BLOG_AUDIO_VOICE || 'Matthew';
 const DEFAULT_AWS_PROFILE = process.env.AWS_PROFILE || 'tineo-labs-deploy';
 const MAX_INPUT_CHARS = 3000;
+const DEFAULT_PIPER_MODEL = process.env.BLOG_PIPER_MODEL || 'en_US-lessac-medium';
+const PIPER_SAMPLE_RATE = 22050;
+
+/**
+ * Determine the TTS backend to use.
+ * Priority: BLOG_AUDIO_BACKEND env var > state.json config > 'polly' fallback.
+ */
+function getAudioBackend() {
+  const envBackend = process.env.BLOG_AUDIO_BACKEND;
+  if (envBackend) return envBackend;
+
+  const stateFile = path.join(__dirname, '..', 'pipeline', 'state.json');
+  try {
+    const state = JSON.parse(fs.readFileSync(stateFile, 'utf-8'));
+    return state.config?.tts_backend || 'polly';
+  } catch {
+    return 'polly';
+  }
+}
 
 async function main() {
   console.log('Generating blog audio...\n');
@@ -33,15 +52,34 @@ async function main() {
     return;
   }
 
-  const awsPath = findExecutable('aws');
-  if (!awsPath) {
-    console.log('aws CLI is required to call Polly. Skipping audio generation.');
-    return;
+  // Determine TTS backend
+  let backend = getAudioBackend();
+  console.log(`TTS backend: ${backend}`);
+
+  // Validate backend-specific dependencies
+  let awsPath = null;
+  let piperPath = null;
+
+  if (backend === 'piper') {
+    piperPath = findExecutable('piper');
+    if (!piperPath) {
+      console.log('piper CLI not found. Install with: brew install piper');
+      console.log('Falling back to polly backend.');
+      backend = 'polly';
+    }
+  }
+
+  if (backend === 'polly') {
+    awsPath = findExecutable('aws');
+    if (!awsPath) {
+      console.log('aws CLI is required to call Polly. Skipping audio generation.');
+      return;
+    }
   }
 
   const ffmpegPath = findExecutable('ffmpeg');
   if (!ffmpegPath) {
-    console.log('ffmpeg is required to merge audio chunks. Skipping audio generation.');
+    console.log('ffmpeg is required for audio processing. Skipping audio generation.');
     return;
   }
 
@@ -59,8 +97,9 @@ async function main() {
       const narrationText = buildNarrationScript(post);
       const settingsHash = hashContent(JSON.stringify({
         narrationText,
-        engine: DEFAULT_ENGINE,
-        voice: post.audioVoice,
+        backend,
+        engine: backend === 'polly' ? DEFAULT_ENGINE : 'piper',
+        voice: backend === 'polly' ? post.audioVoice : DEFAULT_PIPER_MODEL,
       }));
 
       const outputPath = path.join(AUDIO_DIR, `${post.slug}.mp3`);
@@ -75,27 +114,38 @@ async function main() {
         continue;
       }
 
-      console.log(`- Synthesizing ${post.slug}...`);
+      console.log(`- Synthesizing ${post.slug} (${backend})...`);
 
-      const chunks = chunkNarration(narrationText);
       const tempDir = fs.mkdtempSync(path.join(os.tmpdir(), 'blog-audio-'));
-      const chunkPaths = [];
 
       try {
-        for (let index = 0; index < chunks.length; index += 1) {
-          const chunkPath = path.join(tempDir, `chunk-${String(index + 1).padStart(2, '0')}.mp3`);
-          synthesizeChunk(chunks[index], chunkPath, {
-            awsPath,
-            awsProfile: DEFAULT_AWS_PROFILE,
-            engine: DEFAULT_ENGINE,
-            voice: post.audioVoice,
+        if (backend === 'piper') {
+          synthesizeWithPiper(narrationText, outputPath, {
+            piperPath,
+            ffmpegPath,
+            model: DEFAULT_PIPER_MODEL,
             tempDir,
-            chunkIndex: index,
           });
-          chunkPaths.push(chunkPath);
-        }
+        } else {
+          // Polly: chunk and synthesize
+          const chunks = chunkNarration(narrationText);
+          const chunkPaths = [];
 
-        mergeChunkFiles(chunkPaths, outputPath, ffmpegPath);
+          for (let index = 0; index < chunks.length; index += 1) {
+            const chunkPath = path.join(tempDir, `chunk-${String(index + 1).padStart(2, '0')}.mp3`);
+            synthesizeWithPolly(chunks[index], chunkPath, {
+              awsPath,
+              awsProfile: DEFAULT_AWS_PROFILE,
+              engine: DEFAULT_ENGINE,
+              voice: post.audioVoice,
+              tempDir,
+              chunkIndex: index,
+            });
+            chunkPaths.push(chunkPath);
+          }
+
+          mergeChunkFiles(chunkPaths, outputPath, ffmpegPath);
+        }
 
         const durationSeconds = ffprobePath ? getDurationSeconds(outputPath, ffprobePath) : null;
         manifest.posts[post.slug] = {
@@ -104,8 +154,9 @@ async function main() {
           url: `/blog/audio/${post.slug}.mp3`,
           durationSeconds,
           contentHash: settingsHash,
-          engine: DEFAULT_ENGINE,
-          voice: post.audioVoice,
+          backend,
+          engine: backend === 'polly' ? DEFAULT_ENGINE : 'piper',
+          voice: backend === 'polly' ? post.audioVoice : DEFAULT_PIPER_MODEL,
           generatedAt: new Date().toISOString(),
         };
         generatedCount += 1;
@@ -362,7 +413,11 @@ function splitVeryLongSentence(sentence) {
   return chunks;
 }
 
-function synthesizeChunk(input, outputPath, options) {
+/**
+ * Synthesize audio using AWS Polly (chunked).
+ * This is the original synthesizeChunk logic, renamed for clarity.
+ */
+function synthesizeWithPolly(input, outputPath, options) {
   const textFilePath = path.join(
     options.tempDir,
     `chunk-${String(options.chunkIndex + 1).padStart(2, '0')}.txt`,
@@ -387,6 +442,44 @@ function synthesizeChunk(input, outputPath, options) {
   } catch (error) {
     const stderr = error.stderr ? error.stderr.toString() : '';
     throw new Error(`Polly synthesize-speech failed: ${stderr || error.message}`);
+  }
+}
+
+/**
+ * Synthesize audio using Piper TTS.
+ * Piper handles long text natively, so no chunking is needed.
+ * Pipes raw PCM output through ffmpeg to produce MP3.
+ */
+function synthesizeWithPiper(narrationText, outputPath, options) {
+  const inputFile = path.join(options.tempDir, 'narration.txt');
+  fs.writeFileSync(inputFile, narrationText, 'utf-8');
+
+  // Piper outputs raw 16-bit signed PCM; pipe through ffmpeg to encode MP3
+  try {
+    execFileSync(options.ffmpegPath, [
+      '-y',
+      '-f', 's16le',
+      '-ar', String(PIPER_SAMPLE_RATE),
+      '-ac', '1',
+      '-i', 'pipe:0',
+      '-codec:a', 'libmp3lame',
+      '-q:a', '2',
+      outputPath,
+    ], {
+      input: execFileSync(options.piperPath, [
+        '--model', options.model,
+        '--output_raw',
+      ], {
+        input: fs.readFileSync(inputFile),
+        stdio: ['pipe', 'pipe', 'pipe'],
+        maxBuffer: 100 * 1024 * 1024, // 100 MB for long narrations
+      }),
+      stdio: ['pipe', 'ignore', 'pipe'],
+      maxBuffer: 100 * 1024 * 1024,
+    });
+  } catch (error) {
+    const stderr = error.stderr ? error.stderr.toString() : '';
+    throw new Error(`Piper synthesis failed: ${stderr || error.message}`);
   }
 }
 
