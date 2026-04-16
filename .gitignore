@@ -26,7 +26,14 @@ dist-ssr
 # AI
 .claude
 .screenshots
+.worktrees
 
 # Blog generated files
 blog/generated/
 posts.json
+
+# Bear content pipeline runtime (prompts/ and adapters/ ARE tracked)
+inbox/
+pipeline/state.json
+pipeline/seeds/
+pipeline/challenges/
