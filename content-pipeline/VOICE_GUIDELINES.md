@@ -33,9 +33,9 @@
 
 ### 🔒 Pre-publish name audit (automated)
 
-Before any `/content-draft`, `/content-publish`, or `/content-newsletter` command emits or ships a draft, it must run this audit against the staged markdown:
+Before any `./scripts/bear` transition emits or ships a draft (specifically DRAFTED → AUDITED, and AUDITED → SHIPPED via `approve --yes`), it must run this audit against the staged markdown. The bear CLI enforces this automatically via `scripts/audit.sh` at the DRAFTED → AUDITED gate; agents invoking the pipeline outside bear must run it by hand.
 
-1. **Blocklist grep** — `grep -rEn "Hivenet|compute\.hivenet|hive\.net|Antimatter" <files>`. Any hit = halt. The published About/Experience pages are the only place Hivenet may appear and they're exempt because `/content-publish` operates on blog and newsletter files, not static pages. **The blocklist contains public work brand names only — never person names.** Two reasons: (a) listing a coworker surname in this regex would itself leak that name into version-controlled config (the exact failure mode the policy exists to prevent), and (b) the next grep (proper-noun-surface) already catches every two-word capitalized pattern, making enumeration of specific names redundant. If a near-miss happens with a person's name, **do not** add that name to this regex — the correct response is to strengthen the proper-noun-surface review step below and tighten the Names Allowlist in the brief.
+1. **Blocklist grep** — `grep -rEn "Hivenet|compute\.hivenet|hive\.net|Antimatter" <files>`. Any hit = halt. The published About/Experience pages are the only place Hivenet may appear and they're exempt because the bear ship step operates on blog and newsletter files, not static pages. **The blocklist contains public work brand names only — never person names.** Two reasons: (a) listing a coworker surname in this regex would itself leak that name into version-controlled config (the exact failure mode the policy exists to prevent), and (b) the next grep (proper-noun-surface) already catches every two-word capitalized pattern, making enumeration of specific names redundant. If a near-miss happens with a person's name, **do not** add that name to this regex — the correct response is to strengthen the proper-noun-surface review step below and tighten the Names Allowlist in the brief.
 2. **Proper-noun surface grep** — `grep -rEn "\b[A-Z][a-z]+ [A-Z][a-z]+\b" <files>`. Surface every hit to the user for review. False positives are fine (e.g., "New York", "Black Friday") — the point is to make sure no human name slips by unreviewed. This is the *primary* defense against person names — it's generic, scales automatically as coworker rosters change, and doesn't require maintaining a list.
 3. **Attribution-idiom grep** — `grep -rEn "\bsaid\b|according to|put it well|argues|wrote about|'s book|'s post|'s article|inspired by" <files>`. Any hit means there's an attribution — confirm the attributed entity is on the allowed list before continuing.
 4. **Fake-persona pattern grep** — `grep -rEn "(a developer named|an engineer named|let's call (him|her|them)|for example,? [A-Z][a-z]+ (the|our|a) )" <files>`. Any hit = halt. Rewrite with role labels.
@@ -71,6 +71,41 @@ Before any `/content-draft`, `/content-publish`, or `/content-newsletter` comman
 ✅ "The authors of *Continuous Delivery* establish this principle: reduce batch size to reduce risk."
 
 *Why this is allowed:* The book title is the citation anchor — it points at a specific public work, and the reader can look up the authorship if they want to. No person-name surface is introduced into the draft itself. If the paragraph genuinely collapses without the authors named (e.g., a post specifically about their philosophy), the name may be added per-draft via the Names Allowlist in the brief — but only after an explicit interview-time decision that the name is the point of the paragraph, not decoration.
+
+---
+
+## 🚫 EM-DASH BAN (Read Second)
+
+**No em-dashes (—) in any Bear Essentials content. Ever.**
+
+This applies to blog bodies, newsletter bodies, titles, subtitles, excerpts, frontmatter, and quoted seed text. En-dashes (–) in numeric ranges are fine (`2000–2010`). Hyphens in compound words are fine (`open-source`, `drive-by`). What is banned is the em-dash used as a prose separator.
+
+**Why:** Em-dashes are one of the clearest tells that prose was machine-produced. Miguel has flagged them as "blasphemy" in his voice. This rule is a taste rule, not a style-guide preference: em-dashes make the writing sound not-his, which defeats the entire point of the pipeline.
+
+**How to replace them during drafting:**
+
+- **Period.** Best default. Creates snappier prose.
+  - ❌ `I confused two things — they are not the same.`
+  - ✅ `I confused two things. They are not the same.`
+- **Colon.** For introducing a list, definition, or explanation.
+  - ❌ `Three shifts in particular — polish, critic, failure.`
+  - ✅ `Three shifts in particular: polish, critic, failure.`
+- **Comma.** For short mid-sentence parentheticals.
+  - ❌ `With Claude — or any capable assistant — the cost drops.`
+  - ✅ `With Claude, or any capable assistant, the cost drops.`
+- **Parentheses.** For true asides off the main line of thought.
+  - ❌ `The Homebrew formula — which I never finished — sat for months.`
+  - ✅ `The Homebrew formula (which I never finished) sat for months.`
+
+Do not simply delete an em-dash without repairing the sentence around it. The cleanest rewrite usually splits one comma-spliced-via-dashes sentence into two clean sentences with a period between them.
+
+**Pre-publish grep (recommended, not yet automated in `scripts/audit.sh`):**
+
+```
+grep -n '—' content-pipeline/drafts/<id>/blog.md content-pipeline/drafts/<id>/newsletter.md
+```
+
+Any hit is a halt. Rewrite before advancing.
 
 ---
 
@@ -433,7 +468,7 @@ Skip audio (`audio: false` or omit the field) only when:
 
 ### Running the pipeline
 
-The `/content-publish` command generates the MP3 locally before
-committing — the audio file is tracked in git and deployed by the
-standard S3 sync. Requires `AWS_PROFILE=tineo-labs-deploy` in the
+The `./scripts/bear approve --yes` ship step generates the MP3 locally
+before committing — the audio file is tracked in git and deployed by
+the standard S3 sync. Requires `AWS_PROFILE=tineo-labs-deploy` in the
 environment. See `BLOG_README.md` for full details.

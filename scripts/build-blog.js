@@ -179,8 +179,13 @@ function selectIllustration(post) {
 }
 
 // ─── Paths ───────────────────────────────────────────────────────────────────
+// BLOG_DIR can be overridden via env var BEAR_BLOG_DIR (used by the preview
+// command to build a draft into an isolated directory without touching the
+// real blog/ dir that ships to production).
 
-const BLOG_DIR = path.join(__dirname, '..', 'blog');
+const BLOG_DIR = process.env.BEAR_BLOG_DIR
+  ? path.resolve(process.env.BEAR_BLOG_DIR)
+  : path.join(__dirname, '..', 'blog');
 const POSTS_DIR = path.join(BLOG_DIR, 'posts');
 const GENERATED_DIR = path.join(BLOG_DIR, 'generated');
 const AUDIO_DIR = path.join(BLOG_DIR, 'audio');

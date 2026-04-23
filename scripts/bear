@@ -9,7 +9,8 @@
 #   ./scripts/bear seed --answers <id>   Mark interview questions as answered (thin seeds)
 #   ./scripts/bear process               Advance the oldest eligible seed one phase
 #   ./scripts/bear approve [FLAGS] [ID]  Approve, revise, or reject an audited seed
-#   ./scripts/bear status                Show all seeds and pipeline config
+#   ./scripts/bear status                Show all seeds and pipeline config (incl. drift warning)
+#   ./scripts/bear doctor                Deep state-vs-disk consistency check
 #   ./scripts/bear help                  Show this help message
 #
 # State machine: SEEDED -> CHALLENGED -> INTERVIEWED -> DRAFTED -> AUDITED -> APPROVED -> SHIPPED -> ARCHIVED
@@ -100,12 +101,15 @@ state_add_seed() {
 # ── Helpers ─────────────────────────────────────────────────────────────
 
 slugify() {
-  # Take first ~5 meaningful words, lowercase, kebab-case
+  # Take first ~5 meaningful words, lowercase, kebab-case.
+  # Collapse all whitespace (including newlines/tabs) to single spaces up front,
+  # so multi-line seeds don't leak newlines into the slug and filename.
   echo "$1" \
+    | tr '\n\r\t' '   ' \
     | tr '[:upper:]' '[:lower:]' \
     | sed 's/[^a-z0-9 ]/ /g' \
     | tr -s ' ' \
-    | awk '{for(i=1;i<=NF && i<=5;i++) printf "%s%s",$i,(i<NF && i<5?"-":""); print ""}' \
+    | awk '{for(i=1;i<=NF && i<=5;i++) printf "%s%s",$i,(i<NF && i<5?"-":""); print ""; exit}' \
     | sed 's/-$//'
 }
 
@@ -911,13 +915,29 @@ _approve_and_ship() {
   [[ -z "$title" ]] && title="$seed_id"
 
   # ── Step 1: Copy blog draft to blog/posts/ ───────────────────────────
+  # Derive the published filename from the post title rather than the raw
+  # seed_id, so the URL slug matches the headline the reader sees. Falls
+  # back to seed_id if the title can't be slugified.
   echo "Step 1: Publishing blog post..."
-  local dest_post="$ROOT_DIR/blog/posts/${seed_id}.md"
+  local pub_slug pub_date pub_filename
+  pub_slug=$(echo "$title" \
+    | tr '[:upper:]' '[:lower:]' \
+    | sed 's/[^a-z0-9 ]/ /g' \
+    | tr -s ' ' \
+    | tr ' ' '-' \
+    | sed 's/^-//;s/-$//')
+  pub_date=$(echo "$seed_id" | grep -oE '^[0-9]{4}-[0-9]{2}-[0-9]{2}' || date +%Y-%m-%d)
+  if [[ -n "$pub_slug" ]]; then
+    pub_filename="${pub_date}-${pub_slug}.md"
+  else
+    pub_filename="${seed_id}.md"
+  fi
+  local dest_post="$ROOT_DIR/blog/posts/${pub_filename}"
   if [[ -f "$dest_post" ]]; then
-    echo "  Blog post already exists at blog/posts/${seed_id}.md — overwriting."
+    echo "  Blog post already exists at blog/posts/${pub_filename} — overwriting."
   fi
   cp "$BLOG_FILE" "$dest_post"
-  echo "  Copied to blog/posts/${seed_id}.md"
+  echo "  Copied to blog/posts/${pub_filename}"
   echo ""
 
   # ── Step 2: Run the build ────────────────────────────────────────────
@@ -1031,7 +1051,7 @@ _approve_and_ship() {
   # ── Step 5: Display git commands ─────────────────────────────────────
   echo "Blog published and newsletter drafted. To deploy:"
   echo ""
-  echo "  git add blog/posts/${seed_id}.md \\"
+  echo "  git add blog/posts/${pub_filename} \\"
   echo "          blog/audio/*.mp3 \\"
   echo "          blog/audio/.audio-manifest.json \\"
   echo "          content-pipeline/newsletter-ledger.jsonl"
@@ -1126,6 +1146,198 @@ _process_archive() {
   echo "  Advanced to ARCHIVED."
 }
 
+cmd_preview() {
+  state_ensure
+
+  local id="${1:-}"
+
+  # Default: newest piece in DRAFTED / AUDITED / APPROVED
+  if [[ -z "$id" ]]; then
+    id=$(jq -r '.seeds | map(select(.phase == "DRAFTED" or .phase == "AUDITED" or .phase == "APPROVED"))
+                       | sort_by(.updated) | reverse | .[0].id // empty' "$STATE_FILE")
+    if [[ -z "$id" ]]; then
+      echo "No pieces in DRAFTED, AUDITED, or APPROVED state to preview." >&2
+      echo "Run ./scripts/bear process until a draft is generated." >&2
+      return 1
+    fi
+    echo "No piece ID given — using newest drafted: $id" >&2
+  fi
+
+  if ! state_get_seed "$id" &>/dev/null; then
+    echo "ERROR: piece not found in state.json: $id" >&2
+    return 1
+  fi
+
+  local draft_md="$ROOT_DIR/content-pipeline/drafts/$id/blog.md"
+  if [[ ! -f "$draft_md" ]]; then
+    echo "ERROR: draft not found at $draft_md" >&2
+    return 1
+  fi
+
+  # Derive slug from frontmatter title (same way build-blog does: strip date from filename).
+  # Prefer title → slug to produce the URL users will see in production.
+  local title slug
+  title=$(awk -F': ' '/^title:/ {gsub(/^"|"$/, "", $2); print $2; exit}' "$draft_md")
+  if [[ -z "$title" ]]; then
+    slug="$id"
+  else
+    slug=$(echo "$title" \
+      | tr '[:upper:]' '[:lower:]' \
+      | sed 's/[^a-z0-9 ]/ /g' \
+      | tr -s ' ' \
+      | tr ' ' '-' \
+      | sed 's/^-//; s/-$//')
+  fi
+
+  local date_prefix
+  date_prefix=$(date -u -r "$draft_md" +"%Y-%m-%d" 2>/dev/null || date +"%Y-%m-%d")
+
+  local preview_root="$ROOT_DIR/preview/$slug"
+  local preview_blog="$preview_root/blog"
+
+  echo "Building preview for: $id" >&2
+  echo "  slug: $slug" >&2
+
+  # Fresh preview dir — nuke and rebuild so stale artifacts don't linger
+  rm -rf "$preview_root"
+  mkdir -p "$preview_blog/posts"
+
+  # Bring in the full published catalog so the index/list looks real
+  if [[ -d "$ROOT_DIR/blog/posts" ]]; then
+    cp "$ROOT_DIR"/blog/posts/*.md "$preview_blog/posts/" 2>/dev/null || true
+  fi
+  # Drop the draft in with a sensible per-build filename
+  cp "$draft_md" "$preview_blog/posts/${date_prefix}-${slug}.md"
+
+  # Copy blog subdirectories that hold referenced assets (audio, images, etc.)
+  local blog_sub
+  for blog_sub in audio images; do
+    if [[ -d "$ROOT_DIR/blog/$blog_sub" ]]; then
+      mkdir -p "$preview_blog/$blog_sub"
+      cp -R "$ROOT_DIR/blog/$blog_sub/." "$preview_blog/$blog_sub/" 2>/dev/null || true
+    fi
+  done
+
+  # Symlink top-level assets so /css, /js, /images, /assets resolve
+  local asset
+  for asset in css js images assets; do
+    [[ -d "$ROOT_DIR/$asset" ]] && ln -snf "$ROOT_DIR/$asset" "$preview_root/$asset"
+  done
+  # Copy top-level pages for back-nav so header/footer nav links resolve in preview
+  local page
+  for page in index.html about.html contact.html experience.html speaking.html; do
+    [[ -f "$ROOT_DIR/$page" ]] && cp "$ROOT_DIR/$page" "$preview_root/" 2>/dev/null || true
+  done
+
+  # Build via the existing pipeline, targeted at the preview dir
+  echo "  building..." >&2
+  if ! BEAR_BLOG_DIR="$preview_blog" node "$ROOT_DIR/scripts/build-blog.js" > "$preview_root/build.log" 2>&1; then
+    echo "ERROR: build-blog.js failed. See $preview_root/build.log" >&2
+    tail -20 "$preview_root/build.log" >&2
+    return 1
+  fi
+
+  # QA: scan the built post for layout/UI shenanigans (images without size
+  # constraints, em-dashes, broken internal links, oversized native assets, etc.)
+  local built_html="$preview_blog/${slug}.html"
+  if [[ -f "$built_html" ]] && [[ -f "$ROOT_DIR/scripts/bear-qa.py" ]]; then
+    python3 "$ROOT_DIR/scripts/bear-qa.py" "$built_html" --preview-root "$preview_root" || true
+  fi
+
+  # Serve via local-deploy
+  local hostname="${slug}-bearessentials.local.test"
+  local url="https://${hostname}/blog/${slug}.html"
+
+  if command -v local-deploy &>/dev/null; then
+    local-deploy sweep &>/dev/null || true
+    if local-deploy list 2>/dev/null | grep -q "^.\s*${hostname}\b"; then
+      # Already up; leave it serving the (newly rebuilt) files
+      :
+    else
+      if ! local-deploy up "${slug}-bearessentials" --static "$preview_root" >&2; then
+        echo "local-deploy up failed; falling back to file://" >&2
+        url="file://$preview_root/blog/${slug}.html"
+      fi
+    fi
+  else
+    echo "local-deploy not on PATH; using file://" >&2
+    url="file://$preview_root/blog/${slug}.html"
+  fi
+
+  # Print URL on its own line so callers can grep for it
+  echo ""
+  echo "Preview: $url"
+  echo ""
+  if command -v open &>/dev/null; then
+    open "$url" || true
+  fi
+}
+
+cmd_interview() {
+  state_ensure
+
+  local id="${1:-}"
+
+  # Default: oldest non-archived, non-shipped seed
+  if [[ -z "$id" ]]; then
+    id=$(jq -r '.seeds | map(select(.phase != "ARCHIVED" and .phase != "SHIPPED"))
+                       | sort_by(.created) | .[0].id // empty' "$STATE_FILE")
+    if [[ -z "$id" ]]; then
+      echo "No active pieces in the pipeline." >&2
+      echo "Seed one with: ./scripts/bear seed \"<text>\"" >&2
+      return 1
+    fi
+    echo "No piece ID given — using oldest active: $id" >&2
+  fi
+
+  if ! state_get_seed "$id" &>/dev/null; then
+    echo "ERROR: piece not found in state.json: $id" >&2
+    return 1
+  fi
+
+  local ui_dir="$ROOT_DIR/scripts/bear-interview-ui"
+  local builder="$ui_dir/build-data.py"
+
+  if [[ ! -x "$builder" ]] && [[ ! -f "$builder" ]]; then
+    echo "ERROR: $builder not found." >&2
+    return 1
+  fi
+
+  # Build data.json (run from project root so relative paths resolve)
+  echo "Building interview data for: $id" >&2
+  (cd "$ROOT_DIR" && python3 "$builder" "$id")
+
+  # Serve via local-deploy if available; fall back to file:// + open
+  local hostname="interview-bearessentials.local.test"
+  local url="https://${hostname}/"
+  if command -v local-deploy &>/dev/null; then
+    # sweep dead entries first per the CLAUDE.md rule
+    local-deploy sweep &>/dev/null || true
+    if ! local-deploy list 2>/dev/null | grep -q "^.\s*${hostname}\b"; then
+      echo "Bringing up ${hostname} via local-deploy..." >&2
+      local-deploy up interview-bearessentials --static "$ui_dir" >&2 || {
+        echo "local-deploy up failed; falling back to file://" >&2
+        url="file://$ui_dir/index.html"
+      }
+    fi
+  else
+    echo "local-deploy not on PATH; opening file:// URL instead." >&2
+    url="file://$ui_dir/index.html"
+  fi
+
+  echo "" >&2
+  echo "Opening: $url" >&2
+  if command -v open &>/dev/null; then
+    open "$url" || true
+  elif command -v xdg-open &>/dev/null; then
+    xdg-open "$url" || true
+  fi
+
+  echo "" >&2
+  echo "When done, paste the 'Copy as markdown' output back into your CLI chat." >&2
+  return 0
+}
+
 cmd_status() {
   state_ensure
 
@@ -1154,6 +1366,167 @@ cmd_status() {
   jq -r '.config | to_entries[] | "  \(.key): \(.value)"' "$STATE_FILE"
   echo
   echo "Published: $(jq '.published | length' "$STATE_FILE") posts"
+
+  # Lightweight drift check — full report via 'bear doctor'
+  local drift_count
+  drift_count=$(_doctor_count_issues)
+  if [[ "$drift_count" -gt 0 ]]; then
+    echo
+    echo "⚠ Drift detected: $drift_count issue(s). Run './scripts/bear doctor' for details."
+  fi
+}
+
+# _doctor_count_issues — returns the number of state/disk inconsistencies.
+# Used by cmd_status for a one-line drift warning.
+_doctor_count_issues() {
+  state_ensure
+  local count=0
+
+  # Seeds stuck at APPROVED (transient phase — should always advance to SHIPPED)
+  count=$((count + $(jq '[.seeds[] | select(.phase == "APPROVED")] | length' "$STATE_FILE")))
+
+  # Seed file missing on disk
+  while IFS= read -r file_rel; do
+    [[ -z "$file_rel" ]] && continue
+    [[ ! -f "$ROOT_DIR/$file_rel" ]] && count=$((count + 1))
+  done < <(jq -r '.seeds[].file // empty' "$STATE_FILE")
+
+  # published[] entry with no matching blog post file (by date prefix)
+  while IFS= read -r pid; do
+    [[ -z "$pid" ]] && continue
+    local date_prefix="${pid:0:10}"
+    if ! ls "$ROOT_DIR/blog/posts/${date_prefix}"-*.md &>/dev/null; then
+      count=$((count + 1))
+    fi
+  done < <(jq -r '.published[].id // empty' "$STATE_FILE")
+
+  # blog post on disk with no matching published[] entry (by date prefix)
+  if [[ -d "$ROOT_DIR/blog/posts" ]]; then
+    for post in "$ROOT_DIR/blog/posts"/*.md; do
+      [[ ! -f "$post" ]] && continue
+      local post_date
+      post_date=$(basename "$post" | cut -c1-10)
+      if [[ ! "$post_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then continue; fi
+      if ! jq -e --arg d "$post_date" '[.published[] | select(.id | startswith($d))] | length > 0' "$STATE_FILE" &>/dev/null; then
+        count=$((count + 1))
+      fi
+    done
+  fi
+
+  echo "$count"
+}
+
+cmd_doctor() {
+  state_ensure
+  echo "=== Bear Essentials Pipeline Doctor ==="
+  echo
+  local issues=0
+
+  # 1. Stuck APPROVED seeds
+  local stuck_approved
+  stuck_approved=$(jq -r '.seeds[] | select(.phase == "APPROVED") | .id' "$STATE_FILE")
+  if [[ -n "$stuck_approved" ]]; then
+    echo "✗ Seed(s) stuck at APPROVED (transient phase — ship step likely failed):"
+    while IFS= read -r sid; do
+      echo "    - $sid"
+      issues=$((issues + 1))
+    done <<< "$stuck_approved"
+    echo "  Fix: inspect blog/posts/ for the shipped file, then either finish 'approve --yes'"
+    echo "       or hand-edit pipeline/state.json to add the seed to .published[] and set phase=ARCHIVED."
+    echo
+  fi
+
+  # 2. Seed files missing on disk
+  local missing_seeds=""
+  while IFS=$'\t' read -r sid file_rel; do
+    [[ -z "$sid" || -z "$file_rel" ]] && continue
+    if [[ ! -f "$ROOT_DIR/$file_rel" ]]; then
+      missing_seeds+="    - $sid -> $file_rel"$'\n'
+      issues=$((issues + 1))
+    fi
+  done < <(jq -r '.seeds[] | [.id, (.file // "")] | @tsv' "$STATE_FILE")
+  if [[ -n "$missing_seeds" ]]; then
+    echo "✗ Seed file(s) missing on disk:"
+    printf "%s" "$missing_seeds"
+    echo "  Fix: restore from git or remove the seed from state.json."
+    echo
+  fi
+
+  # 3. published[] entries with no matching blog post (date-prefix match)
+  local missing_posts=""
+  while IFS= read -r pid; do
+    [[ -z "$pid" ]] && continue
+    local date_prefix="${pid:0:10}"
+    if ! ls "$ROOT_DIR/blog/posts/${date_prefix}"-*.md &>/dev/null; then
+      missing_posts+="    - $pid (expected blog/posts/${date_prefix}-*.md)"$'\n'
+      issues=$((issues + 1))
+    fi
+  done < <(jq -r '.published[].id // empty' "$STATE_FILE")
+  if [[ -n "$missing_posts" ]]; then
+    echo "✗ published[] entries with no matching blog post:"
+    printf "%s" "$missing_posts"
+    echo "  Fix: restore the blog file from git, or remove the entry from state.published[]."
+    echo
+  fi
+
+  # 4. Orphan blog posts (on disk, no published[] entry)
+  local orphans=""
+  if [[ -d "$ROOT_DIR/blog/posts" ]]; then
+    for post in "$ROOT_DIR/blog/posts"/*.md; do
+      [[ ! -f "$post" ]] && continue
+      local post_name
+      post_name=$(basename "$post" .md)
+      local post_date="${post_name:0:10}"
+      if [[ ! "$post_date" =~ ^[0-9]{4}-[0-9]{2}-[0-9]{2}$ ]]; then continue; fi
+      if ! jq -e --arg d "$post_date" '[.published[] | select(.id | startswith($d))] | length > 0' "$STATE_FILE" &>/dev/null; then
+        orphans+="    - blog/posts/${post_name}.md"$'\n'
+        issues=$((issues + 1))
+      fi
+    done
+  fi
+  if [[ -n "$orphans" ]]; then
+    echo "✗ Blog post(s) on disk with no matching state.published[] entry:"
+    printf "%s" "$orphans"
+    echo "  Fix: if these were shipped manually, add entries to pipeline/state.json under .published[]"
+    echo "       with {id: \"<slug>\", archived: \"<timestamp>\"}. Use the date prefix of the filename."
+    echo
+  fi
+
+  # 5. Stale seeds (non-terminal, not updated in > 14 days)
+  local now_epoch
+  now_epoch=$(date -u +%s)
+  local stale=""
+  while IFS=$'\t' read -r sid phase updated; do
+    [[ -z "$sid" ]] && continue
+    case "$phase" in
+      ARCHIVED|REJECTED) continue ;;
+    esac
+    local updated_epoch
+    if date -j -f "%Y-%m-%dT%H:%M:%SZ" "$updated" "+%s" &>/dev/null; then
+      updated_epoch=$(date -j -f "%Y-%m-%dT%H:%M:%SZ" "$updated" "+%s")
+    else
+      continue
+    fi
+    local age_days=$(( (now_epoch - updated_epoch) / 86400 ))
+    if (( age_days > 14 )); then
+      stale+="    - $sid (phase=$phase, ${age_days}d since last update)"$'\n'
+      issues=$((issues + 1))
+    fi
+  done < <(jq -r '.seeds[] | [.id, .phase, .updated] | @tsv' "$STATE_FILE")
+  if [[ -n "$stale" ]]; then
+    echo "⚠ Stale seed(s) (not advanced in > 14 days):"
+    printf "%s" "$stale"
+    echo "  Fix: run './scripts/bear process' to advance, or 'approve --reject' to close."
+    echo
+  fi
+
+  if [[ "$issues" -eq 0 ]]; then
+    echo "✓ No drift detected. State file and disk are consistent."
+    return 0
+  fi
+
+  echo "--- Summary: $issues issue(s) ---"
+  return 1
 }
 
 cmd_help() {
@@ -1169,12 +1542,17 @@ Commands:
   seed                         Process oldest file from inbox/voice/ or inbox/text/
   seed --answers <id>          Mark interview questions as answered (thin seeds)
   process                      Advance the oldest eligible seed one phase
+  interview [ID]               Launch the browser interview UI for a piece in the pipeline
+                               (defaults to oldest active; serves at interview-bearessentials.local.test)
+  preview [ID]                 Build an isolated local preview of a drafted post and serve it at
+                               <slug>-bearessentials.local.test (defaults to newest DRAFTED/AUDITED/APPROVED)
   approve [FLAGS] [ID]         Act on an audited seed
     (no flags)                   Show comprehensive review of AUDITED seeds
     --yes                        Approve, ship (blog + build + newsletter), advance to SHIPPED
     --revise                     Send back to INTERVIEWED for redraft
     --reject                     Mark as REJECTED
-  status                       Show all seeds and pipeline config
+  status                       Show all seeds and pipeline config (incl. drift warning)
+  doctor                       Deep state-vs-disk consistency check (exit != 0 on drift)
   help                         Show this help message
 
 State machine:
@@ -1218,10 +1596,13 @@ main() {
   shift
 
   case "$command" in
-    seed)     cmd_seed "$@" ;;
-    process)  cmd_process "$@" ;;
-    approve)  cmd_approve "$@" ;;
-    status)   cmd_status "$@" ;;
+    seed)       cmd_seed "$@" ;;
+    process)    cmd_process "$@" ;;
+    interview)  cmd_interview "$@" ;;
+    preview)    cmd_preview "$@" ;;
+    approve)    cmd_approve "$@" ;;
+    status)     cmd_status "$@" ;;
+    doctor)     cmd_doctor "$@" ;;
     help|--help|-h)  cmd_help ;;
     *)
       echo "Unknown command: $command" >&2

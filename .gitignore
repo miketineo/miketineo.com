@@ -37,3 +37,7 @@ inbox/
 pipeline/state.json
 pipeline/seeds/
 pipeline/challenges/
+
+# Bear local preview workspaces (per-piece, served via local-deploy)
+preview/
+scripts/bear-interview-ui/data.json
