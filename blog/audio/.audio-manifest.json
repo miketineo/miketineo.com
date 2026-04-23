@@ -10,7 +10,29 @@
       "engine": "neural",
       "voice": "Matthew",
       "generatedAt": "2026-04-16T10:45:23.851Z"
+    },
+    "managing-human-and-agentic-teams": {
+      "title": "Managing Human and Agentic Engineering Teams",
+      "audioTitle": "Listen to this article",
+      "url": "/blog/audio/managing-human-and-agentic-teams.mp3",
+      "durationSeconds": 349,
+      "contentHash": "2b29b6af6085952a877025ae8f300ef81240b9f5a98c753f9fa02119d60cae16",
+      "backend": "polly",
+      "engine": "neural",
+      "voice": "Matthew",
+      "generatedAt": "2026-04-23T20:24:28.890Z"
+    },
+    "stop-staging": {
+      "title": "Stop Staging.",
+      "audioTitle": "Listen to this article",
+      "url": "/blog/audio/stop-staging.mp3",
+      "durationSeconds": 455,
+      "contentHash": "36eb788868c3c82031ac8cf91fbfc316da7d6591d6e4fb2aadc3942fe318e5c9",
+      "backend": "polly",
+      "engine": "neural",
+      "voice": "Matthew",
+      "generatedAt": "2026-04-23T20:24:36.489Z"
     }
   },
-  "generatedAt": "2026-04-16T10:46:20.249Z"
+  "generatedAt": "2026-04-23T20:24:36.490Z"
 }
