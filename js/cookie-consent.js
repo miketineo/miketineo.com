@@ -7,11 +7,17 @@
   'use strict';
 
   // Configuration
+  // See ~/hack/miketineo/the-audacity/posthog-blueprint/README.md for the
+  // env-var contract this CONFIG implements.
   const CONFIG = {
     storageKey: 'miketineo-cookie-consent',
     consentVersion: '2.0',
     posthogApiKey: 'phc_CefEYSP2v97ZazvvsctE6r8iKtej6qdubPyyaM8UR7Vs',
-    posthogApiHost: 'https://z.miketineo.com'
+    posthogApiHost: 'https://z.miketineo.com',
+    posthogUiHost: 'https://eu.posthog.com',
+    app: 'miketineo',
+    env: 'production',
+    releaseId: '1.0.0+b2aaeff'
   };
 
   // Consent state
@@ -195,16 +201,28 @@
     try {
       window.posthog.init(CONFIG.posthogApiKey, {
         api_host: CONFIG.posthogApiHost,
-        ui_host: 'https://eu.posthog.com',
+        ui_host: CONFIG.posthogUiHost,
         defaults: '2026-01-30',
         person_profiles: 'identified_only',
         autocapture: true,
         capture_pageview: true,
         capture_pageleave: true,
         session_recording: {
-          maskAllInputs: true
+          maskAllInputs: true,
+          maskTextSelector: '.ph-mask, [data-ph-mask]',
+          minimumDurationMilliseconds: 5000,
+          sampleRate: 0.1
         }
       });
+
+      // Tag every event with the portfolio-standard super-properties so this
+      // site's events don't commingle with other Audacity apps in PostHog.
+      window.posthog.register({
+        app: CONFIG.app,
+        env: CONFIG.env,
+        release_id: CONFIG.releaseId
+      });
+
       console.log('[Cookie Consent] PostHog initialized successfully');
     } catch (error) {
       console.error('[Cookie Consent] Error initializing PostHog:', error);
