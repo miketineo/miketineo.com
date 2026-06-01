@@ -1,9 +1,14 @@
-name: Deploy to S3 and Invalidate CloudFront
+name: Deploy to atlas
 
 on:
   push:
     branches:
       - main
+
+# miketineo.com is served from the atlas Hetzner VPS (nginx container behind the
+# Cloudflare tunnel), not AWS S3/CloudFront. This workflow builds the static site
+# and rsyncs it to /opt/miketineo.com/site on atlas. The deploy SSH key is locked
+# down on the server to `rrsync` into that directory only (no shell access).
 
 jobs:
   deploy:
@@ -22,44 +27,39 @@ jobs:
         run: npm install
 
       - name: Build site (pages + blog)
-        run: npm run build
-
-      - name: Sync S3
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
+        # build:audio is intentionally skipped: it calls AWS Polly, and the MP3s
+        # are already committed under blog/audio/.
         run: |
-          aws s3 sync . s3://miketineo.com \
-            --follow-symlinks \
-            --delete \
-            --exclude '.git/*' \
-            --exclude 'node_modules/*' \
-            --exclude '.claude/*' \
-            --exclude 'content-pipeline/*' \
-            --exclude 'src/*' \
-            --exclude 'scripts/*' \
-            --exclude '.github/*' \
-            --exclude '*.md' \
-            --exclude '.mcp.json' \
-            --exclude '.gitignore' \
-            --exclude 'package.json' \
-            --exclude 'package-lock.json' \
-            --exclude 'yarn.lock' \
-            --exclude 'ideas/*' \
-            --exclude 'newsletter-samples/*' \
-            --exclude 'screenshots/*' \
-            --exclude 'interview_answers.md'
+          npm run build:pages
+          npm run build:blog
 
-      - name: Invalidate CloudFront Cache
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: us-east-1
+      - name: Stage static site
         run: |
-          aws cloudfront create-invalidation \
-            --distribution-id ${{ secrets.CLOUDFRONT_DISTRIBUTION_ID }} \
-            --paths "/*"
+          set -euo pipefail
+          rm -rf _deploy && mkdir -p _deploy/blog
+          cp index.html about.html contact.html experience.html speaking.html \
+             robots.txt sitemap.xml portrait.jpeg _deploy/
+          cp -R css js assets _deploy/
+          cp blog/*.html blog/posts.json _deploy/blog/
+          cp -R blog/audio blog/images _deploy/blog/
+          test -f _deploy/index.html
+          echo "Staged $(find _deploy -type f | wc -l) files"
+
+      - name: Configure SSH
+        run: |
+          mkdir -p ~/.ssh && chmod 700 ~/.ssh
+          printf '%s\n' "${{ secrets.ATLAS_DEPLOY_SSH_KEY }}" > ~/.ssh/deploy_key
+          chmod 600 ~/.ssh/deploy_key
+          printf '%s\n' "${{ secrets.ATLAS_SSH_KNOWN_HOSTS }}" > ~/.ssh/known_hosts
+          chmod 644 ~/.ssh/known_hosts
+
+      - name: Deploy to atlas (rsync)
+        # Empty path after the colon = the rrsync-locked root (/opt/miketineo.com/site).
+        # No --chmod: rrsync rejects it; source perms (644/755) are already correct.
+        run: |
+          rsync -az --delete \
+            -e "ssh -i ~/.ssh/deploy_key -o IdentitiesOnly=yes -o ConnectTimeout=20" \
+            _deploy/ miguel@46.4.120.122:
 
       - name: Detect New Blog Post
         id: blog_check
@@ -92,7 +92,7 @@ jobs:
           echo "Next Steps:" >> $GITHUB_STEP_SUMMARY
           echo "1. Verify live: ${POST_URL}" >> $GITHUB_STEP_SUMMARY
           echo "2. Share on social media (optional)" >> $GITHUB_STEP_SUMMARY
-          echo "3. Create newsletter: Run /content-newsletter" >> $GITHUB_STEP_SUMMARY
-          echo "4. Schedule newsletter for next Tuesday" >> $GITHUB_STEP_SUMMARY
+          echo "3. Newsletter: a Buttondown draft was created by ./scripts/bear approve --yes at ship time — review and send from the Buttondown dashboard" >> $GITHUB_STEP_SUMMARY
+          echo "4. Schedule send for next Tuesday" >> $GITHUB_STEP_SUMMARY
 
           echo "::notice title=Blog Post Published::New post live at ${POST_URL}"
