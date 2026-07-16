@@ -1,234 +1,150 @@
+<main id="main">
 
-    <main>
-        <!-- Page Header -->
-        <section class="section section-lg">
-            <div class="container container-narrow">
-                <div class="page-header">
-                    <h1 class="page-title">Speaking Engagements</h1>
-                    <p class="page-description">
-                        Available for conferences, panels, workshops, and podcasts on engineering
-                        leadership, distributed systems, and team building
-                    </p>
-                </div>
-            </div>
-        </section>
+  <!-- Page header -->
+  <section class="section section--header">
+    <div class="container">
+      <div class="grid">
+        <div class="col-9">
+          <p class="section-header__kicker"><span class="tick" aria-hidden="true"></span>Speaking</p>
+          <h1 class="page-header__h1">Talks From the Trenches</h1>
+        </div>
+        <div class="col-7">
+          <p class="page-header__subhead">Conferences, panels, workshops, and podcasts on engineering leadership, distributed systems, and AI adoption. Every talk is built on things I have actually run, not read about.</p>
+        </div>
+      </div>
+    </div>
+  </section>
 
-        <!-- Speaking Topics -->
-        <section class="section">
-            <div class="container">
-                <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">Featured Topics</h2>
+  <!-- Featured Topics -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header section-header--grid">
+        <p class="section-header__kicker"><span class="tick" aria-hidden="true"></span>Talks</p>
+        <h2 class="section-header__heading">Featured Topics</h2>
+      </div>
 
-                <div class="grid grid-2">
-                    <!-- Topic 1 -->
-                    <article class="talk-card">
-                        <h3 class="talk-title">Leading Distributed Teams Across Time Zones</h3>
-                        <p class="talk-description" style="margin-bottom: var(--spacing-md);">
-                            Best practices for building and managing engineering teams across multiple
-                            countries and cultures. Learn how to foster collaboration, maintain team
-                            cohesion, and ensure productivity when your team spans continents.
-                        </p>
-                        <div style="font-size: 14px; color: var(--color-text-secondary);">
-                            <strong style="color: var(--color-primary);">Key Takeaways:</strong>
-                            <ul style="margin-left: var(--spacing-lg); margin-top: var(--spacing-xs);">
-                                <li>Asynchronous communication strategies</li>
-                                <li>Building trust across time zones</li>
-                                <li>Scheduling and meeting best practices</li>
-                                <li>Cultural awareness and inclusion</li>
-                            </ul>
-                        </div>
-                    </article>
+      <div class="cards-2up cards-2up--top">
+        <article class="card">
+          <h3 class="card__title">Leading Distributed Teams Across Time Zones</h3>
+          <p class="card__body">How to build and run engineering teams across countries and cultures, drawn from managing teams spread between Europe and the US.</p>
+          <p class="section-header__kicker" style="margin-top: var(--sp-4);">Key Takeaways</p>
+          <ul class="feature-list">
+            <li>Asynchronous communication strategies</li>
+            <li>Building trust across time zones</li>
+            <li>Scheduling and meeting best practices</li>
+            <li>Cultural awareness and inclusion</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Balancing Velocity and Stability in Cloud Systems</h3>
+          <p class="card__body">Shipping fast without breaking things, with real examples from systems handling millions of requests per day.</p>
+          <p class="section-header__kicker" style="margin-top: var(--sp-4);">Key Takeaways</p>
+          <ul class="feature-list">
+            <li>Progressive deployment strategies</li>
+            <li>Observability and monitoring practices</li>
+            <li>Incident response frameworks</li>
+            <li>Technical debt management</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Coaching Engineers to Become Leaders</h3>
+          <p class="card__body">Framework for developing leadership skills in senior engineers and building a strong technical leadership pipeline. Based on mentoring 50+ engineers across multiple organizations.</p>
+          <p class="section-header__kicker" style="margin-top: var(--sp-4);">Key Takeaways</p>
+          <ul class="feature-list">
+            <li>Identifying leadership potential</li>
+            <li>Creating growth opportunities</li>
+            <li>Effective coaching frameworks</li>
+            <li>Measuring leadership development</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Cloud Cost Optimization at Scale</h3>
+          <p class="card__body">Practical strategies for cutting cloud infrastructure costs without sacrificing performance, including how I cut AWS spend by 30% while traffic grew.</p>
+          <p class="section-header__kicker" style="margin-top: var(--sp-4);">Key Takeaways</p>
+          <ul class="feature-list">
+            <li>Cost visibility and tracking</li>
+            <li>Right-sizing and optimization</li>
+            <li>Architecture efficiency patterns</li>
+            <li>FinOps culture and processes</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Building Engineering Culture in Remote-First Organizations</h3>
+          <p class="card__body">How to create and maintain a strong engineering culture when your team is fully distributed. Practical approaches to psychological safety, continuous learning, and sustainable delivery.</p>
+          <p class="section-header__kicker" style="margin-top: var(--sp-4);">Key Takeaways</p>
+          <ul class="feature-list">
+            <li>Remote-first culture principles</li>
+            <li>Virtual team bonding strategies</li>
+            <li>Documentation and knowledge sharing</li>
+            <li>Recognition and celebration practices</li>
+          </ul>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Scaling Microservices Architecture</h3>
+          <p class="card__body">Lessons learned from scaling distributed systems to handle millions of requests. Architecture patterns, anti-patterns, and practical guidance for teams moving to microservices.</p>
+          <p class="section-header__kicker" style="margin-top: var(--sp-4);">Key Takeaways</p>
+          <ul class="feature-list">
+            <li>Service boundaries and design</li>
+            <li>Inter-service communication patterns</li>
+            <li>Data consistency strategies</li>
+            <li>Testing and deployment approaches</li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </section>
 
-                    <!-- Topic 2 -->
-                    <article class="talk-card">
-                        <h3 class="talk-title">Balancing Velocity and Stability in Cloud Systems</h3>
-                        <p class="talk-description" style="margin-bottom: var(--spacing-md);">
-                            How to maintain rapid delivery while ensuring system reliability and
-                            scalability at scale. Real-world examples from organizations handling
-                            millions of requests per day.
-                        </p>
-                        <div style="font-size: 14px; color: var(--color-text-secondary);">
-                            <strong style="color: var(--color-primary);">Key Takeaways:</strong>
-                            <ul style="margin-left: var(--spacing-lg); margin-top: var(--spacing-xs);">
-                                <li>Progressive deployment strategies</li>
-                                <li>Observability and monitoring practices</li>
-                                <li>Incident response frameworks</li>
-                                <li>Technical debt management</li>
-                            </ul>
-                        </div>
-                    </article>
+  <!-- Speaking Formats -->
+  <section class="section panel">
+    <div class="container">
+      <div class="section-header section-header--grid">
+        <p class="section-header__kicker"><span class="tick" aria-hidden="true"></span>Formats</p>
+        <h2 class="section-header__heading">Speaking Formats</h2>
+      </div>
 
-                    <!-- Topic 3 -->
-                    <article class="talk-card">
-                        <h3 class="talk-title">Coaching Engineers to Become Leaders</h3>
-                        <p class="talk-description" style="margin-bottom: var(--spacing-md);">
-                            Framework for developing leadership skills in senior engineers and building
-                            a strong technical leadership pipeline. Based on mentoring 50+ engineers
-                            across multiple organizations.
-                        </p>
-                        <div style="font-size: 14px; color: var(--color-text-secondary);">
-                            <strong style="color: var(--color-primary);">Key Takeaways:</strong>
-                            <ul style="margin-left: var(--spacing-lg); margin-top: var(--spacing-xs);">
-                                <li>Identifying leadership potential</li>
-                                <li>Creating growth opportunities</li>
-                                <li>Effective coaching frameworks</li>
-                                <li>Measuring leadership development</li>
-                            </ul>
-                        </div>
-                    </article>
+      <div class="cards-3up">
+        <article class="card">
+          <h3 class="card__title">Conference Keynotes</h3>
+          <p class="card__body">45-60 minute presentations for large audiences at technical conferences and industry events.</p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Panel Discussions</h3>
+          <p class="card__body">Moderated conversations with other engineering leaders on current industry challenges and trends.</p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Workshops</h3>
+          <p class="card__body">Half-day or full-day interactive sessions with hands-on exercises and group activities.</p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Fireside Chats</h3>
+          <p class="card__body">Intimate conversational format for smaller groups, ideal for company events and meetups.</p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Podcasts &amp; Webinars</h3>
+          <p class="card__body">Remote appearances for podcasts, webinar series, and virtual events.</p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Custom Topics</h3>
+          <p class="card__body">Presentations built for your event&rsquo;s specific themes and audience.</p>
+        </article>
+      </div>
+    </div>
+  </section>
 
-                    <!-- Topic 4 -->
-                    <article class="talk-card">
-                        <h3 class="talk-title">Cloud Cost Optimization at Scale</h3>
-                        <p class="talk-description" style="margin-bottom: var(--spacing-md);">
-                            Practical strategies for reducing cloud infrastructure costs while
-                            maintaining performance and reliability. Learn from real case studies
-                            achieving 20%+ cost reductions.
-                        </p>
-                        <div style="font-size: 14px; color: var(--color-text-secondary);">
-                            <strong style="color: var(--color-primary);">Key Takeaways:</strong>
-                            <ul style="margin-left: var(--spacing-lg); margin-top: var(--spacing-xs);">
-                                <li>Cost visibility and tracking</li>
-                                <li>Right-sizing and optimization</li>
-                                <li>Architecture efficiency patterns</li>
-                                <li>FinOps culture and processes</li>
-                            </ul>
-                        </div>
-                    </article>
+  <!-- CTA -->
+  <section class="section">
+    <div class="container">
+      <div class="section-header section-header--centered">
+        <p class="section-header__kicker"><span class="tick" aria-hidden="true"></span>Booking</p>
+        <h2 class="section-header__heading">Book Me to Speak</h2>
+        <p class="section-header__intro">Tell me about your event: format, date, audience, and the theme you want covered. I will answer within a week.</p>
+      </div>
+      <div class="cta-row cta-row--centered">
+        <a class="btn btn--primary btn--large" href="/contact.html">Request Speaking Engagement</a>
+        <a class="btn btn--secondary btn--large" href="/experience.html">View My Experience</a>
+      </div>
+      <p style="text-align: center; margin-top: var(--sp-5); font-size: var(--fs-small); color: var(--ink-tertiary);">Available for both in-person and virtual events</p>
+    </div>
+  </section>
 
-                    <!-- Topic 5 -->
-                    <article class="talk-card">
-                        <h3 class="talk-title">Building Engineering Culture in Remote-First Organizations</h3>
-                        <p class="talk-description" style="margin-bottom: var(--spacing-md);">
-                            How to create and maintain a strong engineering culture when your team is
-                            fully distributed. Practical approaches to psychological safety, continuous
-                            learning, and sustainable delivery.
-                        </p>
-                        <div style="font-size: 14px; color: var(--color-text-secondary);">
-                            <strong style="color: var(--color-primary);">Key Takeaways:</strong>
-                            <ul style="margin-left: var(--spacing-lg); margin-top: var(--spacing-xs);">
-                                <li>Remote-first culture principles</li>
-                                <li>Virtual team bonding strategies</li>
-                                <li>Documentation and knowledge sharing</li>
-                                <li>Recognition and celebration practices</li>
-                            </ul>
-                        </div>
-                    </article>
-
-                    <!-- Topic 6 -->
-                    <article class="talk-card">
-                        <h3 class="talk-title">Scaling Microservices Architecture</h3>
-                        <p class="talk-description" style="margin-bottom: var(--spacing-md);">
-                            Lessons learned from scaling distributed systems to handle millions of
-                            requests. Architecture patterns, anti-patterns, and practical guidance for
-                            teams moving to microservices.
-                        </p>
-                        <div style="font-size: 14px; color: var(--color-text-secondary);">
-                            <strong style="color: var(--color-primary);">Key Takeaways:</strong>
-                            <ul style="margin-left: var(--spacing-lg); margin-top: var(--spacing-xs);">
-                                <li>Service boundaries and design</li>
-                                <li>Inter-service communication patterns</li>
-                                <li>Data consistency strategies</li>
-                                <li>Testing and deployment approaches</li>
-                            </ul>
-                        </div>
-                    </article>
-                </div>
-            </div>
-        </section>
-
-        <!-- Speaking Format -->
-        <section class="section bg-light">
-            <div class="container">
-                <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">Speaking Formats</h2>
-                <div class="grid grid-3">
-                    <div class="card text-center">
-                        <h3 class="card-title">Conference Keynotes</h3>
-                        <p class="card-description">
-                            45-60 minute presentations for large audiences at technical conferences
-                            and industry events.
-                        </p>
-                    </div>
-                    <div class="card text-center">
-                        <h3 class="card-title">Panel Discussions</h3>
-                        <p class="card-description">
-                            Moderated conversations with other engineering leaders on current industry
-                            challenges and trends.
-                        </p>
-                    </div>
-                    <div class="card text-center">
-                        <h3 class="card-title">Workshops</h3>
-                        <p class="card-description">
-                            Half-day or full-day interactive sessions with hands-on exercises and
-                            group activities.
-                        </p>
-                    </div>
-                    <div class="card text-center">
-                        <h3 class="card-title">Fireside Chats</h3>
-                        <p class="card-description">
-                            Intimate conversational format for smaller groups, ideal for company
-                            events and meetups.
-                        </p>
-                    </div>
-                    <div class="card text-center">
-                        <h3 class="card-title">Podcasts & Webinars</h3>
-                        <p class="card-description">
-                            Remote appearances for podcasts, webinar series, and virtual events.
-                        </p>
-                    </div>
-                    <div class="card text-center">
-                        <h3 class="card-title">Custom Topics</h3>
-                        <p class="card-description">
-                            Can develop custom presentations tailored to your event's specific
-                            themes and audience.
-                        </p>
-                    </div>
-                </div>
-            </div>
-        </section>
-
-        <!-- Testimonials / Past Speaking -->
-        <section class="section">
-            <div class="container container-narrow">
-                <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">What Attendees Say</h2>
-
-                <div style="display: grid; gap: var(--spacing-lg);">
-                    <blockquote style="border-left: 4px solid var(--color-primary); padding-left: var(--spacing-md); font-style: italic; color: var(--color-text-secondary);">
-                        "Miguel's insights on distributed team management were incredibly practical
-                        and immediately applicable. His real-world examples made complex concepts
-                        easy to understand."
-                        <footer style="font-style: normal; margin-top: var(--spacing-sm); font-size: 14px;">
-                            — Engineering Director, Tech Conference Attendee
-                        </footer>
-                    </blockquote>
-
-                    <blockquote style="border-left: 4px solid var(--color-primary); padding-left: var(--spacing-md); font-style: italic; color: var(--color-text-secondary);">
-                        "The workshop on coaching engineers was transformative for our leadership
-                        team. We implemented several of Miguel's frameworks immediately."
-                        <footer style="font-style: normal; margin-top: var(--spacing-sm); font-size: 14px;">
-                            — VP of Engineering, SaaS Company
-                        </footer>
-                    </blockquote>
-                </div>
-            </div>
-        </section>
-
-        <!-- CTA Section -->
-        <section class="section bg-light">
-            <div class="container container-narrow text-center">
-                <h2>Book Me to Speak</h2>
-                <p style="margin-bottom: var(--spacing-lg);">
-                    Interested in having me speak at your event? Let's discuss how I can
-                    contribute to your conference, workshop, or podcast.
-                </p>
-                <div style="display: flex; gap: var(--spacing-md); justify-content: center; flex-wrap: wrap;">
-                    <a href="/contact.html" class="btn btn-primary">Request Speaking Engagement</a>
-                    <a href="/experience.html" class="btn btn-secondary">View My Experience</a>
-                </div>
-                <p style="margin-top: var(--spacing-md); font-size: 14px; color: var(--color-text-secondary);">
-                    Available for both in-person and virtual events
-                </p>
-            </div>
-        </section>
-    </main>
-
-    <!-- Footer -->
+</main>

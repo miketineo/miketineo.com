@@ -1,5 +1,12 @@
 #!/usr/bin/env node
 
+// Builds the root static pages from src/pages/*.html (page <main> content)
+// wrapped with src/components/nav.html + footer.html and the shared <head>.
+// Design system: PLEX (design-explorations/factories/plex/SYSTEM.md), adopted
+// as the production design 2026-07-16. Styles live in /css/tokens.css +
+// /css/plex.css; the only page JS is the nav disclosure (/js/nav.js) plus the
+// GDPR cookie consent + PostHog loader (/js/cookie-consent.js).
+
 const fs = require('fs');
 const path = require('path');
 
@@ -13,18 +20,24 @@ const OUTPUT_DIR = path.join(__dirname, '..');
 const navHTML = fs.readFileSync(path.join(COMPONENTS_DIR, 'nav.html'), 'utf-8');
 const footerHTML = fs.readFileSync(path.join(COMPONENTS_DIR, 'footer.html'), 'utf-8');
 
-// Page configuration
+// Page configuration (titles/descriptions: factories/plex/COPY.md)
 const pages = [
   {
     name: 'index',
-    title: 'Miguel Tineo - Engineering Leadership',
-    description: 'Engineering Leader | Cloud Innovator | Mentor | Speaker. Building teams that build the future.',
+    title: 'Miguel Tineo | Fractional CTO & Engineering Leader',
+    description: 'Fractional CTO for founders and scale-ups. 10+ years leading engineering at Zendesk, Dutchie, and Hivenet: architecture, hiring, and delivery without the full-time salary.',
     activeNav: 'Home'
+  },
+  {
+    name: 'fractional-cto',
+    title: 'Fractional CTO for Startups & Scale-ups - Miguel Tineo',
+    description: 'Part-time CTO for founders and scale-ups: technical strategy, architecture, hiring, and delivery leadership. Advisory or embedded, monthly rolling.',
+    activeNav: 'Work With Me'
   },
   {
     name: 'about',
     title: 'About - Miguel Tineo',
-    description: 'Learn about Miguel Tineo\'s journey in engineering leadership, from building distributed systems to mentoring teams.',
+    description: 'Miguel Tineo: Head of Engineering at Hivenet, fractional CTO, based in Cagliari, Italy. Ten years of building teams and distributed systems at Zendesk, Dutchie, and Hivenet.',
     activeNav: 'About'
   },
   {
@@ -42,27 +55,30 @@ const pages = [
   {
     name: 'contact',
     title: 'Contact - Miguel Tineo',
-    description: 'Get in touch with Miguel Tineo for speaking engagements, consulting, or just to say hello.',
+    description: 'Contact Miguel Tineo for fractional CTO engagements, speaking, or mentorship. Replies within 2-3 business days.',
     activeNav: 'Contact'
   }
 ];
+
+// Mark the current page in both the desktop nav and the mobile panel:
+// find each plain link whose label matches activeNav and add aria-current.
+// The plex CSS keys the datum tick off [aria-current="page"].
+function markActiveNav(nav, label) {
+  const pattern = new RegExp(`<a href="([^"]*)">(\\s*${label}\\s*)</a>`, 'g');
+  return nav.replace(pattern, `<a href="$1" aria-current="page">$2</a>`);
+}
 
 // Generate full HTML page
 function generatePage(pageConfig) {
   const pageContentPath = path.join(PAGES_DIR, `${pageConfig.name}.html`);
 
   if (!fs.existsSync(pageContentPath)) {
-    console.log(`⚠️  Warning: ${pageContentPath} not found, skipping...`);
+    console.log(`Warning: ${pageContentPath} not found, skipping...`);
     return;
   }
 
   const pageContent = fs.readFileSync(pageContentPath, 'utf-8');
-
-  // Update nav to set active class
-  const navWithActive = navHTML.replace(
-    new RegExp(`(<a href="[^"]*" class="nav-link)(">\\s*${pageConfig.activeNav}\\s*</a>)`, 'i'),
-    `$1 active$2`
-  );
+  const navWithActive = markActiveNav(navHTML, pageConfig.activeNav);
 
   const html = `<!DOCTYPE html>
 <html lang="en">
@@ -86,12 +102,14 @@ function generatePage(pageConfig) {
 
     <title>${pageConfig.title}</title>
 
-    <!-- Stylesheets -->
-    <link rel="stylesheet" href="/css/main.css">
-    <link rel="stylesheet" href="/css/components.css">
+    <!-- Fonts (PLEX: IBM Plex Sans + Serif) -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Serif:ital@0;1&display=swap" rel="stylesheet">
 
-    <!-- Theme must load before page renders to prevent flash -->
-    <script src="/js/theme.js"></script>
+    <!-- Stylesheets (PLEX design system) -->
+    <link rel="stylesheet" href="/css/tokens.css">
+    <link rel="stylesheet" href="/css/plex.css">
 
     <!-- Cookie Consent & Analytics (PostHog) -->
     <script src="/js/cookie-consent.js" defer></script>
@@ -133,32 +151,28 @@ function generatePage(pageConfig) {
     ${footerHTML}
 
     <!-- Scripts -->
-    <script src="/js/main.js" defer></script>
-
-    ${pageConfig.name === 'index' ? `<!-- Three.js for WebGL Background (homepage only) -->
-    <script src="https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.min.js"></script>
-    <script src="/js/webgl-background.js" defer></script>` : ''}
+    <script src="/js/nav.js" defer></script>
 </body>
 </html>`;
 
   const outputPath = path.join(OUTPUT_DIR, `${pageConfig.name}.html`);
   fs.writeFileSync(outputPath, html);
-  console.log(`✅ Generated: ${pageConfig.name}.html`);
+  console.log(`Generated: ${pageConfig.name}.html`);
 }
 
 // Main build process
 function build() {
-  console.log('🔨 Building pages...\n');
+  console.log('Building pages...\n');
 
   pages.forEach(pageConfig => {
     try {
       generatePage(pageConfig);
     } catch (error) {
-      console.error(`❌ Error building ${pageConfig.name}:`, error.message);
+      console.error(`Error building ${pageConfig.name}:`, error.message);
     }
   });
 
-  console.log(`\n✨ Build complete! Generated ${pages.length} page(s).`);
+  console.log(`\nBuild complete! Generated ${pages.length} page(s).`);
 }
 
 // Run build

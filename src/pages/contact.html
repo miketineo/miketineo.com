@@ -1,177 +1,116 @@
+<main id="main">
 
-    <main>
-        <!-- Page Header -->
-        <section class="section section-lg">
-            <div class="container container-narrow">
-                <div class="page-header">
-                    <h1 class="page-title">Get in Touch</h1>
-                    <p class="page-description">
-                        Interested in speaking engagements, consulting, or just want to chat
-                        about engineering leadership? I'd love to hear from you.
-                    </p>
-                </div>
+  <!-- Page header -->
+  <section class="section section--header">
+    <div class="container">
+      <div class="grid">
+        <div class="col-9">
+          <p class="section-header__kicker"><span class="tick" aria-hidden="true"></span>Contact</p>
+          <h1 class="page-header__h1">Get in Touch</h1>
+        </div>
+        <div class="col-7">
+          <p class="page-header__subhead">Fractional CTO work, speaking, mentorship, or a question about engineering leadership. Write what is on your mind; I read everything.</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- Form + aside -->
+  <section class="section">
+    <div class="container">
+      <div class="grid">
+
+        <div class="col-7">
+          <p class="form-legend">* Required fields</p>
+
+          <form class="form-stack" action="https://formspree.io/f/xrbyyjev" method="POST">
+            <input class="honeypot-field" type="text" name="_gotcha" tabindex="-1" aria-hidden="true" autocomplete="off">
+
+            <div class="field">
+              <label for="name">Name <abbr class="required" title="required">*</abbr></label>
+              <input type="text" id="name" name="name" placeholder="Your full name" required aria-required="true">
             </div>
-        </section>
 
-        <!-- Contact Form -->
-        <section class="section">
-            <div class="container container-narrow">
-                <div class="card">
-                    <form id="contactForm" action="https://formspree.io/f/xrbyyjev" method="POST">
-                        <!-- Success Message (hidden by default) -->
-                        <div id="successMessage" class="form-success" style="display: none;">
-                            Thank you for your message! I'll get back to you as soon as possible.
-                        </div>
-
-                        <!-- Honeypot field for spam protection -->
-                        <input type="text" name="_gotcha" style="display: none;" tabindex="-1" autocomplete="off">
-
-                        <!-- Name Field -->
-                        <div class="form-group">
-                            <label for="name" class="form-label">Name *</label>
-                            <input
-                                type="text"
-                                id="name"
-                                name="name"
-                                class="form-input"
-                                required
-                                aria-required="true"
-                                placeholder="Your full name">
-                        </div>
-
-                        <!-- Email Field -->
-                        <div class="form-group">
-                            <label for="email" class="form-label">Email *</label>
-                            <input
-                                type="email"
-                                id="email"
-                                name="email"
-                                class="form-input"
-                                required
-                                aria-required="true"
-                                placeholder="your@email.com">
-                        </div>
-
-                        <!-- Subject Field -->
-                        <div class="form-group">
-                            <label for="subject" class="form-label">Subject *</label>
-                            <input
-                                type="text"
-                                id="subject"
-                                name="subject"
-                                class="form-input"
-                                required
-                                aria-required="true"
-                                placeholder="What would you like to discuss?">
-                        </div>
-
-                        <!-- Message Field -->
-                        <div class="form-group">
-                            <label for="message" class="form-label">Message *</label>
-                            <textarea
-                                id="message"
-                                name="message"
-                                class="form-textarea"
-                                required
-                                aria-required="true"
-                                placeholder="Tell me more about your inquiry..."></textarea>
-                        </div>
-
-                        <!-- GDPR Consent -->
-                        <div class="form-group" style="display: flex; align-items: start; gap: var(--spacing-sm);">
-                            <input
-                                type="checkbox"
-                                id="consent"
-                                name="consent"
-                                required
-                                aria-required="true"
-                                style="margin-top: 4px;">
-                            <label for="consent" style="font-size: 14px; color: var(--color-text-secondary); margin-bottom: 0;">
-                                I consent to having this website store my submitted information so
-                                Miguel can respond to my inquiry. *
-                            </label>
-                        </div>
-
-                        <!-- Submit Button -->
-                        <button type="submit" class="btn btn-primary" style="width: 100%;">
-                            Send Message
-                        </button>
-
-                        <p style="font-size: 14px; color: var(--color-text-secondary); margin-top: var(--spacing-md); margin-bottom: 0;">
-                            * Required fields
-                        </p>
-                    </form>
-                </div>
+            <div class="field">
+              <label for="email">Email <abbr class="required" title="required">*</abbr></label>
+              <input type="email" id="email" name="email" placeholder="your@email.com" required aria-required="true">
             </div>
-        </section>
 
-        <!-- Other Contact Methods -->
-        <section class="section bg-light">
-            <div class="container">
-                <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">Other Ways to Connect</h2>
-                <div class="grid grid-3">
-                    <a href="mailto:miketineo@gmail.com" class="card text-center" style="text-decoration: none; color: inherit; display: block;">
-                        <h3 class="card-title">Email</h3>
-                        <p class="card-description">miketineo@gmail.com</p>
-                    </a>
-                    <a href="https://www.linkedin.com/in/miketineo" target="_blank" rel="noopener" class="card text-center" style="text-decoration: none; color: inherit; display: block;">
-                        <h3 class="card-title">LinkedIn</h3>
-                        <p class="card-description">Connect professionally</p>
-                    </a>
-                    <a href="https://github.com/miketineo" target="_blank" rel="noopener" class="card text-center" style="text-decoration: none; color: inherit; display: block;">
-                        <h3 class="card-title">GitHub</h3>
-                        <p class="card-description">View my open source work</p>
-                    </a>
-                </div>
+            <div class="field">
+              <label for="subject">Subject <abbr class="required" title="required">*</abbr></label>
+              <input type="text" id="subject" name="subject" placeholder="What would you like to discuss?" required aria-required="true">
             </div>
-        </section>
 
-        <!-- FAQ / Response Time -->
-        <section class="section">
-            <div class="container container-narrow">
-                <h2 class="text-center" style="margin-bottom: var(--spacing-xl);">What to Expect</h2>
-                <div style="display: grid; gap: var(--spacing-lg);">
-                    <div>
-                        <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">
-                            Response Time
-                        </h3>
-                        <p style="color: var(--color-text-secondary);">
-                            I typically respond to inquiries within 2-3 business days. For speaking
-                            engagement requests, please allow up to one week for a detailed response.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">
-                            Speaking Inquiries
-                        </h3>
-                        <p style="color: var(--color-text-secondary);">
-                            For speaking engagements, please include event details, date, location
-                            (or virtual), expected audience size, and any specific topics you'd like
-                            me to cover.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">
-                            Consulting & Advisory
-                        </h3>
-                        <p style="color: var(--color-text-secondary);">
-                            I'm open to consulting and advisory opportunities in engineering leadership,
-                            cloud architecture, and team building. Please provide details about your
-                            organization and specific challenges you're facing.
-                        </p>
-                    </div>
-                    <div>
-                        <h3 style="font-size: var(--font-size-lg); margin-bottom: var(--spacing-sm);">
-                            Privacy
-                        </h3>
-                        <p style="color: var(--color-text-secondary);">
-                            Your information is handled with care and never shared with third parties.
-                            See our privacy policy for full details on data handling.
-                        </p>
-                    </div>
-                </div>
+            <div class="field">
+              <label for="message">Message <abbr class="required" title="required">*</abbr></label>
+              <textarea id="message" name="message" placeholder="What are you building, and where is it stuck?" required aria-required="true"></textarea>
             </div>
-        </section>
-    </main>
 
-    <!-- Footer -->
+            <div class="field-consent">
+              <input type="checkbox" id="consent" name="consent" required aria-required="true">
+              <label for="consent">I consent to having this website store my submitted information so Miguel can respond to my inquiry. <abbr class="required" title="required">*</abbr></label>
+            </div>
+
+            <button type="submit" class="btn btn--primary">Send Message</button>
+          </form>
+        </div>
+
+        <div class="col-5">
+          <div class="section-header">
+            <p class="section-header__kicker"><span class="tick" aria-hidden="true"></span>Elsewhere</p>
+            <h2 class="section-header__heading">Other Ways to Connect</h2>
+          </div>
+
+          <div class="channel-list">
+            <div class="channel-item">
+              <p class="channel-item__label">Email</p>
+              <p class="channel-item__value"><a class="link" href="mailto:hello@miketineo.com">hello@miketineo.com</a></p>
+            </div>
+            <div class="channel-item">
+              <p class="channel-item__label">LinkedIn</p>
+              <p class="channel-item__value"><a class="link" href="https://www.linkedin.com/in/miketineo" rel="noopener">Connect professionally</a></p>
+            </div>
+            <div class="channel-item">
+              <p class="channel-item__label">GitHub</p>
+              <p class="channel-item__value"><a class="link" href="https://github.com/miketineo" rel="noopener">View my open source work</a></p>
+            </div>
+          </div>
+        </div>
+
+      </div>
+    </div>
+  </section>
+
+  <!-- What to Expect -->
+  <section class="section panel">
+    <div class="container">
+      <div class="section-header section-header--grid">
+        <p class="section-header__kicker"><span class="tick" aria-hidden="true"></span>Expectations</p>
+        <h2 class="section-header__heading">What to Expect</h2>
+      </div>
+
+      <div class="cards-2up">
+        <article class="card">
+          <h3 class="card__title">Response Time</h3>
+          <p class="card__body">I typically respond to inquiries within 2-3 business days. For speaking engagement requests, please allow up to one week for a detailed response.</p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Speaking Inquiries</h3>
+          <p class="card__body">For speaking engagements, please include event details, date, location (or virtual), expected audience size, and any specific topics you&rsquo;d like me to cover.</p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Fractional CTO &amp; Advisory</h3>
+          <p class="card__body">Looking for ongoing technical leadership? I take on a small number of fractional CTO engagements for founders and scale-ups. The fastest route is booking a call directly, or see <a class="link" href="/fractional-cto.html">how we&rsquo;d work together</a> and mention your company stage in the form above.</p>
+          <p style="margin-top: var(--sp-3);">
+            <a class="btn btn--quiet" href="https://cal.com/the-audacity-io/diagnostic-call">Book a Diagnostic Call <span class="arrow" aria-hidden="true">&rarr;</span></a>
+          </p>
+        </article>
+        <article class="card">
+          <h3 class="card__title">Privacy</h3>
+          <p class="card__body">Your information is used only to reply to you and is never shared with third parties.</p>
+        </article>
+      </div>
+    </div>
+  </section>
+
+</main>

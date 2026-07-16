@@ -1,0 +1,144 @@
+/* ==========================================================================
+   PLEX design system — tokens.css
+   Primitive + semantic custom properties. No component rules here.
+   Source of truth: SYSTEM.md sections 1 and 2.
+   ========================================================================== */
+
+:root {
+  /* -- 1.1 Color scale: graphite ------------------------------------------ */
+  --g-000: #FFFFFF; /* pure white */
+  --g-025: #FAFAF9; /* paper */
+  --g-050: #F4F4F2; /* panel */
+  --g-100: #EAEAE7; /* inset */
+  --g-200: #D8D8D4; /* hairline border */
+  --g-300: #B8B8B3; /* strong border */
+  --g-400: #8F8F89; /* disabled ink only */
+  --g-500: #6B6B65; /* tertiary ink */
+  --g-600: #52524C; /* secondary ink */
+  --g-700: #3D3D38; /* hover fill (dark) */
+  --g-800: #2A2A26; /* pressed fill (dark) */
+  --g-900: #1C1C19; /* primary ink / primary button fill */
+
+  /* Amber marker scale: one hue, four stops, strict usage tiers */
+  --amber-300: #F2C879; /* marker on dark fills only */
+  --amber-400: #E8A33D; /* THE marker: decorative/structural only, never text */
+  --amber-500: #C07E12; /* non-text UI: focus rings, hover underline color */
+  --amber-700: #7A5200; /* the only text amber */
+
+  /* Feedback (forms only) */
+  --red-600: #B42318; /* error text + error border */
+
+  /* -- 1.2 Spacing scale (4/8 base) ---------------------------------------- */
+  --sp-1: 4px;
+  --sp-2: 8px;
+  --sp-3: 12px;
+  --sp-4: 16px;
+  --sp-5: 24px;
+  --sp-6: 32px;
+  --sp-7: 40px;
+  --sp-8: 48px;
+  --sp-9: 64px;
+  --sp-10: 80px;
+  --sp-11: 96px;
+  --sp-12: 128px;
+
+  /* -- 1.3 Type ramp -------------------------------------------------------- */
+  --font-sans: 'IBM Plex Sans', 'Helvetica Neue', Arial, sans-serif;
+  --font-serif: 'IBM Plex Serif', Georgia, serif;
+
+  /* Home hero H1 only */
+  --fs-display: clamp(2.25rem, 1.65rem + 2.6vw, 3.5rem);
+  --lh-display: 1.08;
+  --ls-display: -0.022em;
+
+  /* Page-header H1 */
+  --fs-h1: clamp(1.875rem, 1.5rem + 1.6vw, 2.625rem);
+  --lh-h1: 1.12;
+  --ls-h1: -0.018em;
+
+  /* Section headings */
+  --fs-h2: clamp(1.5rem, 1.35rem + 0.7vw, 1.875rem);
+  --lh-h2: 1.18;
+  --ls-h2: -0.014em;
+
+  /* Card titles, FAQ questions */
+  --fs-h3: clamp(1.1875rem, 1.14rem + 0.25vw, 1.3125rem);
+  --lh-h3: 1.3;
+  --ls-h3: -0.006em;
+
+  /* Page subheads, section intros: serif */
+  --fs-lead: clamp(1.125rem, 1.08rem + 0.25vw, 1.25rem);
+  --lh-lead: 1.55;
+  --ls-lead: 0;
+
+  /* Body prose */
+  --fs-body: 1.0625rem;
+  --lh-body: 1.65;
+  --ls-body: 0;
+
+  /* Card body, form help, footer */
+  --fs-small: 0.9375rem;
+  --lh-small: 1.55;
+  --ls-small: 0;
+
+  /* Kickers, metric labels, form labels */
+  --fs-label: 0.8125rem;
+  --lh-label: 1.2;
+  --ls-label: 0.08em;
+
+  /* Metric values */
+  --fs-metric: clamp(2.5rem, 2.1rem + 1.8vw, 3.5rem);
+  --lh-metric: 1;
+  --ls-metric: -0.02em;
+
+  /* -- 1.4 Radii -------------------------------------------------------------- */
+  --r-sm: 4px;   /* buttons, inputs, badges */
+  --r-md: 8px;   /* cards, panels, nav dropdown */
+  --r-tick: 1.5px; /* the datum tick */
+
+  /* -- 1.5 Borders -------------------------------------------------------------- */
+  --border-hairline: 1px solid var(--g-200); /* default: cards, dividers, header/footer edges */
+  --border-strong: 1px solid var(--g-300);   /* inputs, secondary buttons */
+  --border-ink: 1px solid var(--g-900);      /* hover state of secondary controls */
+
+  /* -- 1.6 Shadows -------------------------------------------------------------- */
+  --shadow-1: 0 1px 2px rgba(28, 28, 25, 0.05);
+  --shadow-2: 0 2px 8px rgba(28, 28, 25, 0.07), 0 1px 2px rgba(28, 28, 25, 0.05);
+
+  /* -- 1.7 Motion -------------------------------------------------------------- */
+  --t-fast: 120ms;  /* color, border, underline changes */
+  --t-base: 180ms;  /* background fills, FAQ marker rotate */
+  --t-slow: 240ms;  /* mobile nav panel open */
+  --ease: cubic-bezier(0.2, 0, 0, 1);
+
+  /* ==========================================================================
+     2. Semantic tokens
+     ========================================================================== */
+
+  /* -- 2.1 Surfaces -------------------------------------------------------------- */
+  --surface-page: var(--g-025);    /* <body> background */
+  --surface-raised: var(--g-000);  /* cards, inputs, mobile nav panel */
+  --surface-panel: var(--g-050);   /* full-bleed alternate bands */
+  --surface-inset: var(--g-100);   /* footer, badges, <code> chips */
+  --surface-ink: var(--g-900);     /* primary button fill only */
+
+  /* -- 2.2 Ink hierarchy -------------------------------------------------------------- */
+  --ink-primary: var(--g-900);     /* headings, body prose, nav current, button labels */
+  --ink-secondary: var(--g-600);   /* card body, subheads, footer links */
+  --ink-tertiary: var(--g-500);    /* kickers, metric labels, dates, fine print */
+  --ink-disabled: var(--g-400);    /* disabled controls only (exempt from AA) */
+  --ink-accent: var(--amber-700);  /* inline accent text, required asterisks */
+  --ink-error: var(--red-600);     /* form errors */
+  --ink-inverse: var(--g-000);     /* text on --surface-ink */
+
+  /* -- 4.1 Layout -------------------------------------------------------------- */
+  --container-max: 1120px;
+}
+
+/* -- 1.7 Motion: reduced-motion guard (global, lives beside the tokens it governs) */
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    transition-duration: 0.01ms !important;
+    animation: none !important;
+  }
+}
