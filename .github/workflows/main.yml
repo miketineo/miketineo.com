@@ -37,7 +37,7 @@ jobs:
         run: |
           set -euo pipefail
           rm -rf _deploy && mkdir -p _deploy/blog
-          cp index.html fractional-cto.html about.html contact.html experience.html speaking.html \
+          cp index.html fractional-cto.html tech-due-diligence.html about.html contact.html experience.html speaking.html \
              robots.txt sitemap.xml portrait.jpeg _deploy/
           cp -R css js assets _deploy/
           cp blog/*.html blog/posts.json _deploy/blog/

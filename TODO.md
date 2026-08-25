@@ -8,7 +8,7 @@
 
 ## In Flight
 
-*(nothing currently in flight)*
+- [~] `miguel` `cc+claude-fable-5` 2026-08-25 — Tech due diligence page (`/tech-due-diligence.html`, ships dark behind PostHog flag `tech-dd-page`, reviewer override `?ff=tech-dd-page`), past-tense Hivenet copy + JSON-LD fix, `interview_answers.md` untracked. Branch `feat/tech-due-diligence`; local review at https://miketineo-tech-dd.local.test. GA checklist: create the flag in PostHog, roll out, then drop `noindex` + `data-flag` gates and add the page to `sitemap.xml`.
 
 ---
 

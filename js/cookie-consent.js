@@ -223,6 +223,9 @@
         release_id: CONFIG.releaseId
       });
 
+      // Let flag-gated content (js/flags.js) know PostHog is ready.
+      document.dispatchEvent(new CustomEvent('posthog:ready'));
+
       console.log('[Cookie Consent] PostHog initialized successfully');
     } catch (error) {
       console.error('[Cookie Consent] Error initializing PostHog:', error);

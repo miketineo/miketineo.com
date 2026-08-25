@@ -544,6 +544,9 @@ h1, .fs-display { max-width: 30ch; }
 
 /* -- Visually hidden (screen-reader-only text) --------------------------------------- */
 
+/* Gated content (js/flags.js): hidden must beat component display rules. */
+[hidden] { display: none !important; }
+
 .visually-hidden {
   position: absolute;
   width: 1px;

@@ -35,9 +35,16 @@ const pages = [
     activeNav: 'Work With Me'
   },
   {
+    name: 'tech-due-diligence',
+    title: 'Pre-Fundraising Tech Due Diligence - Miguel Tineo',
+    description: 'Technical due diligence for founders raising Seed to Series B: people, process, and technology audited against the benchmarks investors use, with a remediation plan before the data room opens.',
+    activeNav: 'Work With Me',
+    noindex: true
+  },
+  {
     name: 'about',
     title: 'About - Miguel Tineo',
-    description: 'Miguel Tineo: Head of Engineering at Hivenet, fractional CTO, based in Cagliari, Italy. Ten years of building teams and distributed systems at Zendesk, Dutchie, and Hivenet.',
+    description: 'Miguel Tineo: fractional CTO, formerly Head of Engineering at Hivenet, based in Cagliari, Italy. Ten years of building teams and distributed systems at Zendesk, Dutchie, and Hivenet.',
     activeNav: 'About'
   },
   {
@@ -87,7 +94,7 @@ function generatePage(pageConfig) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${pageConfig.description}">
     <meta name="author" content="Miguel Tineo">
-
+${pageConfig.noindex ? '    <meta name="robots" content="noindex">\n' : ''}
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://miketineo.com/${pageConfig.name === 'index' ? '' : pageConfig.name + '.html'}">
@@ -113,6 +120,8 @@ function generatePage(pageConfig) {
 
     <!-- Cookie Consent & Analytics (PostHog) -->
     <script src="/js/cookie-consent.js" defer></script>
+    <!-- Feature-flag gate for content shipped dark (PostHog flags + ?ff= override) -->
+    <script src="/js/flags.js" defer></script>
 
     <!-- JSON-LD Structured Data (for homepage only) -->
     ${pageConfig.name === 'index' ? `<script type="application/ld+json">
@@ -121,12 +130,12 @@ function generatePage(pageConfig) {
       "@type": "Person",
       "name": "Miguel Tineo",
       "url": "https://miketineo.com",
-      "jobTitle": "Head of Engineering",
-      "worksFor": {
-        "@type": "Organization",
-        "name": "Hivenet"
-      },
+      "jobTitle": "Fractional CTO",
       "alumniOf": [
+        {
+          "@type": "Organization",
+          "name": "Hivenet"
+        },
         {
           "@type": "Organization",
           "name": "Zendesk"
