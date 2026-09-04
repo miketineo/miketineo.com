@@ -5,7 +5,8 @@
 // Design system: PLEX (design-explorations/factories/plex/SYSTEM.md), adopted
 // as the production design 2026-07-16. Styles live in /css/tokens.css +
 // /css/plex.css; the only page JS is the nav disclosure (/js/nav.js) plus the
-// GDPR cookie consent + PostHog loader (/js/cookie-consent.js).
+// GDPR cookie consent banner (/js/cookie-consent.js) and the shared PostHog
+// loader (/js/posthog-config.js + /js/posthog-setup.js).
 
 const fs = require('fs');
 const path = require('path');
@@ -87,6 +88,7 @@ function generatePage(pageConfig) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="${pageConfig.description}">
     <meta name="author" content="Miguel Tineo">
+    <link rel="canonical" href="https://miketineo.com/${pageConfig.name === 'index' ? '' : pageConfig.name + '.html'}">
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="website">
@@ -112,6 +114,8 @@ function generatePage(pageConfig) {
     <link rel="stylesheet" href="/css/plex.css">
 
     <!-- Cookie Consent & Analytics (PostHog) -->
+    <script src="/js/posthog-config.js"></script>
+    <script src="/js/posthog-setup.js" defer></script>
     <script src="/js/cookie-consent.js" defer></script>
 
     <!-- JSON-LD Structured Data (for homepage only) -->

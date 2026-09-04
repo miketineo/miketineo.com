@@ -1,23 +1,20 @@
 /**
  * Cookie Consent Manager for miketineo.com
- * GDPR-compliant cookie consent banner and PostHog analytics management
+ * GDPR-compliant cookie consent banner. This file owns the banner and the
+ * stored choice only; PostHog itself is loaded and configured by
+ * js/posthog-setup.js + js/posthog-config.js, which this file drives through
+ * window.phConsent(true|false).
+ *
+ * Contract: ~/hack/miketineo/the-audacity/website/shared/analytics/README.md
  */
 
 (function() {
   'use strict';
 
   // Configuration
-  // See ~/hack/miketineo/the-audacity/posthog-blueprint/README.md for the
-  // env-var contract this CONFIG implements.
   const CONFIG = {
     storageKey: 'miketineo-cookie-consent',
-    consentVersion: '2.0',
-    posthogApiKey: 'phc_CefEYSP2v97ZazvvsctE6r8iKtej6qdubPyyaM8UR7Vs',
-    posthogApiHost: 'https://z.miketineo.com',
-    posthogUiHost: 'https://eu.posthog.com',
-    app: 'miketineo',
-    env: 'production',
-    releaseId: '1.0.0+b2aaeff'
+    consentVersion: '2.0'
   };
 
   // Consent state
@@ -162,7 +159,7 @@
   function handleAccept() {
     saveConsent(true);
     hideConsentBanner();
-    initializePostHog();
+    window.phConsent(true);
   }
 
   /**
@@ -171,6 +168,9 @@
   function handleDecline() {
     saveConsent(false);
     hideConsentBanner();
+    // Also opts out an already-booted PostHog, so accept -> Cookie Settings ->
+    // decline stops capturing immediately instead of on the next reload.
+    window.phConsent(false);
     console.log('[Cookie Consent] Analytics disabled: User declined cookies');
   }
 
@@ -180,53 +180,6 @@
   function handlePrivacyLink(event) {
     event.preventDefault();
     alert('We use PostHog to understand how visitors use our site. This helps us improve user experience. You can opt out anytime by changing your cookie preferences in the footer.');
-  }
-
-  /**
-   * Initialize PostHog analytics (only if user has consented)
-   */
-  function initializePostHog() {
-    // Check if PostHog is already loaded
-    if (window.posthog && window.posthog.__loaded) {
-      console.log('[Cookie Consent] PostHog already initialized');
-      return;
-    }
-
-    console.log('[Cookie Consent] Loading PostHog analytics...');
-
-    // Load PostHog library
-    !function(t,e){var o,n,p,r;e.__SV||(window.posthog && window.posthog.__loaded)||(window.posthog=e,e._i=[],e.init=function(i,s,a){function g(t,e){var o=e.split(".");2==o.length&&(t=t[o[0]],e=o[1]),t[e]=function(){t.push([e].concat(Array.prototype.slice.call(arguments,0)))}}(p=t.createElement("script")).type="text/javascript",p.crossOrigin="anonymous",p.async=!0,p.src=s.api_host.replace(".i.posthog.com","-assets.i.posthog.com")+"/static/array.js",(r=t.getElementsByTagName("script")[0]).parentNode.insertBefore(p,r);var u=e;for(void 0!==a?u=e[a]=[]:a="posthog",u.people=u.people||[],u.toString=function(t){var e="posthog";return"posthog"!==a&&(e+="."+a),t||(e+=" (stub)"),e},u.people.toString=function(){return u.toString(1)+".people (stub)"},o="Ir init Br Zr Ci jr $r Lr capture calculateEventProperties Yr register register_once register_for_session unregister unregister_for_session Jr getFeatureFlag getFeatureFlagPayload getFeatureFlagResult isFeatureEnabled reloadFeatureFlags updateFlags updateEarlyAccessFeatureEnrollment getEarlyAccessFeatures on onFeatureFlags onSurveysLoaded onSessionId getSurveys getActiveMatchingSurveys renderSurvey displaySurvey cancelPendingSurvey canRenderSurvey canRenderSurveyAsync Kr identify setPersonProperties group resetGroups setPersonPropertiesForFlags resetPersonPropertiesForFlags setGroupPropertiesForFlags resetGroupPropertiesForFlags reset setIdentity clearIdentity get_distinct_id getGroups get_session_id get_session_replay_url alias set_config startSessionRecording stopSessionRecording sessionRecordingStarted captureException captureLog startExceptionAutocapture stopExceptionAutocapture loadToolbar get_property getSessionProperty Wr zr createPersonProfile setInternalOrTestUser Xr Or en opt_in_capturing opt_out_capturing has_opted_in_capturing has_opted_out_capturing get_explicit_consent_status is_capturing clear_opt_in_out_capturing Vr debug ki Gr getPageViewId captureTraceFeedback captureTraceMetric Nr".split(" "),n=0;n<o.length;n++)g(u,o[n]);e._i.push([i,s,a])},e.__SV=1)}(document,window.posthog||[]);
-
-    // Initialize PostHog with configuration
-    try {
-      window.posthog.init(CONFIG.posthogApiKey, {
-        api_host: CONFIG.posthogApiHost,
-        ui_host: CONFIG.posthogUiHost,
-        defaults: '2026-01-30',
-        person_profiles: 'identified_only',
-        autocapture: true,
-        capture_pageview: true,
-        capture_pageleave: true,
-        session_recording: {
-          maskAllInputs: true,
-          maskTextSelector: '.ph-mask, [data-ph-mask]',
-          minimumDurationMilliseconds: 5000,
-          sampleRate: 0.1
-        }
-      });
-
-      // Tag every event with the portfolio-standard super-properties so this
-      // site's events don't commingle with other Audacity apps in PostHog.
-      window.posthog.register({
-        app: CONFIG.app,
-        env: CONFIG.env,
-        release_id: CONFIG.releaseId
-      });
-
-      console.log('[Cookie Consent] PostHog initialized successfully');
-    } catch (error) {
-      console.error('[Cookie Consent] Error initializing PostHog:', error);
-    }
   }
 
   /**
@@ -258,13 +211,9 @@
       console.log('[Cookie Consent] No consent found, showing banner');
       showConsentBanner();
     } else {
-      // Consent already stored
-      if (consentState.accepted) {
-        console.log('[Cookie Consent] User has accepted cookies, loading analytics');
-        initializePostHog();
-      } else {
-        console.log('[Cookie Consent] User has declined cookies, analytics disabled');
-      }
+      // A stored choice needs no call: posthog-config.js reads this same key
+      // through its consent adapter before posthog-setup.js decides to boot.
+      console.log(`[Cookie Consent] Stored consent: ${consentState.accepted ? 'accepted' : 'declined'}`);
     }
 
     // Setup Cookie Settings link in footer (if it exists)
