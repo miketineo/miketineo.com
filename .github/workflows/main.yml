@@ -46,6 +46,13 @@ jobs:
           test -f _deploy/fractional-cto.html
           echo "Staged $(find _deploy -type f | wc -l) files"
 
+      - name: Stamp release_id
+        run: |
+          set -euo pipefail
+          F=_deploy/js/posthog-config.js
+          grep -q '__RELEASE_ID__' "$F" || { echo "::error::placeholder missing in $F"; exit 1; }
+          sed -i "s/__RELEASE_ID__/${GITHUB_SHA:0:7}/" "$F"
+
       - name: Configure SSH
         run: |
           mkdir -p ~/.ssh && chmod 700 ~/.ssh

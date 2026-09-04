@@ -1,0 +1,26 @@
+name: Analytics guard
+
+# Static assertions on the vendored PostHog setup: no drift from the canonical
+# module in the-audacity/website, the three options still forced on, no custom
+# page_view, env never hardcoded, __RELEASE_ID__ still stampable — and the
+# loader actually present on every generated page, which source assertions
+# alone cannot see.
+
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+
+jobs:
+  guard:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Check analytics setup
+        run: |
+          bash scripts/check-analytics.sh js/posthog-setup.js js/posthog-config.js
+          missing=$(comm -23 <(ls *.html blog/*.html | sort) \
+                             <(grep -l 'posthog-setup.js' *.html blog/*.html | sort))
+          [ -z "$missing" ] || { echo "::error::pages missing loader: $missing"; exit 1; }
