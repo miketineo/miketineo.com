@@ -285,6 +285,7 @@ function generatePostPage(post) {
 
     <!-- Open Graph / Social Media -->
     <meta property="og:type" content="article">
+    <link rel="canonical" href="https://miketineo.com/blog/${post.slug}.html">
     <meta property="og:url" content="https://miketineo.com/blog/${post.slug}.html">
     <meta property="og:title" content="${escapeHtml(post.title)}">
     <meta property="og:description" content="${escapeHtml(post.excerpt)}">
@@ -304,6 +305,8 @@ function generatePostPage(post) {
     <script src="/js/theme.js"></script>
 
     <!-- Cookie Consent & Analytics (PostHog) -->
+    <script src="/js/posthog-config.js"></script>
+    <script src="/js/posthog-setup.js" defer></script>
     <script src="/js/cookie-consent.js" defer></script>
 
     <style>
@@ -956,6 +959,7 @@ function generateBlogIndex(posts) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <meta name="description" content="Engineering leadership insights, team building strategies, and distributed systems thinking from Miguel Tineo.">
+    <link rel="canonical" href="https://miketineo.com/blog/">
     <title>Blog &amp; Newsletter - Miguel Tineo</title>
 
     <!-- Stylesheets -->
@@ -966,6 +970,8 @@ function generateBlogIndex(posts) {
     <script src="/js/theme.js"></script>
 
     <!-- Cookie Consent & Analytics (PostHog) -->
+    <script src="/js/posthog-config.js"></script>
+    <script src="/js/posthog-setup.js" defer></script>
     <script src="/js/cookie-consent.js" defer></script>
 </head>
 <body>

@@ -38,13 +38,20 @@ jobs:
           set -euo pipefail
           rm -rf _deploy && mkdir -p _deploy/blog
           cp index.html fractional-cto.html tech-due-diligence.html about.html contact.html experience.html speaking.html \
-             robots.txt sitemap.xml portrait.jpeg _deploy/
+             robots.txt sitemap.xml ads.txt portrait.jpeg _deploy/
           cp -R css js assets _deploy/
           cp blog/*.html blog/posts.json _deploy/blog/
           cp -R blog/audio blog/images _deploy/blog/
           test -f _deploy/index.html
           test -f _deploy/fractional-cto.html
           echo "Staged $(find _deploy -type f | wc -l) files"
+
+      - name: Stamp release_id
+        run: |
+          set -euo pipefail
+          F=_deploy/js/posthog-config.js
+          grep -q '__RELEASE_ID__' "$F" || { echo "::error::placeholder missing in $F"; exit 1; }
+          sed -i "s/__RELEASE_ID__/${GITHUB_SHA:0:7}/" "$F"
 
       - name: Configure SSH
         run: |

@@ -6,12 +6,17 @@
  * reviewer override is set: open any page with `?ff=<key>` to turn a flag on
  * for this browser (stored in localStorage), `?ff=-<key>` to turn it off.
  *
- * PostHog only exists after cookie consent (cookie-consent.js dispatches
- * `posthog:ready` once it has initialised), so for visitors who have not
- * consented a flag can only be on through the override.
+ * PostHog is loaded by the shared module (js/posthog-setup.js): production
+ * hostnames only, and only after consent. `window.posthog` therefore may not
+ * exist at load, and may appear later when the banner calls
+ * `window.phConsent(true)`, so this script checks once at load (covers
+ * returning consented visitors, the module boots synchronously before this
+ * defer script runs) and wraps phConsent for late accepts. Off production and
+ * pre-consent, a flag can only be on through the override.
  *
- * Elements with `data-ph-event="<name>"` send a named PostHog event on click,
- * when PostHog is loaded.
+ * Elements with `data-ph-event="<name>"` send a named event on click through
+ * `window.phTrack`, the shared module's buffered capture stub: safe to call
+ * before PostHog loads, a no-op off production.
  */
 (function () {
   'use strict';
@@ -63,8 +68,8 @@
   function captureNamedClicks() {
     document.addEventListener('click', function (event) {
       var el = event.target.closest ? event.target.closest('[data-ph-event]') : null;
-      if (!el || !window.posthog || typeof window.posthog.capture !== 'function') return;
-      window.posthog.capture(el.getAttribute('data-ph-event'), {
+      if (!el || typeof window.phTrack !== 'function') return;
+      window.phTrack(el.getAttribute('data-ph-event'), {
         href: el.getAttribute('href') || null,
         page: window.location.pathname
       });
@@ -73,7 +78,15 @@
 
   applyOverrideFromUrl();
   applyStoredOverrides();
-  if (window.posthog && window.posthog.__loaded) applyPostHogFlags();
-  document.addEventListener('posthog:ready', applyPostHogFlags);
+  applyPostHogFlags();
+
+  var previousConsent = window.phConsent;
+  if (typeof previousConsent === 'function') {
+    window.phConsent = function (granted) {
+      previousConsent.apply(null, arguments);
+      if (granted) applyPostHogFlags();
+    };
+  }
+
   captureNamedClicks();
 })();
