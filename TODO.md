@@ -8,7 +8,7 @@
 
 ## In Flight
 
-- [~] `miguel` `cc+claude-fable-5` 2026-08-25 — Tech due diligence page (`/tech-due-diligence.html`, ships dark behind PostHog flag `tech-dd-page`, reviewer override `?ff=tech-dd-page`), past-tense Hivenet copy + JSON-LD fix, `interview_answers.md` untracked. Branch `feat/tech-due-diligence`; local review at https://miketineo-tech-dd.local.test. GA checklist: create the flag in PostHog, roll out, then drop `noindex` + `data-flag` gates and add the page to `sitemap.xml`.
+- [ ] **Tech DD GA** — once flag `tech-dd-page` (id 281831, created disabled 2026-09-19) has been enabled and validated: drop `noindex` + the `data-flag` gates, add `/tech-due-diligence.html` to `sitemap.xml`. Enabling the flag is one toggle at https://eu.posthog.com/project/160291/feature_flags/281831. (2026-09-19)
 
 ---
 
@@ -34,6 +34,7 @@
 
 | Item | Actor | Via | PR/Commit | Date |
 |------|-------|-----|-----------|------|
+| Tech DD page live (dark, noindex, flag-gated) + past-tense Hivenet fix + JSON-LD + interview_answers.md untracked | miguel | cc+claude-fable-5 | effaeda | 2026-09-19 |
 | CEO full-owner handover | miguel | cc+opus-4.6 | — | 2026-04-09 |
 
 ---
