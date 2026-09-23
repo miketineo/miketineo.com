@@ -2,44 +2,66 @@
 <urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
   <url>
     <loc>https://miketineo.com/</loc>
-    <lastmod>2025-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>1.0</priority>
   </url>
   <url>
     <loc>https://miketineo.com/fractional-cto.html</loc>
-    <lastmod>2026-07-14</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.9</priority>
   </url>
   <url>
+    <loc>https://miketineo.com/blog/</loc>
+    <changefreq>weekly</changefreq>
+    <priority>0.9</priority>
+  </url>
+  <url>
     <loc>https://miketineo.com/about.html</loc>
-    <lastmod>2025-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://miketineo.com/experience.html</loc>
-    <lastmod>2025-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.8</priority>
   </url>
   <url>
     <loc>https://miketineo.com/speaking.html</loc>
-    <lastmod>2025-10-11</lastmod>
     <changefreq>monthly</changefreq>
     <priority>0.7</priority>
   </url>
   <url>
-    <loc>https://miketineo.com/blog/</loc>
-    <lastmod>2025-10-11</lastmod>
-    <changefreq>weekly</changefreq>
-    <priority>0.9</priority>
-  </url>
-  <url>
     <loc>https://miketineo.com/contact.html</loc>
-    <lastmod>2025-10-11</lastmod>
     <changefreq>yearly</changefreq>
     <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://miketineo.com/privacy.html</loc>
+    <changefreq>yearly</changefreq>
+    <priority>0.3</priority>
+  </url>
+  <url>
+    <loc>https://miketineo.com/blog/stop-staging.html</loc>
+    <lastmod>2026-04-23</lastmod>
+  </url>
+  <url>
+    <loc>https://miketineo.com/blog/managing-human-and-agentic-teams.html</loc>
+    <lastmod>2026-04-16</lastmod>
+  </url>
+  <url>
+    <loc>https://miketineo.com/blog/orchestrating-outcomes.html</loc>
+    <lastmod>2026-04-09</lastmod>
+  </url>
+  <url>
+    <loc>https://miketineo.com/blog/deployment-brigade-system.html</loc>
+    <lastmod>2025-10-27</lastmod>
+  </url>
+  <url>
+    <loc>https://miketineo.com/blog/energy-aware-ai-infrastructure.html</loc>
+    <lastmod>2025-10-18</lastmod>
+  </url>
+  <url>
+    <loc>https://miketineo.com/blog/psychological-safety.html</loc>
+    <lastmod>2025-01-15</lastmod>
   </url>
 </urlset>

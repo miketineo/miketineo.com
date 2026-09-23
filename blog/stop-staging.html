@@ -32,6 +32,9 @@
     <script src="/js/posthog-setup.js" defer></script>
     <script src="/js/cookie-consent.js" defer></script>
 
+    <!-- AdSense (blog posts only) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-1142224973470587" crossorigin="anonymous"></script>
+
     <style>
         .blog-post {
             max-width: 1000px;
@@ -144,6 +147,23 @@
             font-size: var(--font-size-base);
             line-height: 1.8;
             color: var(--color-text-primary);
+        }
+        /* ── Ad slot: reserved height so the page does not shift ── */
+        .ad-slot {
+            max-width: 720px;
+            min-height: 280px;
+            margin: var(--spacing-xl) 0;
+            padding: var(--spacing-sm) 0;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .ad-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
         }
         /* ── Hero audio card (minimal, New Yorker style) ── */
         .blog-audio-card {
@@ -580,6 +600,8 @@
 
             </div>
 
+            
+
             <footer class="blog-post-footer">
                 <div class="text-center">
                     <h3>Join Bear Essentials</h3>
@@ -636,6 +658,7 @@
                         <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
                         <li><a href="mailto:hello@miketineo.com">Email</a></li>
                         <li><a href="/contact.html">Contact Form</a></li>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
                         <li><a href="#cookie-settings" id="cookie-settings-link">Cookie Settings</a></li>
                     </ul>
                 </div>

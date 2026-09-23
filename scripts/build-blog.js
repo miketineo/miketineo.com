@@ -11,6 +11,71 @@ marked.setOptions({
   gfm: true,
 });
 
+// ─── AdSense ─────────────────────────────────────────────────────────────────
+// Blog posts are the only ad surface on the site; the marketing pages stay
+// ad-free. Slot ids come from the AdSense console after approval. An empty id
+// renders no slot, so the loader can ship before the units exist.
+
+const ADSENSE_CLIENT = 'ca-pub-1142224973470587';
+const ADSENSE_SLOTS = { intro: '', mid: '', end: '' };
+
+function adSlot(key) {
+  const slot = ADSENSE_SLOTS[key];
+  if (!slot) return '';
+  return `<aside class="ad-slot" aria-label="Advertisement">
+                <span class="ad-label">Advertisement</span>
+                <ins class="adsbygoogle" style="display:block" data-ad-client="${ADSENSE_CLIENT}" data-ad-slot="${slot}" data-ad-format="auto" data-full-width-responsive="true"></ins>
+                <script>(adsbygoogle = window.adsbygoogle || []).push({});</script>
+            </aside>`;
+}
+
+// Offsets of top-level </p> ends and <h2 starts in rendered post HTML,
+// skipping anything nested in lists, blockquotes or tables.
+function topLevelMarks(html) {
+  const paragraphEnds = [];
+  const headings = [];
+  let depth = 0;
+  const tag = /<(\/?)(blockquote|ul|ol|table|p|h2)\b[^>]*>/g;
+  let m;
+  while ((m = tag.exec(html))) {
+    const closing = m[1] === '/';
+    const name = m[2];
+    if (name === 'p') {
+      if (closing && depth === 0) paragraphEnds.push(m.index + m[0].length);
+    } else if (name === 'h2') {
+      if (!closing && depth === 0) headings.push(m.index);
+    } else {
+      depth += closing ? -1 : 1;
+    }
+  }
+  return { paragraphEnds, headings };
+}
+
+// post-intro after the 3rd paragraph (posts over 800 words); post-mid before
+// the h2 nearest 60% of the post (posts over 2,000 words).
+function insertInArticleAds(html, wordCount) {
+  const { paragraphEnds, headings } = topLevelMarks(html);
+  const inserts = [];
+
+  const introAt = wordCount > 800 && paragraphEnds.length > 3 ? paragraphEnds[2] : -1;
+  const intro = adSlot('intro');
+  if (introAt >= 0 && intro) inserts.push([introAt, intro]);
+
+  const mid = adSlot('mid');
+  if (wordCount > 2000 && mid) {
+    const target = html.length * 0.6;
+    const candidates = headings.filter(h => h > introAt);
+    if (candidates.length) {
+      const midAt = candidates.reduce((a, b) => (Math.abs(b - target) < Math.abs(a - target) ? b : a));
+      inserts.push([midAt, mid]);
+    }
+  }
+
+  return inserts
+    .sort((a, b) => b[0] - a[0])
+    .reduce((out, [at, slot]) => out.slice(0, at) + '\n' + slot + '\n' + out.slice(at), html);
+}
+
 // ─── Illustration Library ────────────────────────────────────────────────────
 // Inline SVG illustrations: ink-drawing style, ~80x80 viewBox, stroke-based.
 
@@ -233,6 +298,7 @@ function parsePost(filePath, audioManifest) {
     slug,
     title: data.title || 'Untitled',
     date: data.date || new Date().toISOString().split('T')[0],
+    updated: data.updated || '',
     excerpt: data.excerpt || '',
     tags: data.tags || [],
     subtitle: data.subtitle || '',
@@ -308,6 +374,9 @@ function generatePostPage(post) {
     <script src="/js/posthog-config.js"></script>
     <script src="/js/posthog-setup.js" defer></script>
     <script src="/js/cookie-consent.js" defer></script>
+
+    <!-- AdSense (blog posts only) -->
+    <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${ADSENSE_CLIENT}" crossorigin="anonymous"></script>
 
     <style>
         .blog-post {
@@ -421,6 +490,23 @@ function generatePostPage(post) {
             font-size: var(--font-size-base);
             line-height: 1.8;
             color: var(--color-text-primary);
+        }
+        /* ── Ad slot: reserved height so the page does not shift ── */
+        .ad-slot {
+            max-width: 720px;
+            min-height: 280px;
+            margin: var(--spacing-xl) 0;
+            padding: var(--spacing-sm) 0;
+            border-top: 1px solid var(--color-border);
+            border-bottom: 1px solid var(--color-border);
+        }
+        .ad-label {
+            display: block;
+            margin-bottom: var(--spacing-sm);
+            font-size: var(--font-size-sm);
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--color-text-secondary);
         }
         /* ── Hero audio card (minimal, New Yorker style) ── */
         .blog-audio-card {
@@ -794,8 +880,10 @@ function generatePostPage(post) {
             ${audioWidget}
 
             <div class="blog-post-content">
-                ${post.content}
+                ${insertInArticleAds(post.content, post.rawContent.split(/\s+/).length)}
             </div>
+
+            ${adSlot('end')}
 
             <footer class="blog-post-footer">
                 <div class="text-center">
@@ -837,6 +925,7 @@ function generatePostPage(post) {
                         <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
                         <li><a href="mailto:hello@miketineo.com">Email</a></li>
                         <li><a href="/contact.html">Contact Form</a></li>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
                         <li><a href="#cookie-settings" id="cookie-settings-link">Cookie Settings</a></li>
                     </ul>
                 </div>
@@ -1176,6 +1265,7 @@ function generateBlogIndex(posts) {
                         <li><a href="https://github.com/miketineo" target="_blank" rel="noopener">GitHub</a></li>
                         <li><a href="mailto:hello@miketineo.com">Email</a></li>
                         <li><a href="/contact.html">Contact Form</a></li>
+                        <li><a href="/privacy.html">Privacy Policy</a></li>
                         <li><a href="#cookie-settings" id="cookie-settings-link">Cookie Settings</a></li>
                     </ul>
                 </div>
@@ -1342,6 +1432,47 @@ function formatDuration(durationSeconds) {
   return `${minutes}m ${String(seconds).padStart(2, '0')}s audio`;
 }
 
+// ─── Sitemap ─────────────────────────────────────────────────────────────────
+// Written here because this is the only step that knows every post. Static
+// pages carry no <lastmod>: CI checks out shallow, so file and commit dates
+// would claim every page changed on every deploy. Posts use updated/date
+// frontmatter. tech-due-diligence.html is noindex and stays out.
+
+const SITEMAP_PATH = path.join(__dirname, '..', 'sitemap.xml');
+const SITEMAP_PAGES = [
+  { loc: '/', changefreq: 'monthly', priority: '1.0' },
+  { loc: '/fractional-cto.html', changefreq: 'monthly', priority: '0.9' },
+  { loc: '/blog/', changefreq: 'weekly', priority: '0.9' },
+  { loc: '/about.html', changefreq: 'monthly', priority: '0.8' },
+  { loc: '/experience.html', changefreq: 'monthly', priority: '0.8' },
+  { loc: '/speaking.html', changefreq: 'monthly', priority: '0.7' },
+  { loc: '/contact.html', changefreq: 'yearly', priority: '0.6' },
+  { loc: '/privacy.html', changefreq: 'yearly', priority: '0.3' },
+];
+
+function writeSitemap(posts) {
+  const isoDate = d => new Date(d).toISOString().split('T')[0];
+  const entries = [
+    ...SITEMAP_PAGES.map(p => `  <url>
+    <loc>https://miketineo.com${p.loc}</loc>
+    <changefreq>${p.changefreq}</changefreq>
+    <priority>${p.priority}</priority>
+  </url>`),
+    ...[...posts]
+      .sort((a, b) => new Date(b.date) - new Date(a.date))
+      .map(post => `  <url>
+    <loc>https://miketineo.com/blog/${post.slug}.html</loc>
+    <lastmod>${isoDate(post.updated || post.date)}</lastmod>
+  </url>`),
+  ];
+  fs.writeFileSync(SITEMAP_PATH, `<?xml version="1.0" encoding="UTF-8"?>
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+${entries.join('\n')}
+</urlset>
+`);
+  console.log(`Generated: ${SITEMAP_PATH} (${entries.length} URLs)`);
+}
+
 // Main build process
 function build() {
   console.log('Building blog...\n');
@@ -1354,6 +1485,7 @@ function build() {
     console.log('Generating empty blog index...\n');
     generateBlogIndex([]);
     fs.writeFileSync(POSTS_JSON, JSON.stringify([], null, 2));
+    if (!process.env.BEAR_BLOG_DIR) writeSitemap([]);
     console.log('\nBlog build complete! (0 posts)');
     return;
   }
@@ -1388,6 +1520,9 @@ function build() {
     audioDurationSeconds: audio ? audio.durationSeconds : null,
   }));
   fs.writeFileSync(POSTS_JSON, JSON.stringify(postsMetadata, null, 2));
+
+  // Preview builds (BEAR_BLOG_DIR) must not rewrite the production sitemap.
+  if (!process.env.BEAR_BLOG_DIR) writeSitemap(posts);
 
   console.log(`\nBlog build complete! Generated ${posts.length} post(s).`);
 }

@@ -85,7 +85,7 @@
           <span class="cookie-icon" aria-hidden="true">🍪</span>
           <p>
             We use cookies to improve your experience and analyze site traffic.
-            <a href="#privacy" class="cookie-privacy-link" id="cookie-privacy-link">Learn more</a>
+            <a href="/privacy.html" class="cookie-privacy-link" id="cookie-privacy-link">Learn more</a>
           </p>
         </div>
         <div class="cookie-consent-buttons">
@@ -113,7 +113,6 @@
     // Add event listeners
     const acceptBtn = document.getElementById('cookie-accept-btn');
     const declineBtn = document.getElementById('cookie-decline-btn');
-    const privacyLink = document.getElementById('cookie-privacy-link');
 
     if (acceptBtn) {
       acceptBtn.addEventListener('click', handleAccept);
@@ -121,10 +120,6 @@
 
     if (declineBtn) {
       declineBtn.addEventListener('click', handleDecline);
-    }
-
-    if (privacyLink) {
-      privacyLink.addEventListener('click', handlePrivacyLink);
     }
 
     // Trigger fade-in animation
@@ -172,14 +167,6 @@
     // decline stops capturing immediately instead of on the next reload.
     window.phConsent(false);
     console.log('[Cookie Consent] Analytics disabled: User declined cookies');
-  }
-
-  /**
-   * Handle privacy link click
-   */
-  function handlePrivacyLink(event) {
-    event.preventDefault();
-    alert('We use PostHog to understand how visitors use our site. This helps us improve user experience. You can opt out anytime by changing your cookie preferences in the footer.');
   }
 
   /**

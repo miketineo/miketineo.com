@@ -65,6 +65,12 @@ const pages = [
     title: 'Contact - Miguel Tineo',
     description: 'Contact Miguel Tineo for fractional CTO engagements, speaking, or mentorship. Replies within 2-3 business days.',
     activeNav: 'Contact'
+  },
+  {
+    name: 'privacy',
+    title: 'Privacy Policy - Miguel Tineo',
+    description: 'How miketineo.com handles analytics, advertising cookies, the contact form and the newsletter, and how to opt out.',
+    activeNav: 'Privacy'
   }
 ];
 
